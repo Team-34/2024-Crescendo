@@ -1,6 +1,6 @@
 #pragma once
 
-#include <frc2/command/CommandBase.h>
+#include <frc2/command/Command.h>
 #include <frc2/command/CommandHelper.h>
 #include <AHRS.h>
 #include <frc/controller/PIDController.h>
@@ -10,7 +10,7 @@
     namespace t34
     {
         class CMD_AutoBal
-        : public frc2::CommandHelper<frc2::CommandBase, CMD_AutoBal> 
+        : public frc2::CommandHelper<frc2::Command, CMD_AutoBal> 
         {
             public:
                 CMD_AutoBal();

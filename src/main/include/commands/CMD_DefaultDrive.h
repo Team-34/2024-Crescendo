@@ -2,7 +2,7 @@
 #define CMD_DEFAULTDRIVE_H
 
 #include <memory>
-#include <frc2/command/CommandBase.h>
+#include <frc2/command/Command.h>
 #include <frc2/command/CommandHelper.h>
 
 #include "subsystems/SwerveDrive.h"
@@ -11,7 +11,7 @@
 namespace t34 {
 
     class DefaultDriveCommand 
-        : public frc2::CommandHelper<frc2::CommandBase, DefaultDriveCommand> {
+        : public frc2::CommandHelper<frc2::Command, DefaultDriveCommand> {
 
     public:
         DefaultDriveCommand(std::shared_ptr<SwerveDrive> drive, std::shared_ptr<T34XboxController> controller);

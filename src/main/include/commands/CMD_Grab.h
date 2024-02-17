@@ -1,4 +1,4 @@
-#include <frc2/command/CommandBase.h>
+#include <frc2/command/Command.h>
 #include <frc2/command/CommandHelper.h>
 #include <frc/controller/PIDController.h>
 
@@ -8,7 +8,7 @@
 namespace t34 {
 
     class CMD_Grab :
-    public frc2::CommandHelper<frc2::CommandBase, CMD_Grab> 
+    public frc2::CommandHelper<frc2::Command, CMD_Grab> 
     {
         double arm_ext_setpoint{};
         double current_arm_ext{};

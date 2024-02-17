@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include <frc2/command/CommandBase.h>
+#include <frc2/command/Command.h>
 #include <frc2/command/CommandHelper.h>
 
 #include "subsystems/ExampleSubsystem.h"
@@ -17,7 +17,7 @@
  * Command will *not* work!
  */
 class ExampleCommand
-    : public frc2::CommandHelper<frc2::CommandBase, ExampleCommand> {
+    : public frc2::CommandHelper<frc2::Command, ExampleCommand> {
  public:
   /**
    * Creates a new ExampleCommand.

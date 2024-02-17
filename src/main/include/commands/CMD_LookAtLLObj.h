@@ -4,7 +4,7 @@
 
 // #pragma once
 
-// #include <frc2/command/CommandBase.h>
+// #include <frc2/command/Command.h>
 // #include <frc2/command/CommandHelper.h>
 
 // /**
@@ -15,7 +15,7 @@
 //  * Command will *not* work!
 //  */
 // class CMD_LookAtLLObj
-//     : public frc2::CommandHelper<frc2::CommandBase, CMD_LookAtLLObj> {
+//     : public frc2::CommandHelper<frc2::Command, CMD_LookAtLLObj> {
 //  public:
 //   CMD_LookAtLLObj();
 

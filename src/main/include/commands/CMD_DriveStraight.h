@@ -1,6 +1,6 @@
 #pragma once
 
-#include <frc2/command/CommandBase.h>
+#include <frc2/command/Command.h>
 #include <frc2/command/CommandHelper.h>
 #include <frc/controller/PIDController.h>
 #include <frc/filter/MedianFilter.h>
@@ -9,7 +9,7 @@
 namespace t34
 {
     class CMD_DriveStraightDistance : 
-        public frc2::CommandHelper<frc2::CommandBase, CMD_DriveStraightDistance>
+        public frc2::CommandHelper<frc2::Command, CMD_DriveStraightDistance>
     {
     public:
         

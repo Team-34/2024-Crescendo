@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include <frc2/command/CommandBase.h>
+#include <frc2/command/Command.h>
 #include <frc2/command/CommandHelper.h>
 
 /**
@@ -17,7 +17,7 @@
 
 
 class CMD_Drop
-    : public frc2::CommandHelper<frc2::CommandBase, CMD_Drop> {
+    : public frc2::CommandHelper<frc2::Command, CMD_Drop> {
  public:
 
   double arm_ext_setpoint{};

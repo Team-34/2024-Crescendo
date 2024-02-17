@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include <frc2/command/CommandBase.h>
+#include <frc2/command/Command.h>
 #include <frc2/command/CommandHelper.h>
 #include <algorithm>
 #include "RobotContainer.h"
@@ -19,7 +19,7 @@
 namespace t34
 {
   class CMD_ReturnHome
-      : public frc2::CommandHelper<frc2::CommandBase, CMD_ReturnHome> {
+      : public frc2::CommandHelper<frc2::Command, CMD_ReturnHome> {
    public:
 
     //double arm_drive{};
