@@ -143,18 +143,18 @@ namespace t34 {
     }
 
     /**
-     * Get the current pose's transitionsl x component of the robot.
+     * Get the current pose's transitional x component of the robot.
      * 
-     * @return double Represent the pose's transitionsl x component.
+     * @return double Represent the pose's transitional x component.
      */    
     double SwerveDrive::GetPoseX() {
         return m_swerve_odometry.GetPose().X().value();
     }
 
     /**
-     * Get the current pose's transitionsl y component of the robot.
+     * Get the current pose's transitional y component of the robot.
      * 
-     * @return double Represent the pose's transitionsl y component.
+     * @return double Represent the pose's transitional y component.
      */    
     double SwerveDrive::GetPoseY() {
         return m_swerve_odometry.GetPose().Y().value();
@@ -170,7 +170,7 @@ namespace t34 {
     }
 
     /**
-     * Reset the odometer for all swerve mosules.
+     * Reset the odometer for all swerve modules.
      */
     void SwerveDrive::ResetOdometry(frc::Pose2d pose) {
         m_swerve_odometry.ResetPosition(frc::Rotation2d(units::degree_t(m_gyro->GetAngle())), GetModulePositions(), pose);
