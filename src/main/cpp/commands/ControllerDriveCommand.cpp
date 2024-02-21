@@ -41,7 +41,7 @@ namespace t34 {
         if (IsInputZero(x, y, rot)) {
             m_swerve_drive->Stop();
 
-            // When input there is no input and when the alloted time has elapsed, rezero the swerve wheels.
+            // When there is no input and when the alloted time has elapsed, rezero the swerve wheels.
             // The alloted time is in seconds and can be set using the ZERO_SWERVE_TIME_SECONDS constexpr
             // located in SwerveContants.h. Suggested value is 5 seconds.
             std::chrono::time_point<std::chrono::steady_clock> now = std::chrono::steady_clock::now();

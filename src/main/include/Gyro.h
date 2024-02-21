@@ -9,9 +9,6 @@ namespace t34 {
         static Gyro* Get();
 
         void ZeroYaw();
-        void ZeroHeading();
-        void AutoGyro();
-    
 
     private: // METHODS
         Gyro();
