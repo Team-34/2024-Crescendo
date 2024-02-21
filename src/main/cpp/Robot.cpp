@@ -57,12 +57,29 @@ void Robot::TeleopInit() {}
  * This function is called periodically during operator control.
  */
 void Robot::TeleopPeriodic() {
+    static t34::Gyro* gyro = t34::Gyro::Get();
     static std::shared_ptr<t34::SwerveDrive> drive = m_rc->SwerveDrive;
     static std::shared_ptr<t34::T34XboxController> drive_controller = m_rc->DriveController;
-    //static frc2::Trigger = drive_controller->Back();
+
+    // PROCESS CONTROLLER BUTTONS
+    // Buttons are implemented this way out of simplicity.
+    // Consider using button trigger events with commands instead.
+
+    // Assign Back Button to Faris Mode.
     if (drive_controller->GetBackButtonReleased()) {
         drive->ToggleFarisMode();
     }
+
+    // Assign Start Button to Zeroing Yaw.
+    // Note: This is for emergency use only!
+    // The robot should be oriented with the front pointed 
+    // at the opposite end of the field and sides as 
+    // parallel as possible to the fields sides when this
+    // button is pressed/released.
+    if (drive_controller->GetStartButtonReleased()) {
+        gyro->ZeroYaw();
+    }
+
 }
 
 /**
