@@ -7,6 +7,8 @@
 #include "T34Controller.hpp"
 #include "subsystems/ExampleSubsystem.h"
 #include "subsystems/SwerveDrive.h"
+#include "subsystems/Shooter.h"
+#include "subsystems/Climber.h"
 #include "commands/ControllerDriveCommand.h"
 
 
@@ -17,9 +19,13 @@
 
 class RobotContainer {
 public: // PROPERTIES
-    std::shared_ptr<t34::T34XboxController> DriveController;
-    std::shared_ptr<t34::SwerveDrive>  SwerveDrive;
+    std::shared_ptr<t34::T34XboxController> ctrl;
+    std::shared_ptr<t34::SwerveDrive>  swerve_drive;
 
+    t34::Shooter shooter;
+    t34::Climber climber;
+
+    double arm_angle_setpoint;
 
     t34::ControllerDriveCommand DefaultCommand;
     //frc2::Command AutonomousCommand;

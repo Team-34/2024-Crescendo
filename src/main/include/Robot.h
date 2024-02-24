@@ -26,7 +26,7 @@ public:
     void SimulationPeriodic() override;
 
 private:
-    RobotContainer* m_rc{ nullptr };
+    RobotContainer* rc{ nullptr };
     
     // Have it empty by default so that if testing teleop it
     // doesn't have undefined behavior and potentially crash.

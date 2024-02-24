@@ -12,8 +12,11 @@
 #include <frc/smartdashboard/SmartDashboard.h>
 
 void Robot::RobotInit() {
-    m_rc = RobotContainer::Get();
-    frc2::CommandScheduler::GetInstance().SetDefaultCommand(m_rc->SwerveDrive.get(), std::move(m_rc->DefaultCommand));
+    rc = RobotContainer::Get();
+    frc2::CommandScheduler::GetInstance().SetDefaultCommand(rc->swerve_drive.get(), std::move(rc->DefaultCommand));
+
+    rc->shooter.Init();
+    rc->climber.Init();
 }
 
 /**
@@ -26,12 +29,14 @@ void Robot::RobotInit() {
  */
 void Robot::RobotPeriodic()
 {
-    static std::shared_ptr<t34::SwerveDrive> drive = m_rc->SwerveDrive;
+    //static std::shared_ptr<t34::SwerveDrive> drive = m_rc->SwerveDrive;
     static t34::Gyro* gyro = t34::Gyro::Get();
     frc2::CommandScheduler::GetInstance().Run();
     
     frc::SmartDashboard::PutNumber("_Yaw", gyro->GetAngle());
-    drive->PutTelemetry();
+
+    rc->swerve_drive->PutTelemetry();
+    rc->shooter.PutTelemetry();
 }
 
 /**
@@ -58,16 +63,16 @@ void Robot::TeleopInit() {}
  */
 void Robot::TeleopPeriodic() {
     static t34::Gyro* gyro = t34::Gyro::Get();
-    static std::shared_ptr<t34::SwerveDrive> drive = m_rc->SwerveDrive;
-    static std::shared_ptr<t34::T34XboxController> drive_controller = m_rc->DriveController;
+    //static std::shared_ptr<t34::SwerveDrive> drive = m_rc->swerve_drive;
+    //static std::shared_ptr<t34::T34XboxController> drive_controller = m_rc->ctrl;
 
     // PROCESS CONTROLLER BUTTONS
     // Buttons are implemented this way out of simplicity.
     // Consider using button trigger events with commands instead.
 
     // Assign Back Button to Faris Mode.
-    if (drive_controller->GetBackButtonReleased()) {
-        drive->ToggleFarisMode();
+    if (rc->ctrl->GetBackButtonReleased()) {
+        rc->swerve_drive->ToggleFarisMode();
     }
 
     // Assign Start Button to Zeroing Yaw.
@@ -76,9 +81,66 @@ void Robot::TeleopPeriodic() {
     // at the opposite end of the field and sides as 
     // parallel as possible to the fields sides when this
     // button is pressed/released.
-    if (drive_controller->GetStartButtonReleased()) {
+    if (rc->ctrl->GetStartButtonReleased()) {
         gyro->ZeroYaw();
     }
+
+
+    //Run the shooter with the triggers
+        //Right is forward, left is back
+    if (rc->ctrl->GetLeftTriggerAxis() > 0.2)
+    {
+        rc->shooter.RunShooter(-(rc->ctrl->GetLeftTriggerAxis()));
+    }
+    else if (rc->ctrl->GetRightTriggerAxis() > 0.2)
+    {
+        rc->shooter.RunShooter(rc->ctrl->GetRightTriggerAxis());
+    }
+    else
+    {
+        rc->shooter.RunShooter(0.0);
+    }
+
+    //Set the shooter's max speed with the D-Pad
+    switch (rc->ctrl->GetPOV())
+    {
+        case (0):
+            rc->shooter.SetMaxSpeedPercent(0.1);
+            break;
+        case (90):
+            rc->shooter.SetMaxSpeedPercent(0.4);
+            break;
+        case (180):
+            rc->shooter.SetMaxSpeedPercent(0.7);
+            break;
+        case (270):
+            rc->shooter.SetMaxSpeedPercent(1.0);
+            break;
+    }
+
+    //Move the arm with the bumpers
+        //Right bumper increases angle, left bumper decreases angle
+    if (rc->ctrl->GetLeftBumper())
+    {
+        rc->arm_angle_setpoint -= 1.0;
+
+        rc->shooter.RunTopArmMotor(-0.4);
+        rc->shooter.RunBottomArmMotor(-0.4);
+    }
+    else if (rc->ctrl->GetRightBumper())
+    {
+        rc->arm_angle_setpoint += 1.0;
+
+        rc->shooter.RunTopArmMotor(0.4);
+        rc->shooter.RunBottomArmMotor(0.4);
+    }
+    else
+    {
+        rc->shooter.RunTopArmMotor(0.0);
+        rc->shooter.RunBottomArmMotor(0.0);
+    }
+
+    //rc->shooter.MoveToAngleDeg(std::clamp(rc->arm_angle_setpoint, -170.0, 180.0));
 
 }
 

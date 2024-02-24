@@ -18,11 +18,14 @@ RobotContainer* RobotContainer::Get() {
 
 
 RobotContainer::RobotContainer()
-    : SwerveDrive(new t34::SwerveDrive())
-    , DriveController(new t34::T34XboxController(0))
-    , DefaultCommand(SwerveDrive, DriveController) {
-
-    DriveController->SetAllAxisDeadband(0.2);
+    : swerve_drive(new t34::SwerveDrive())
+    , ctrl(new t34::T34XboxController(0))
+    , shooter()
+    , climber()
+    , arm_angle_setpoint(10.0)
+    , DefaultCommand(swerve_drive, ctrl) {
+    
+    ctrl->SetAllAxisDeadband(0.2);
 
     ConfigureBindings();
 
