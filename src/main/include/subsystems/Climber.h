@@ -2,35 +2,49 @@
 
 #include <rev/CANSparkMax.h>
 #include <frc/DigitalInput.h>
+#include <frc/controller/PIDController.h>
 
-class Climber
+namespace t34
 {
+
+    class Climber
+    {
+        rev::CANSparkMax m_left_pulley;
+        rev::CANSparkMax m_right_pulley;
+
+        rev::SparkAbsoluteEncoder m_left_pulley_encoder; 
+        rev::SparkAbsoluteEncoder m_right_pulley_encoder;
+
+        frc::PIDController m_pulley_pid;
+
+        bool m_locked_state;
+
+        double m_left_pulley_inches;
+        double m_right_pulley_inches;
+
     public:
 
-    Climber();
+        Climber();
 
-    void move(double inches_from_base);
+        void Move(double inches_from_base);
 
-    void init();
+        void Init();
 
-    void periodic();
+        void Periodic();
 
-    bool setLock(bool state);
+        bool Lock();
 
-    bool getIsLocked();
+        bool Unlock();
 
-    rev::CANSparkMax m_left_pulley;
-    rev::CANSparkMax m_right_pulley;
+        inline bool IsLocked() { return m_locked_state; }
 
-    rev::SparkAbsoluteEncoder m_left_pulley_encoder; 
-    rev::SparkAbsoluteEncoder m_right_pulley_encoder;
+        inline void RunLeftPulley(const double motor_output) { m_left_pulley.Set(motor_output); }
+        inline void RunRightPulley(const double motor_output) { m_right_pulley.Set(motor_output); }
+
+        
+        inline void GetLeftPulleyEncoderVal() { m_left_pulley_encoder.GetPosition(); }
+        inline void GetRightPulleyEncoderVal() { m_right_pulley_encoder.GetPosition(); }
 
 
-    private:
-
-    bool isLocked;
-
-    double m_left_pulley_inches;
-
-    
-};
+    };
+}

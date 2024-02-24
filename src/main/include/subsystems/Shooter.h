@@ -8,40 +8,56 @@
 
 #include "Constants.h"
 
-class Shooter
+namespace t34
 {
+    class Shooter
+    {
+        rev::CANSparkMax m_firing_motor_left;
+        rev::CANSparkMax m_firing_motor_right;
+        rev::CANSparkMax m_arm_motor_top;
+        rev::CANSparkMax m_arm_motor_bottom;
+
+        rev::SparkMaxAbsoluteEncoder m_arm_encoder_top;
+        rev::SparkMaxAbsoluteEncoder m_arm_encoder_bottom;
+
+        ctre::phoenix::motorcontrol::can::TalonSRX m_intake_motor;
+
+        frc::PIDController m_arm_pid;
+
+        frc::DigitalInput m_note_sensor;
+
+        double m_arm_angle_top{};
+        double m_arm_angle_bottom{};
+
+        inline bool IntakeHasNote() { return m_note_sensor.Get(); }
+        inline bool IsIntakeMovingBackward(const double motor_output) { return (-motor_output) < 0.0; }
+
     public:
 
-    Shooter();
+        Shooter();
 
-    void runShooter(const double motor_output);
+        void RunShooter(const double motor_output);
 
-    void runIntake(const double motor_output);
+        void RunIntake(const double motor_output);
 
-    void moveToAngle(const double angle);
+        void MoveToAngle(const double angle);
 
-    void periodic();
+        void Periodic();
 
-    void init();
+        void Init();
 
-    rev::CANSparkMax m_firing_motorL;
-    rev::CANSparkMax m_firing_motorR;
-    rev::CANSparkMax m_arm_motorT;
-    rev::CANSparkMax m_arm_motorB;
+        inline double GetTopArmEncoderVal() { return m_arm_encoder_top.GetPosition(); }
+        inline double GetBottomArmEncoderVal() { return m_arm_encoder_top.GetPosition(); }
 
-    rev::SparkMaxAbsoluteEncoder m_arm_encoderT;
-    rev::SparkMaxAbsoluteEncoder m_arm_encoderB;
+        inline void RunTopArmMotor(const double motor_output) { m_arm_motor_top.Set(motor_output); }
+        inline void RunBottomArmMotor(const double motor_output) { m_arm_motor_bottom.Set(motor_output); }
 
-    ctre::phoenix::motorcontrol::can::TalonSRX m_intake;
+        inline void RunLeftFiringMotor(const double motor_output) { m_firing_motor_left.Set(motor_output); }
+        inline void RunRightFiringMotor(const double motor_output) { m_firing_motor_right.Set(motor_output); }
 
-    frc::PIDController m_arm_PID;
+        
+        inline void RunIntakeMotor(const double motor_output) { m_intake_motor.Set(ctre::phoenix::motorcontrol::ControlMode::PercentOutput, motor_output); }
 
-    frc::DigitalInput m_note_sensor;
-
-
-    private:
-
-    double m_arm_angleT{};
-    double m_arm_angleB{};
-
-};
+        
+    };
+}
