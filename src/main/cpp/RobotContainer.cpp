@@ -23,13 +23,14 @@ RobotContainer* RobotContainer::Get() {
 
 
 RobotContainer::RobotContainer()
-    : SwerveDrive(new t34::SwerveDrive())
-    , DriveController(new t34::T34XboxController(0))
-    , DefaultCommand(SwerveDrive, DriveController)
-    , m_shooter()
-{
-
-    DriveController->SetAllAxisDeadband(0.2);
+    : swerve_drive(new t34::SwerveDrive())
+    , ctrl(new t34::T34XboxController(0))
+    , shooter()
+    , climber()
+    , arm_angle_setpoint(10.0)
+    , DefaultCommand(swerve_drive, ctrl) {
+    
+    ctrl->SetAllAxisDeadband(0.2);
 
     // USE THIS LINE OF CODE: // NamedCommands::registerCommand("ShootSpeaker", std::move(/* put corrosponding function here */)); // <- This example method returns CommandPtr
     // USE THIS LINE OF CODE: // NamedCommands::registerCommand("exampleCommand", std::move(/* put corrosponding function here */)); // <- This example method returns CommandPtr

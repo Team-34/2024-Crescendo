@@ -5,6 +5,7 @@
 #include <units/math.h>
 #include <frc/controller/PIDController.h>
 #include <frc/DigitalInput.h>
+#include <frc/smartdashboard/SmartDashboard.h>
 #include "subsystems/SwerveDrive.h"
 
 #include "Constants.h"
@@ -30,6 +31,7 @@ namespace t34
 
         double m_arm_angle_top{};
         double m_arm_angle_bottom{};
+        double m_max_speed_percent{};
 
         inline bool IntakeHasNote() { return m_note_sensor.Get(); }
         inline bool IsIntakeMovingBackward(const double motor_output) { return (-motor_output) < 0.0; }
@@ -44,14 +46,18 @@ namespace t34
 
         void RunIntake(const double motor_output);
 
-        void MoveToAngle(const double angle);
+        void MoveToAngleDeg(const double angle);
+
+        void SetMaxSpeedPercent(const double percent);
 
         void Periodic();
 
         void Init();
 
+        void PutTelemetry();
+
         inline double GetTopArmEncoderVal() { return m_arm_encoder_top.GetPosition(); }
-        inline double GetBottomArmEncoderVal() { return m_arm_encoder_top.GetPosition(); }
+        inline double GetBottomArmEncoderVal() { return m_arm_encoder_bottom.GetPosition(); }
 
         inline void RunTopArmMotor(const double motor_output) { m_arm_motor_top.Set(motor_output); }
         inline void RunBottomArmMotor(const double motor_output) { m_arm_motor_bottom.Set(motor_output); }

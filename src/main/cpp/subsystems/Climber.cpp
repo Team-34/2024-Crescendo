@@ -2,7 +2,7 @@
 
 t34::Climber::Climber()
 :   m_left_pulley(99, rev::CANSparkMaxLowLevel::MotorType::kBrushless),
-    m_right_pulley(99, rev::CANSparkMaxLowLevel::MotorType::kBrushless),
+    m_right_pulley(98, rev::CANSparkMaxLowLevel::MotorType::kBrushless),
     m_left_pulley_encoder(m_left_pulley.GetAbsoluteEncoder(rev::SparkMaxAbsoluteEncoder::Type::kDutyCycle)),
     m_right_pulley_encoder(m_right_pulley.GetAbsoluteEncoder(rev::SparkMaxAbsoluteEncoder::Type::kDutyCycle)),
     m_pulley_pid(0.1, 0.0, 0.1),
