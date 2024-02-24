@@ -4,6 +4,8 @@
 #include <frc/DigitalInput.h>
 #include <frc/controller/PIDController.h>
 
+#include "Constants.h"
+
 namespace t34
 {
 
@@ -42,8 +44,8 @@ namespace t34
         inline void RunRightPulley(const double motor_output) { m_right_pulley.Set(motor_output); }
 
         
-        inline void GetLeftPulleyEncoderVal() { m_left_pulley_encoder.GetPosition(); }
-        inline void GetRightPulleyEncoderVal() { m_right_pulley_encoder.GetPosition(); }
+        inline double GetLeftPulleyEncoderVal() { m_left_pulley_encoder.GetPosition(); }
+        inline double GetRightPulleyEncoderVal() { m_right_pulley_encoder.GetPosition(); }
 
 
     };
