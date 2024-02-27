@@ -19,7 +19,7 @@ double t34::TrajMath::GetFiringAngle()
     const auto g = 9.80665; // gravity
 
     const auto gx² = g * x²;
-    const auto v² * y = v²y
+    const auto v²y = v² * y;
     const auto gx = g * x;
 
     const auto numerator = v² - sqrt(v⁴ - (g * (gx² + (2  * v²y))));
