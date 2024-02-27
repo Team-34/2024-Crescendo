@@ -45,9 +45,9 @@ bool t34::TrajMath::IsInRange()
 
 double t34::TrajMath::GetDistanceFromTarget()
 {
-    return ( 
+    return (
         (m_target_height_meters - m_limelight_height_meters) / tan(
-            RAD_TO_DEG( (m_limelight_angle + m_target_ty) ) 
+            RAD_TO_DEG( (m_limelight_angle + m_target_ty) )
         )
     );
 }
