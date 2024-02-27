@@ -19,8 +19,8 @@ namespace t34
         rev::CANSparkMax m_arm_motor_top;
         rev::CANSparkMax m_arm_motor_bottom;
 
-        rev::SparkMaxAbsoluteEncoder m_arm_encoder_top;
-        rev::SparkMaxAbsoluteEncoder m_arm_encoder_bottom;
+        rev::SparkMaxRelativeEncoder m_arm_encoder_top;
+        rev::SparkMaxRelativeEncoder m_arm_encoder_bottom;
 
         ctre::phoenix::motorcontrol::can::TalonSRX m_intake_motor;
 
@@ -33,6 +33,8 @@ namespace t34
         double m_arm_angle_bottom{};
         double m_max_speed_percent{};
 
+        bool arm_using_pid{};
+
         inline bool IntakeHasNote() { return m_note_sensor.Get(); }
         inline bool IsIntakeMovingBackward(const double motor_output) { return (-motor_output) < 0.0; }
 
@@ -44,7 +46,7 @@ namespace t34
 
         void RunShooter(const double motor_output);
 
-        void RunIntake(const double motor_output);
+        void RunIntakeMotor(const double motor_output);
 
         void MoveToAngleDeg(const double angle);
 
@@ -65,9 +67,8 @@ namespace t34
         inline void RunLeftFiringMotor(const double motor_output) { m_firing_motor_left.Set(motor_output); }
         inline void RunRightFiringMotor(const double motor_output) { m_firing_motor_right.Set(motor_output); }
 
-        
-        inline void RunIntakeMotor(const double motor_output) { m_intake_motor.Set(ctre::phoenix::motorcontrol::ControlMode::PercentOutput, motor_output); }
+        inline void TogglePIDArmMovement() { arm_using_pid = !arm_using_pid; }
+        inline bool UsingPIDArmMovement() { return arm_using_pid; }
 
-        
     };
 }
