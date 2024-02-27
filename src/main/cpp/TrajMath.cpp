@@ -18,8 +18,12 @@ double t34::TrajMath::GetFiringAngle()
     const auto y = m_target_height_meters;
     const auto g = 9.80665; // gravity
 
-    const auto numerator = v² - sqrt(v⁴ - (g * ((g * x²) + (2  * v² * y))));
-    const auto denominator = g * x;
+    const auto gx² = g * x²;
+    const auto v² * y = v²y
+    const auto gx = g * x;
+
+    const auto numerator = v² - sqrt(v⁴ - (g * (gx² + (2  * v²y))));
+    const auto denominator = gx;
     const auto θ = atan(numerator / denominator);
 
     return RAD_TO_DEG(θ);
