@@ -54,9 +54,13 @@ void Robot::DisabledPeriodic() {}
  */
 void Robot::AutonomousInit() {}
 
-void Robot::AutonomousPeriodic() {}
+void Robot::AutonomousPeriodic() 
+{
 
-void Robot::TeleopInit() {}
+}
+
+void Robot::TeleopInit() {
+}
 
 /**
  * This function is called periodically during operator control.
@@ -82,7 +86,8 @@ void Robot::TeleopPeriodic() {
     // parallel as possible to the fields sides when this
     // button is pressed/released.
     if (rc->ctrl->GetStartButtonReleased()) {
-        gyro->ZeroYaw();
+        rc->arm_angle_setpoint = ((rc->shooter.GetTopArmEncoderVal() + rc->shooter.GetBottomArmEncoderVal()) * 0.5) / ARM_DEG_SCALAR;
+        rc->shooter.TogglePIDArmMovement();
     }
 
 
@@ -120,19 +125,28 @@ void Robot::TeleopPeriodic() {
 
     //Move the arm with the bumpers
         //Right bumper increases angle, left bumper decreases angle
-    if (rc->ctrl->GetLeftBumper())
+    if (rc->ctrl->GetLeftBumper() && rc->shooter.UsingPIDArmMovement())
     {
         rc->arm_angle_setpoint -= 1.0;
-
+    }
+    else if (rc->ctrl->GetLeftBumper() && rc->shooter.UsingPIDArmMovement() == false)
+    {
         rc->shooter.RunTopArmMotor(-0.4);
         rc->shooter.RunBottomArmMotor(-0.4);
     }
-    else if (rc->ctrl->GetRightBumper())
+    else if (rc->ctrl->GetRightBumper() && rc->shooter.UsingPIDArmMovement())
     {
         rc->arm_angle_setpoint += 1.0;
-
+    }
+    else if (rc->ctrl->GetRightBumper() && rc->shooter.UsingPIDArmMovement() == false)
+    {
         rc->shooter.RunTopArmMotor(0.4);
         rc->shooter.RunBottomArmMotor(0.4);
+    }
+
+    if (rc->shooter.UsingPIDArmMovement())
+    {
+        rc->shooter.MoveToAngleDeg(std::clamp(rc->arm_angle_setpoint, 0.0, 360.0));
     }
     else
     {
@@ -140,8 +154,15 @@ void Robot::TeleopPeriodic() {
         rc->shooter.RunBottomArmMotor(0.0);
     }
 
-    //rc->shooter.MoveToAngleDeg(std::clamp(rc->arm_angle_setpoint, -170.0, 180.0));
-
+    //Run intake with the X button
+    if (rc->ctrl->GetXButton())
+    {
+        rc->shooter.RunIntakeMotor(0.2);
+    }
+    else
+    {
+        rc->shooter.RunIntakeMotor(0.0);
+    }
 }
 
 /**

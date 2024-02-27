@@ -7,8 +7,8 @@ t34::Shooter::Shooter()
   m_arm_motor_bottom(11, rev::CANSparkMaxLowLevel::MotorType::kBrushless),
   m_intake_motor(11),
   m_arm_pid(0.1, 0.0, 0.1),
-  m_arm_encoder_top(m_arm_motor_top.GetAbsoluteEncoder(rev::SparkMaxAbsoluteEncoder::Type::kDutyCycle)),
-  m_arm_encoder_bottom(m_arm_motor_bottom.GetAbsoluteEncoder(rev::SparkMaxAbsoluteEncoder::Type::kDutyCycle)),
+  m_arm_encoder_top(m_arm_motor_top.GetEncoder(rev::CANEncoder::EncoderType::kHallSensor, 42)),
+  m_arm_encoder_bottom(m_arm_motor_bottom.GetEncoder(rev::CANEncoder::EncoderType::kHallSensor, 42)),
   m_note_sensor(1),
   //m_arm_angle_top(0.0),
   //m_arm_angle_bottom(0.0),
@@ -20,11 +20,9 @@ void t34::Shooter::RunShooter(const double motor_output)
 {
     m_firing_motor_left.Set(std::clamp(motor_output, -m_max_speed_percent, m_max_speed_percent));
     m_firing_motor_right.Set(std::clamp(motor_output, -m_max_speed_percent, m_max_speed_percent));
-
-    RunIntake(motor_output);
 }
 
-void t34::Shooter::RunIntake(const double motor_output)
+void t34::Shooter::RunIntakeMotor(const double motor_output)
 {
 
     m_intake_motor.Set(ctre::phoenix::motorcontrol::ControlMode::PercentOutput, motor_output);
@@ -40,7 +38,7 @@ void t34::Shooter::RunIntake(const double motor_output)
 
 void t34::Shooter::MoveToAngleDeg(const double angle) 
 {
-    m_arm_pid.SetSetpoint(angle);
+    m_arm_pid.SetSetpoint(angle * ARM_DEG_SCALAR);
     
     m_arm_motor_top.Set(m_arm_pid.Calculate(GetTopArmEncoderVal()));
     m_arm_motor_bottom.Set(m_arm_pid.Calculate(GetTopArmEncoderVal()));
@@ -55,12 +53,15 @@ void t34::Shooter::SetMaxSpeedPercent(const double percent)
 
 void t34::Shooter::PutTelemetry()
 {
-    frc::SmartDashboard::PutNumber("Arm Top Encoder: ", m_arm_encoder_top.GetPosition());
-    frc::SmartDashboard::PutNumber("Arm Bottom Encoder: ", m_arm_encoder_bottom.GetPosition());
+    frc::SmartDashboard::PutNumber("Arm Top Relative Encoder: ", GetTopArmEncoderVal());
+    frc::SmartDashboard::PutNumber("Arm Bottom Relative Encoder: ", GetBottomArmEncoderVal());
+    
     frc::SmartDashboard::PutNumber("Max Speed: ", m_max_speed_percent);
     frc::SmartDashboard::PutNumber("Arm Setpoint: ", m_arm_pid.GetSetpoint());
 
     frc::SmartDashboard::PutBoolean("IsIntakeMovingBackwards: ", IsIntakeMovingBackward(m_intake_motor.GetMotorOutputPercent()));
+    frc::SmartDashboard::PutBoolean("UsingPIDArmMovement: ", UsingPIDArmMovement());
+
 }
 
 void t34::Shooter::Periodic()
