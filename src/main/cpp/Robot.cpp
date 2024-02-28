@@ -17,7 +17,6 @@ void Robot::RobotInit() {
 
     rc->shooter.Init();
     rc->climber.Init();
-    rc->limelight_util.Init();
 }
 
 /**

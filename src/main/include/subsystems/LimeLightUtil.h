@@ -52,7 +52,7 @@ namespace t34
 
         void Periodic();
 
-        inline void setTargetMode(TargetMode mode) { m_target_mode = mode };
+        inline void setTargetMode(TargetMode mode) { m_target_mode = mode; };
 
         double m_swerve_drive_speeds[3]{};
             // 0 -> x movement
