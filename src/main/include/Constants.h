@@ -14,7 +14,7 @@ constexpr double ARM_ENC_CONVERSION_FACTOR{360.0 / (NEO550_RES * INTAKE_GEAR_RAT
 constexpr double ARM_DEG_SCALAR{ 0.02756 };
 constexpr double SHOOTER_DEG_SCALAR{ 0.0116 };
 
-const std::string LL_TABLE_NAME{ "" };
+const std::string LIMELIGHT_TABLE_NAME{ "" };
 
 #define DEG_TO_RAD(x) (x * PI_DIV_180)
 #define RAD_TO_DEG(x) (x * _180_DIV_PI)

@@ -10,6 +10,8 @@
 #include "subsystems/Shooter.h"
 #include "subsystems/Climber.h"
 #include "commands/ControllerDriveCommand.h"
+#include "Autoflags.h"
+#include "subsystems/LimelightUtil.h"
 
 
 #include <memory>
@@ -24,6 +26,9 @@ public: // PROPERTIES
 
     t34::Shooter shooter;
     t34::Climber climber;
+    t34::Autoflags autoflags;
+    t34::TrajMath traj_math;
+    t34::LimelightUtil limelight_util;
 
     double arm_angle_setpoint;
 

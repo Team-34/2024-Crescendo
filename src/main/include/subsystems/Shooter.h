@@ -40,9 +40,9 @@ namespace t34
 
         Shooter();
 
-        void RunShooter(const double motor_output);
+        void RunShooterPercent(const double motor_output);
 
-        void RunIntakeMotor(const double motor_output);
+        void RunIntakeMotorPercent(const double motor_output);
 
         void MoveToAngleDeg(const double angle);
 
@@ -57,11 +57,11 @@ namespace t34
         inline double GetTopArmEncoderVal() { return m_arm_encoder_top.GetPosition(); }
         inline double GetBottomArmEncoderVal() { return m_arm_encoder_bottom.GetPosition(); }
 
-        inline void RunTopArmMotor(const double motor_output) { m_arm_motor_top.Set(motor_output); }
-        inline void RunBottomArmMotor(const double motor_output) { m_arm_motor_bottom.Set(motor_output); }
+        inline void RunTopArmMotorPercent(const double motor_output) { m_arm_motor_top.Set(motor_output); }
+        inline void RunBottomArmMotorPercent(const double motor_output) { m_arm_motor_bottom.Set(motor_output); }
 
-        inline void RunLeftFiringMotor(const double motor_output) { m_firing_motor_left.Set(motor_output); }
-        inline void RunRightFiringMotor(const double motor_output) { m_firing_motor_right.Set(motor_output); }
+        inline void RunLeftFiringMotorPercent(const double motor_output) { m_firing_motor_left.Set(motor_output); }
+        inline void RunRightFiringMotorPercent(const double motor_output) { m_firing_motor_right.Set(motor_output); }
 
         inline void TogglePIDArmMovement() { arm_using_pid = !arm_using_pid; }
         inline bool UsingPIDArmMovement() { return arm_using_pid; }
