@@ -17,6 +17,7 @@ void Robot::RobotInit() {
 
     rc->shooter.Init();
     rc->climber.Init();
+    rc->limelight_util.Init();
 }
 
 /**
@@ -37,6 +38,10 @@ void Robot::RobotPeriodic()
 
     rc->swerve_drive->PutTelemetry();
     rc->shooter.PutTelemetry();
+
+    rc->shooter.Periodic();
+    rc->climber.Periodic();
+    rc->limelight_util.Periodic();
 }
 
 /**
@@ -124,31 +129,37 @@ void Robot::TeleopPeriodic() {
         //Right is forward, left is back
     if (rc->ctrl->GetLeftTriggerAxis() > 0.2)
     {
-        rc->shooter.RunShooter(-(rc->ctrl->GetLeftTriggerAxis()));
+        rc->shooter.RunShooterPercent(-(rc->ctrl->GetLeftTriggerAxis()));
     }
     else if (rc->ctrl->GetRightTriggerAxis() > 0.2)
     {
-        rc->shooter.RunShooter(rc->ctrl->GetRightTriggerAxis());
+        rc->shooter.RunShooterPercent(rc->ctrl->GetRightTriggerAxis());
     }
     else
     {
-        rc->shooter.RunShooter(0.0);
+        rc->shooter.RunShooterPercent(0.0);
     }
 
-    //Set the shooter's max speed with the D-Pad
+    //Set the robot's target mode with the D-Pad
     switch (rc->ctrl->GetPOV())
     {
-        case (0):
+        case (0): // amp - up
             rc->shooter.SetMaxSpeedPercent(0.1);
+            rc->limelight_util.setTargetMode(t34::LimelightUtil::TargetMode::kAmp);
+            rc->arm_angle_setpoint = 87.18;
             break;
-        case (90):
+        case (90): // needs data - right
             rc->shooter.SetMaxSpeedPercent(0.4);
+            rc->limelight_util.setTargetMode(t34::LimelightUtil::TargetMode::kSpeaker);
             break;
-        case (180):
+        case (180): // needs data - down
             rc->shooter.SetMaxSpeedPercent(0.7);
+            rc->limelight_util.setTargetMode(t34::LimelightUtil::TargetMode::kTrap);
             break;
-        case (270):
-            rc->shooter.SetMaxSpeedPercent(1.0);
+        case (270): // collection mode - left
+            rc->shooter.SetMaxSpeedPercent(0.0);
+            rc->arm_angle_setpoint = 5.0;
+
             break;
     }
 
@@ -160,8 +171,8 @@ void Robot::TeleopPeriodic() {
     }
     else if (rc->ctrl->GetLeftBumper() && rc->shooter.UsingPIDArmMovement() == false)
     {
-        rc->shooter.RunTopArmMotor(-0.4);
-        rc->shooter.RunBottomArmMotor(-0.4);
+        rc->shooter.RunTopArmMotorPercent(-0.4);
+        rc->shooter.RunBottomArmMotorPercent(-0.4);
     }
     else if (rc->ctrl->GetRightBumper() && rc->shooter.UsingPIDArmMovement())
     {
@@ -169,29 +180,42 @@ void Robot::TeleopPeriodic() {
     }
     else if (rc->ctrl->GetRightBumper() && rc->shooter.UsingPIDArmMovement() == false)
     {
-        rc->shooter.RunTopArmMotor(0.4);
-        rc->shooter.RunBottomArmMotor(0.4);
+        rc->shooter.RunTopArmMotorPercent(0.4);
+        rc->shooter.RunBottomArmMotorPercent(0.4);
     }
 
     if (rc->shooter.UsingPIDArmMovement())
     {
-        rc->shooter.MoveToAngleDeg(std::clamp(rc->arm_angle_setpoint, 0.0, 360.0));
+        rc->shooter.MoveToAngleDeg(std::clamp(rc->arm_angle_setpoint, 0.0, 180.0));
     }
     else
     {
-        rc->shooter.RunTopArmMotor(0.0);
-        rc->shooter.RunBottomArmMotor(0.0);
+        rc->shooter.RunTopArmMotorPercent(0.0);
+        rc->shooter.RunBottomArmMotorPercent(0.0);
     }
 
     //Run intake with the X button
     if (rc->ctrl->GetXButton())
     {
-        rc->shooter.RunIntakeMotor(0.2);
+        rc->shooter.RunIntakeMotorPercent(0.4);
     }
     else
     {
-        rc->shooter.RunIntakeMotor(0.0);
+        rc->shooter.RunIntakeMotorPercent(0.0);
     }
+
+    if (rc->ctrl->GetYButton())
+    {
+        rc->swerve_drive->Drive
+        (
+            frc::Translation2d(
+                units::meter_t(rc->limelight_util.m_swerve_drive_speeds[0]),
+                units::meter_t(rc->limelight_util.m_swerve_drive_speeds[1])
+            ),
+            rc->limelight_util.m_swerve_drive_speeds[2]
+        );
+    }
+
 }
 
 /**

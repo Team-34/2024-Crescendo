@@ -1,14 +1,15 @@
 #pragma once
 
 #include <frc/controller/PIDController.h>
-#include "LimeLightHelpers.h"
+#include "LimelightHelpers.h"
 #include "SwerveDrive.h"
 #include "Constants.h"
+#include "TrajMath.h"
 
 namespace t34
 {
 
-    class LimeLightUtil
+    class LimelightUtil
     {
 
     public:
@@ -22,14 +23,12 @@ namespace t34
 
     private:
 
-        frc::PIDController m_ll_swerve_pid;
-
-        std::shared_ptr<SwerveDrive> m_swerve_drive;
+        frc::PIDController m_limelight_swerve_pid;
 
         std::shared_ptr<nt::NetworkTable> m_table;
 
-        double m_tx = LimelightHelpers::getTX(LL_TABLE_NAME);
-        double m_ty = LimelightHelpers::getTY(LL_TABLE_NAME);
+        double m_tx = LimelightHelpers::getTX(LIMELIGHT_TABLE_NAME);
+        double m_ty = LimelightHelpers::getTY(LIMELIGHT_TABLE_NAME);
 
         double m_heading_error;
         double m_kp;
@@ -39,23 +38,27 @@ namespace t34
         double m_drive_x;
         double m_drive_y;
 
-        double m_target_height_meters;
-        double m_note_velocity_mps;
-        double m_ll_angle_deg;
-        double m_target_distance_meters;
-        double m_ll_height_meters;
-
         TargetMode m_target_mode;
 
-        double AdjustSteering();
+        void AdjustSteering();
 
     public:
 
-        LimeLightUtil(std::shared_ptr<SwerveDrive> swerve_ptr, TargetMode target_mode = TargetMode::kSpeaker);
+        TrajMath m_math_handler;
+
+        LimelightUtil(TrajMath math_handler, TargetMode target_mode = TargetMode::kSpeaker);
 
         void Init();
 
         void Periodic();
+
+        inline void setTargetMode(TargetMode mode) { m_target_mode = mode };
+
+        double m_swerve_drive_speeds[3]{};
+            // 0 -> x movement
+            // 1 -> y movement
+            // 2 -> r movement
+            // Ex: swerve_drive->Drive(m_swerve_drive_speeds[0], m_swerve_drive_speeds[1], m_swerve_drive_speeds[2]);
 
     };
 }
