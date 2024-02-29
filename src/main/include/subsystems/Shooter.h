@@ -5,6 +5,7 @@
 #include <units/math.h>
 #include <frc/controller/PIDController.h>
 #include <frc/DigitalInput.h>
+#include "subsystems/SwerveDrive.h"
 
 #include "Constants.h"
 
@@ -26,6 +27,7 @@ namespace t34
 
         frc::DigitalInput m_note_sensor;
 
+
         double m_arm_angle_top{};
         double m_arm_angle_bottom{};
 
@@ -34,6 +36,8 @@ namespace t34
 
     public:
 
+        t34::SwerveDrive m_swerveDrive;
+        
         Shooter();
 
         void RunShooter(const double motor_output);

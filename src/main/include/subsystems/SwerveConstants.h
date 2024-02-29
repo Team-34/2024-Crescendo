@@ -110,7 +110,7 @@ namespace t34 {
     constexpr double  DRIVE_TELEOP_MAX_SPEED            { 2.0 };
     constexpr double  DRIVE_GEAR_RATIO                  { SDSMK4_L1 };
     constexpr double  DRIVE_WHEEL_DIAMETER              { 4.0 };
-    constexpr double  DRIVE_WHEEL_CIRCUMFERENCE         { DRIVE_WHEEL_DIAMETER * PI };
+    constexpr double  DRIVE_WHEEL_CIRCUMFERENCE         { DRIVE_WHEEL_DIAMETER * M_PIl };
 
     // TALONFX STEERING CONFIG CONSTANTS
     constexpr bool    STEER_ENABLE_CURRENT_LIMIT                { false };
