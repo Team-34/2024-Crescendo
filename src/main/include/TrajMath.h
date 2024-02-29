@@ -12,8 +12,8 @@ namespace t34
         double m_target_distance_meters;
         double m_target_height_meters;
         double m_limelight_height_meters;
-        double m_shooter_angle;
-        double m_limelight_angle;
+        double m_shooter_angle_degrees;
+        double m_limelight_angle_degrees;
 
         double m_target_tx;
         double m_target_ty;

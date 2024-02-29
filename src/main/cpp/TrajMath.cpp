@@ -11,8 +11,8 @@ t34::TrajMath::TrajMath
     m_note_max_velocity_mps(note_max_velocity_mps),
     m_target_height_meters(target_height_meters),
     m_limelight_height_meters(limelight_height_meters),
-    m_shooter_angle(shooter_angle),
-    m_limelight_angle(limelight_angle),
+    m_shooter_angle_degrees(shooter_angle),
+    m_limelight_angle_degrees(limelight_angle),
     m_target_tx(0.0),
     m_target_ty(0.0)
 {}     
@@ -48,25 +48,18 @@ double t34::TrajMath::GetFiringAngleDeg()
 bool t34::TrajMath::IsInRange()
 {
     double rate = (
-        tan(m_shooter_angle) - 
-        (g * m_target_distance_meters) / (pow(m_shooter_angle, 2) * pow(m_note_max_velocity_mps, 2))
+        tan(m_shooter_angle_degrees) - 
+        (g * m_target_distance_meters) / (pow(m_shooter_angle_degrees, 2) * pow(m_note_max_velocity_mps, 2))
     );
 
-    if (rate > 0)
-    {
-        return true;
-    }
-    else
-    {
-        return false;
-    }
+    return rate > 0.0;
 }
 
 double t34::TrajMath::GetDistanceFromTarget()
 {
     return (
         (m_target_height_meters - m_limelight_height_meters) / tan(
-            RAD_TO_DEG( (m_limelight_angle + m_target_ty) )
+            RAD_TO_DEG( (m_limelight_angle_degrees + m_target_ty) )
         )
     );
 }
