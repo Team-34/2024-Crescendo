@@ -1,4 +1,4 @@
-#include "subsystems/LimeLightUtil.h"
+#include "subsystems/LimelightUtil.h"
 
 t34::LimelightUtil::LimelightUtil(TrajMath math_handler, TargetMode target_mode)
 :   m_limelight_swerve_pid(0.1, 0.0, 0.1),
@@ -20,18 +20,10 @@ void t34::LimelightUtil::AdjustSteering()
 {
     if (fabs(m_heading_error) > 1.0) {
 
-        if (m_heading_error < 0.0) {
-
-            m_steering_adjust = m_kp*m_heading_error + m_min_command;
-
-        }
-        else 
-        {
-
-            m_steering_adjust = m_kp*m_heading_error - m_min_command;
-      
+        m_steering_adjust = m_heading_error < 0.0 ?
+            m_kp * m_heading_error + m_min_command :
+            m_kp * m_heading_error - m_min_command;
     }
-  }
 }
 
 void t34::LimelightUtil::Periodic()
