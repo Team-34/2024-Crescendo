@@ -34,7 +34,8 @@ void t34::Climber::Init()
 
 void t34::Climber::Periodic()
 {
-
+    m_left_pulley_inches = GetLeftPulleyEncoderVal() * CLIMBER_UNITS_TO_INCHES_FACTOR;
+    m_right_pulley_inches = GetRightPulleyEncoderVal() * CLIMBER_UNITS_TO_INCHES_FACTOR;
 }
 
 bool t34::Climber::Lock()
