@@ -196,6 +196,10 @@ namespace LimelightHelpers
         setLimelightNTDouble(limelightName, "pipeline", index);
     }
 
+    inline void setPriorityTagID(const std::string &limelightName, int ID) {
+        setLimelightNTDouble(limelightName, "priorityid", ID);
+    }
+
     inline void setLEDMode_PipelineControl(const std::string &limelightName)
     {
         setLimelightNTDouble(limelightName, "ledMode", 0);
@@ -515,7 +519,7 @@ namespace LimelightHelpers
             return defaultValue;
         }
     }
-    void from_json(const wpi::json &j, RetroreflectiveResultClass &t)
+    inline void from_json(const wpi::json &j, RetroreflectiveResultClass &t)
     {
         std::vector<double> defaultValueVector(6, 0.0);
         t.m_CAMERATransform6DTARGETSPACE = SafeJSONAccess<std::vector<double>>(j, internal::_key_transformCAMERAPOSE_TARGETSPACE, defaultValueVector);
@@ -534,7 +538,7 @@ namespace LimelightHelpers
         t.m_TargetCorners = SafeJSONAccess<std::vector<std::vector<double>>>(j, internal::_key_corners, std::vector<std::vector<double>>{});
     }
 
-    void from_json(const wpi::json &j,  FiducialResultClass &t)
+    inline void from_json(const wpi::json &j,  FiducialResultClass &t)
     {
         std::vector<double> defaultValueVector(6, 0.0);
         t.m_family = SafeJSONAccess<std::string>(j, internal::_key_ffamily, "");
@@ -554,7 +558,7 @@ namespace LimelightHelpers
         t.m_TargetCorners = SafeJSONAccess<std::vector<std::vector<double>>>(j, internal::_key_corners, std::vector<std::vector<double>>{});
     }
 
-    void from_json(const wpi::json &j,  DetectionResultClass &t)
+    inline void from_json(const wpi::json &j,  DetectionResultClass &t)
     {
         t.m_confidence = SafeJSONAccess<double>(j, internal::_key_confidence, 0.0);
         t.m_classID = SafeJSONAccess<double>(j, internal::_key_classID, 0.0);
@@ -567,7 +571,7 @@ namespace LimelightHelpers
         t.m_TargetCorners = SafeJSONAccess<std::vector<std::vector<double>>>(j, internal::_key_corners, std::vector<std::vector<double>>{});
     }
 
-    void from_json(const wpi::json &j,  ClassificationResultClass &t)
+    inline void from_json(const wpi::json &j,  ClassificationResultClass &t)
     {
         t.m_confidence = SafeJSONAccess<double>(j, internal::_key_confidence, 0.0);
         t.m_classID = SafeJSONAccess<double>(j, internal::_key_classID, 0.0);
@@ -580,7 +584,7 @@ namespace LimelightHelpers
         t.m_TargetCorners = SafeJSONAccess<std::vector<std::vector<double>>>(j, internal::_key_corners, std::vector<std::vector<double>>{});
     }
 
-    void from_json(const wpi::json &j,  VisionResultsClass &t)
+    inline void from_json(const wpi::json &j,  VisionResultsClass &t)
     {
         t.m_timeStamp = SafeJSONAccess<double>(j, internal::_key_timestamp, 0.0);
         t.m_latencyPipeline = SafeJSONAccess<double>(j, internal::_key_latency_pipeline, 0.0);
@@ -599,7 +603,7 @@ namespace LimelightHelpers
         t.ClassificationResults = SafeJSONAccess<std::vector< ClassificationResultClass>>(j, "Detector", std::vector< ClassificationResultClass>{});
     }
 
-    void from_json(const wpi::json &j,  LimelightResultsClass &t)
+    inline void from_json(const wpi::json &j,  LimelightResultsClass &t)
     {
         t.targetingResults = SafeJSONAccess<LimelightHelpers::VisionResultsClass>(j, "Results",  LimelightHelpers::VisionResultsClass{});
     }
