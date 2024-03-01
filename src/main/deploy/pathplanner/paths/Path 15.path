@@ -1,0 +1,126 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 0.8085924743278065,
+        "y": 4.160116428340965
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 0.8284932310662568,
+        "y": 4.533643808909241
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 1.89,
+        "y": 7.173889663094642
+      },
+      "prevControl": {
+        "x": 1.8871639437214525,
+        "y": 6.87665945111068
+      },
+      "nextControl": {
+        "x": 1.891411350390267,
+        "y": 7.321804913880099
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 2.630987604317551,
+        "y": 4.160116428340965
+      },
+      "prevControl": {
+        "x": 2.917573402714373,
+        "y": 3.9752223648591443
+      },
+      "nextControl": {
+        "x": 1.3456226271583607,
+        "y": 4.989384155540442
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 1.4569103012079896,
+        "y": 5.556066607628711
+      },
+      "prevControl": {
+        "x": 2.2519547741798176,
+        "y": 4.9551609013127935
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": null
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 1.9,
+      "rotationDegrees": 90.0,
+      "rotateFast": false
+    },
+    {
+      "waypointRelativePos": 0.5,
+      "rotationDegrees": 90.0,
+      "rotateFast": false
+    }
+  ],
+  "constraintZones": [],
+  "eventMarkers": [
+    {
+      "name": "ShootAmp",
+      "waypointRelativePos": 1.0499999999999998,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": []
+        }
+      }
+    },
+    {
+      "name": "Collect Ring",
+      "waypointRelativePos": 1.9500000000000002,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": []
+        }
+      }
+    },
+    {
+      "name": "ShootSpeaker",
+      "waypointRelativePos": 3.0,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": []
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": -179.1048262897889,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": null,
+  "previewStartingState": {
+    "rotation": -61.23092735801747,
+    "velocity": 0
+  },
+  "useDefaultConstraints": true
+}

@@ -56,7 +56,7 @@ RobotContainer::RobotContainer()
     // Build an auto chooser. This will use Commands.none() as the default option.
     // m_auto_chooser = pathplanner::AutoBuilder::b buildAutoChooser();
 
-    m_chooser.SetDefaultOption("Back Up and Shoot", "Back Up and Shoot");
+    m_chooser.SetDefaultOption("path 13", "path 13");
     m_chooser.AddOption("Back Up", "Back Up");
 }
 
