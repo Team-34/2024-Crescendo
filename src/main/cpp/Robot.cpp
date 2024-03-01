@@ -60,7 +60,7 @@ void Robot::DisabledPeriodic() {}
  */
 void Robot::AutonomousInit() {
 
-    m_autonomous_command = m_rc->GetAutonomousCommand();
+    m_autonomous_command = rc->GetAutonomousCommand();
 
     if (m_autonomous_command)
     {
