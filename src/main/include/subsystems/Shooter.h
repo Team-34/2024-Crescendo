@@ -6,6 +6,7 @@
 #include <frc/controller/PIDController.h>
 #include <frc/DigitalInput.h>
 #include <frc/smartdashboard/SmartDashboard.h>
+#include "subsystems/SwerveDrive.h"
 
 #include "Constants.h"
 
@@ -27,6 +28,7 @@ namespace t34
 
         frc::DigitalInput m_note_sensor;
 
+
         //double m_arm_angle_top{};
         //double m_arm_angle_bottom{};
         double m_max_speed_percent{};
@@ -38,6 +40,8 @@ namespace t34
 
     public:
 
+        t34::SwerveDrive m_swerveDrive;
+        
         Shooter();
 
         void RunShooterPercent(const double motor_output);

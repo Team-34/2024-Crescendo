@@ -52,19 +52,47 @@ void Robot::DisabledInit() {}
 
 void Robot::DisabledPeriodic() {}
 
+
+
 /**
  * This autonomous runs the autonomous command selected by your {@link
  * RobotContainer} class.
  */
-void Robot::AutonomousInit() {}
+void Robot::AutonomousInit() {
 
-void Robot::AutonomousPeriodic() 
-{
-    
+    m_autonomous_command = rc->GetAutonomousCommand();
+
+    if (m_autonomous_command)
+    {
+        m_autonomous_command->Schedule();
+    }
+
+    // m_autoSelected = m_chooser.GetSelected();
+    // frc::SmartDashboard::PutString("Auto selected: ", m_autoSelected);
+
+    // if (m_autoSelected == kAutoNameCustom) {
+    //     // Custom Auto goes here
+    // } else {
+    //     // Default Auto goes here
+    // }
 
 }
 
+void Robot::AutonomousPeriodic()
+{
+}
+
 void Robot::TeleopInit() {
+
+      // This makes sure that the autonomous stops running when
+  // teleop starts running. If you want the autonomous to
+  // continue until interrupted by another command, remove
+  // this line or comment it out.
+  if (m_autonomous_command)
+  {
+    m_autonomous_command->Cancel();
+    m_autonomous_command.reset();
+  }
 }
 
 /**
@@ -80,7 +108,8 @@ void Robot::TeleopPeriodic() {
     // Consider using button trigger events with commands instead.
 
     // Assign Back Button to Faris Mode.
-    if (rc->ctrl->GetBackButtonReleased()) {
+    if (rc->ctrl->GetBackButtonReleased())
+    {
         rc->swerve_drive->ToggleFarisMode();
     }
 
@@ -189,6 +218,7 @@ void Robot::TeleopPeriodic() {
             ),
             rc->limelight_util.m_swerve_drive_speeds[2]
         );
+
     }
 
 }

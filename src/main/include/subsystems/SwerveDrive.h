@@ -5,7 +5,6 @@
 
 #include <frc2/command/SubsystemBase.h>
 
-
 namespace t34 {
 
     class SwerveDrive : public frc2::SubsystemBase {
@@ -17,6 +16,7 @@ namespace t34 {
         void Drive(frc::Translation2d translation, double rotation, bool field_relative = true, bool is_open_loop = false);
         void DriveAuto(frc::ChassisSpeeds speeds);
         void Stop();
+
 
         frc::ChassisSpeeds GetRobotRelativeSpeeds();
         frc::Pose2d GetPose();
