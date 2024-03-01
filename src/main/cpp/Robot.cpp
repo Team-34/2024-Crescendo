@@ -91,10 +91,14 @@ void Robot::TeleopPeriodic() {
     // parallel as possible to the fields sides when this
     // button is pressed/released.
     if (rc->ctrl->GetStartButtonReleased()) {
+        gyro->ZeroYaw();
+    }
+
+    // toggle PID vs basic motor output arm movement with the A button
+    if (rc->ctrl->GetAButtonReleased()) { 
         rc->arm_angle_setpoint = ((rc->shooter.GetTopArmEncoderVal() + rc->shooter.GetBottomArmEncoderVal()) * 0.5) / ARM_DEG_SCALAR;
         rc->shooter.TogglePIDArmMovement();
     }
-
 
     //Run the shooter with the triggers
         //Right is forward, left is back
@@ -175,7 +179,7 @@ void Robot::TeleopPeriodic() {
         rc->shooter.RunIntakeMotorPercent(0.0);
     }
 
-    if (rc->ctrl->GetYButton())
+    if (rc->ctrl->GetYButton()) // run swerve automatically using the limelight with the Y button
     {
         rc->swerve_drive->Drive
         (
