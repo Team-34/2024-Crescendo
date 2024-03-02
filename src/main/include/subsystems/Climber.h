@@ -44,8 +44,8 @@ namespace t34
         inline void RunRightPulley(const double motor_output) { m_right_pulley.Set(motor_output); }
 
         
-        inline double GetLeftPulleyEncoderVal() { m_left_pulley_encoder.GetPosition(); }
-        inline double GetRightPulleyEncoderVal() { m_right_pulley_encoder.GetPosition(); }
+        inline double GetLeftPulleyEncoderVal() { return m_left_pulley_encoder.GetPosition(); }
+        inline double GetRightPulleyEncoderVal() { return m_right_pulley_encoder.GetPosition(); }
 
 
     };
