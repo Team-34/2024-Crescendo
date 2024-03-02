@@ -12,8 +12,11 @@
 #include <frc/smartdashboard/SmartDashboard.h>
 
 void Robot::RobotInit() {
-    m_rc = RobotContainer::Get();
-    frc2::CommandScheduler::GetInstance().SetDefaultCommand(m_rc->SwerveDrive.get(), std::move(m_rc->DefaultCommand));
+    rc = RobotContainer::Get();
+    frc2::CommandScheduler::GetInstance().SetDefaultCommand(rc->swerve_drive.get(), std::move(rc->DefaultCommand));
+
+    rc->shooter.Init();
+    rc->climber.Init();
 }
 
 /**
@@ -26,12 +29,18 @@ void Robot::RobotInit() {
  */
 void Robot::RobotPeriodic()
 {
-    static std::shared_ptr<t34::SwerveDrive> drive = m_rc->SwerveDrive;
+    //static std::shared_ptr<t34::SwerveDrive> drive = m_rc->SwerveDrive;
     static t34::Gyro* gyro = t34::Gyro::Get();
     frc2::CommandScheduler::GetInstance().Run();
     
     frc::SmartDashboard::PutNumber("_Yaw", gyro->GetAngle());
-    drive->PutTelemetry();
+
+    rc->swerve_drive->PutTelemetry();
+    rc->shooter.PutTelemetry();
+
+    rc->shooter.Periodic();
+    rc->climber.Periodic();
+    rc->limelight_util.Periodic();
 }
 
 /**
@@ -49,25 +58,30 @@ void Robot::DisabledPeriodic() {}
  */
 void Robot::AutonomousInit() {}
 
-void Robot::AutonomousPeriodic() {}
+void Robot::AutonomousPeriodic() 
+{
+    
 
-void Robot::TeleopInit() {}
+}
+
+void Robot::TeleopInit() {
+}
 
 /**
  * This function is called periodically during operator control.
  */
 void Robot::TeleopPeriodic() {
     static t34::Gyro* gyro = t34::Gyro::Get();
-    static std::shared_ptr<t34::SwerveDrive> drive = m_rc->SwerveDrive;
-    static std::shared_ptr<t34::T34XboxController> drive_controller = m_rc->DriveController;
+    //static std::shared_ptr<t34::SwerveDrive> drive = m_rc->swerve_drive;
+    //static std::shared_ptr<t34::T34XboxController> drive_controller = m_rc->ctrl;
 
     // PROCESS CONTROLLER BUTTONS
     // Buttons are implemented this way out of simplicity.
     // Consider using button trigger events with commands instead.
 
     // Assign Back Button to Faris Mode.
-    if (drive_controller->GetBackButtonReleased()) {
-        drive->ToggleFarisMode();
+    if (rc->ctrl->GetBackButtonReleased()) {
+        rc->swerve_drive->ToggleFarisMode();
     }
 
     // Assign Start Button to Zeroing Yaw.
@@ -76,8 +90,101 @@ void Robot::TeleopPeriodic() {
     // at the opposite end of the field and sides as 
     // parallel as possible to the fields sides when this
     // button is pressed/released.
-    if (drive_controller->GetStartButtonReleased()) {
-        gyro->ZeroYaw();
+    if (rc->ctrl->GetStartButtonReleased()) {
+        rc->arm_angle_setpoint = ((rc->shooter.GetTopArmEncoderVal() + rc->shooter.GetBottomArmEncoderVal()) * 0.5) / ARM_DEG_SCALAR;
+        rc->shooter.TogglePIDArmMovement();
+    }
+
+
+    //Run the shooter with the triggers
+        //Right is forward, left is back
+    if (rc->ctrl->GetLeftTriggerAxis() > 0.2)
+    {
+        rc->shooter.RunShooterPercent(-(rc->ctrl->GetLeftTriggerAxis()));
+    }
+    else if (rc->ctrl->GetRightTriggerAxis() > 0.2)
+    {
+        rc->shooter.RunShooterPercent(rc->ctrl->GetRightTriggerAxis());
+    }
+    else
+    {
+        rc->shooter.RunShooterPercent(0.0);
+    }
+
+    //Set the robot's target mode with the D-Pad
+    switch (rc->ctrl->GetPOV())
+    {
+        case (0): // amp - up
+            rc->shooter.SetMaxSpeedPercent(0.1);
+            rc->limelight_util.setTargetMode(t34::LimelightUtil::TargetMode::kAmp);
+            rc->arm_angle_setpoint = 87.18;
+            break;
+        case (90): // needs data - right
+            rc->shooter.SetMaxSpeedPercent(0.4);
+            rc->limelight_util.setTargetMode(t34::LimelightUtil::TargetMode::kSpeaker);
+            break;
+        case (180): // needs data - down
+            rc->shooter.SetMaxSpeedPercent(0.7);
+            rc->limelight_util.setTargetMode(t34::LimelightUtil::TargetMode::kTrap);
+            break;
+        case (270): // collection mode - left
+            rc->shooter.SetMaxSpeedPercent(0.0);
+            rc->arm_angle_setpoint = 5.0;
+
+            break;
+    }
+
+    //Move the arm with the bumpers
+        //Right bumper increases angle, left bumper decreases angle
+    if (rc->ctrl->GetLeftBumper() && rc->shooter.UsingPIDArmMovement())
+    {
+        rc->arm_angle_setpoint -= 1.0;
+    }
+    else if (rc->ctrl->GetLeftBumper() && rc->shooter.UsingPIDArmMovement() == false)
+    {
+        rc->shooter.RunTopArmMotorPercent(-0.4);
+        rc->shooter.RunBottomArmMotorPercent(-0.4);
+    }
+    else if (rc->ctrl->GetRightBumper() && rc->shooter.UsingPIDArmMovement())
+    {
+        rc->arm_angle_setpoint += 1.0;
+    }
+    else if (rc->ctrl->GetRightBumper() && rc->shooter.UsingPIDArmMovement() == false)
+    {
+        rc->shooter.RunTopArmMotorPercent(0.4);
+        rc->shooter.RunBottomArmMotorPercent(0.4);
+    }
+
+    if (rc->shooter.UsingPIDArmMovement())
+    {
+        rc->shooter.MoveToAngleDeg(std::clamp(rc->arm_angle_setpoint, 0.0, 180.0));
+    }
+    else
+    {
+        rc->shooter.RunTopArmMotorPercent(0.0);
+        rc->shooter.RunBottomArmMotorPercent(0.0);
+    }
+
+    //Run intake with the X button
+    if (rc->ctrl->GetXButton())
+    {
+        rc->shooter.RunIntakeMotorPercent(0.4);
+    }
+    else
+    {
+        rc->shooter.RunIntakeMotorPercent(0.0);
+    }
+
+    if (rc->ctrl->GetYButton())
+    {
+        rc->swerve_drive->Drive
+        (
+            frc::Translation2d(
+                units::meter_t(rc->limelight_util.m_swerve_drive_speeds[0]),
+                units::meter_t(rc->limelight_util.m_swerve_drive_speeds[1])
+            ),
+            rc->limelight_util.m_swerve_drive_speeds[2]
+        );
     }
 
 }
