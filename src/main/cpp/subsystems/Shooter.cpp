@@ -6,7 +6,7 @@ t34::Shooter::Shooter()
   m_arm_motor_top(14, rev::CANSparkMaxLowLevel::MotorType::kBrushless), 
   m_arm_motor_bottom(11, rev::CANSparkMaxLowLevel::MotorType::kBrushless),
   m_intake_motor(11),
-  m_arm_pid(0.7, 0.0, 0.25),
+  m_arm_pid(0.5, 0.0, 0.25),
   m_arm_encoder_top(m_arm_motor_top.GetEncoder(rev::CANEncoder::EncoderType::kHallSensor, 42)),
   m_arm_encoder_bottom(m_arm_motor_bottom.GetEncoder(rev::CANEncoder::EncoderType::kHallSensor, 42)),
   m_note_sensor(1),

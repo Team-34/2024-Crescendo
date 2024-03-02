@@ -32,7 +32,7 @@ RobotContainer::RobotContainer()
         (
             23.884,
             1.9815,
-            1.0,
+            0.2699,
             ((shooter.GetTopArmEncoderVal() + shooter.GetBottomArmEncoderVal()) * 0.5) / ARM_DEG_SCALAR,
             90.0
         )

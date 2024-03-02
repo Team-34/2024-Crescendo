@@ -149,21 +149,20 @@ void Robot::TeleopPeriodic() {
     {
         case (0): // amp - up
             rc->shooter.SetMaxSpeedPercent(0.1);
-            rc->limelight_util.setTargetMode(t34::LimelightUtil::TargetMode::kAmp);
+            rc->limelight_util.SetTargetMode(t34::LimelightUtil::TargetMode::kAmp);
             rc->arm_angle_setpoint = 87.18;
             break;
         case (90): // needs data - right
             rc->shooter.SetMaxSpeedPercent(0.4);
-            rc->limelight_util.setTargetMode(t34::LimelightUtil::TargetMode::kSpeaker);
+            rc->limelight_util.SetTargetMode(t34::LimelightUtil::TargetMode::kSpeaker);
             break;
         case (180): // needs data - down
             rc->shooter.SetMaxSpeedPercent(0.7);
-            rc->limelight_util.setTargetMode(t34::LimelightUtil::TargetMode::kTrap);
+            rc->limelight_util.SetTargetMode(t34::LimelightUtil::TargetMode::kTrap);
             break;
         case (270): // collection mode - left
             rc->shooter.SetMaxSpeedPercent(0.0);
-            rc->arm_angle_setpoint = 5.0;
-
+            rc->arm_angle_setpoint = 10.0;
             break;
     }
 
