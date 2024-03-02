@@ -16,6 +16,8 @@ namespace t34
 
         enum class TargetMode
         {
+            kNone = -1,
+
             kSpeaker,
             kAmp,
             kTrap
@@ -38,6 +40,8 @@ namespace t34
         double m_drive_x;
         double m_drive_y;
 
+        double m_target_id;
+
         TargetMode m_target_mode;
 
         void AdjustSteering();
@@ -52,7 +56,9 @@ namespace t34
 
         void Periodic();
 
-        inline void setTargetMode(TargetMode mode) { m_target_mode = mode; };
+        inline void SetTargetMode(TargetMode mode) { m_target_mode = mode; };
+
+        inline TargetMode GetTargetMode() { return m_target_mode; };
 
         double m_swerve_drive_speeds[3]{};
             // 0 -> x movement
