@@ -52,19 +52,47 @@ void Robot::DisabledInit() {}
 
 void Robot::DisabledPeriodic() {}
 
+
+
 /**
  * This autonomous runs the autonomous command selected by your {@link
  * RobotContainer} class.
  */
-void Robot::AutonomousInit() {}
+void Robot::AutonomousInit() {
 
-void Robot::AutonomousPeriodic() 
-{
-    
+    m_autonomous_command = rc->GetAutonomousCommand();
+
+    if (m_autonomous_command)
+    {
+        m_autonomous_command->Schedule();
+    }
+
+    // m_autoSelected = m_chooser.GetSelected();
+    // frc::SmartDashboard::PutString("Auto selected: ", m_autoSelected);
+
+    // if (m_autoSelected == kAutoNameCustom) {
+    //     // Custom Auto goes here
+    // } else {
+    //     // Default Auto goes here
+    // }
 
 }
 
+void Robot::AutonomousPeriodic()
+{
+}
+
 void Robot::TeleopInit() {
+
+      // This makes sure that the autonomous stops running when
+  // teleop starts running. If you want the autonomous to
+  // continue until interrupted by another command, remove
+  // this line or comment it out.
+  if (m_autonomous_command)
+  {
+    m_autonomous_command->Cancel();
+    m_autonomous_command.reset();
+  }
 }
 
 /**
@@ -80,7 +108,8 @@ void Robot::TeleopPeriodic() {
     // Consider using button trigger events with commands instead.
 
     // Assign Back Button to Faris Mode.
-    if (rc->ctrl->GetBackButtonReleased()) {
+    if (rc->ctrl->GetBackButtonReleased())
+    {
         rc->swerve_drive->ToggleFarisMode();
     }
 
@@ -91,10 +120,14 @@ void Robot::TeleopPeriodic() {
     // parallel as possible to the fields sides when this
     // button is pressed/released.
     if (rc->ctrl->GetStartButtonReleased()) {
+        gyro->ZeroYaw();
+    }
+
+    // toggle PID vs basic motor output arm movement with the A button
+    if (rc->ctrl->GetAButtonReleased()) { 
         rc->arm_angle_setpoint = ((rc->shooter.GetTopArmEncoderVal() + rc->shooter.GetBottomArmEncoderVal()) * 0.5) / ARM_DEG_SCALAR;
         rc->shooter.TogglePIDArmMovement();
     }
-
 
     //Run the shooter with the triggers
         //Right is forward, left is back
@@ -116,16 +149,16 @@ void Robot::TeleopPeriodic() {
     {
         case (0): // amp - up
             rc->shooter.SetMaxSpeedPercent(0.1);
-            rc->limelight_util.setTargetMode(t34::LimelightUtil::TargetMode::kAmp);
+            rc->limelight_util.SetTargetMode(t34::LimelightUtil::TargetMode::kAmp);
             rc->arm_angle_setpoint = 87.18;
             break;
         case (90): // needs data - right
             rc->shooter.SetMaxSpeedPercent(0.4);
-            rc->limelight_util.setTargetMode(t34::LimelightUtil::TargetMode::kSpeaker);
+            rc->limelight_util.SetTargetMode(t34::LimelightUtil::TargetMode::kSpeaker);
             break;
         case (180): // needs data - down
             rc->shooter.SetMaxSpeedPercent(0.7);
-            rc->limelight_util.setTargetMode(t34::LimelightUtil::TargetMode::kTrap);
+            rc->limelight_util.SetTargetMode(t34::LimelightUtil::TargetMode::kTrap);
             break;
         case (270): // collection mode - left
             rc->shooter.SetMaxSpeedPercent(0.0);
@@ -175,7 +208,7 @@ void Robot::TeleopPeriodic() {
         rc->shooter.RunIntakeMotorPercent(0.0);
     }
 
-    if (rc->ctrl->GetYButton())
+    if (rc->ctrl->GetYButton()) // run swerve automatically using the limelight with the Y button
     {
         rc->swerve_drive->Drive
         (
@@ -185,6 +218,7 @@ void Robot::TeleopPeriodic() {
             ),
             rc->limelight_util.m_swerve_drive_speeds[2]
         );
+
     }
 
 }
