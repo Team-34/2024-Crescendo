@@ -13,6 +13,7 @@ constexpr double INTAKE_GEAR_RATIO{203.636364};
 constexpr double ARM_ENC_CONVERSION_FACTOR{360.0 / (NEO550_RES * INTAKE_GEAR_RATIO)};
 constexpr double ARM_DEG_SCALAR{ 0.02756 };
 constexpr double SHOOTER_DEG_SCALAR{ 0.0116 };
+constexpr double CLIMBER_UNITS_TO_INCHES_FACTOR{ 1 };
 
 const std::string LIMELIGHT_TABLE_NAME{ "" };
 
