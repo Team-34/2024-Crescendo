@@ -40,7 +40,17 @@ void Robot::RobotPeriodic()
 
     rc->shooter.Periodic();
     rc->climber.Periodic();
+    rc->limelight_util.m_math_handler.Periodic();
     rc->limelight_util.Periodic();
+
+    frc::SmartDashboard::PutNumber("Distance from limelight target (meters): ", rc->limelight_util.m_math_handler.GetDistanceFromTarget());
+    frc::SmartDashboard::PutNumber("Auto drive x: ", rc->limelight_util.m_swerve_drive_speeds[0]);
+    frc::SmartDashboard::PutNumber("Auto drive y: ", rc->limelight_util.m_swerve_drive_speeds[1]);
+    frc::SmartDashboard::PutNumber("Auto drive r: ", rc->limelight_util.m_swerve_drive_speeds[2]);
+    frc::SmartDashboard::PutNumber("Arm firing angle (degrees): ", rc->limelight_util.m_math_handler.GetFiringAngleDeg());
+    frc::SmartDashboard::PutNumber("Target ID: ", rc->limelight_util.GetTargetID());
+    rc->limelight_util.m_math_handler.PutTelemetry();
+    
 }
 
 /**
@@ -102,6 +112,8 @@ void Robot::TeleopPeriodic() {
     static t34::Gyro* gyro = t34::Gyro::Get();
     //static std::shared_ptr<t34::SwerveDrive> drive = m_rc->swerve_drive;
     //static std::shared_ptr<t34::T34XboxController> drive_controller = m_rc->ctrl;
+    
+    rc->limelight_util.m_math_handler.InputMotorOutputPercent(rc->shooter.GetMaxSpeedPercent());
 
     // PROCESS CONTROLLER BUTTONS
     // Buttons are implemented this way out of simplicity.
@@ -152,9 +164,10 @@ void Robot::TeleopPeriodic() {
             rc->limelight_util.SetTargetMode(t34::LimelightUtil::TargetMode::kAmp);
             rc->arm_angle_setpoint = 87.18;
             break;
-        case (90): // needs data - right
+        case (90): // speaker - right
             rc->shooter.SetMaxSpeedPercent(0.4);
             rc->limelight_util.SetTargetMode(t34::LimelightUtil::TargetMode::kSpeaker);
+            rc->shooter.MoveToAngleDeg(rc->limelight_util.m_math_handler.GetFiringAngleDeg());
             break;
         case (180): // needs data - down
             rc->shooter.SetMaxSpeedPercent(0.7);

@@ -1,14 +1,17 @@
 #pragma once
 
 #include <math.h>
+#include <frc/smartdashboard/SmartDashboard.h>
 
 #include "Constants.h"
+#include "LimelightHelpers.h"
 
 namespace t34
 {
     class TrajMath
     {
         double m_note_max_velocity_mps;
+        double m_motor_output;
         double m_target_distance_meters;
         double m_target_height_meters;
         double m_limelight_height_meters;
@@ -32,11 +35,19 @@ namespace t34
             double limelight_angle
         );
 
+        void Periodic();
+
+        void PutTelemetry();
+
         double GetFiringAngleDeg();
 
         bool IsInRange();
 
         double GetDistanceFromTarget();
+
+        inline void InputMotorOutputPercent(const double percent) { m_motor_output = percent; }
+
+        inline void SetTargetHeightMeters(const double meters) { m_target_height_meters = meters; }
 
 
     };

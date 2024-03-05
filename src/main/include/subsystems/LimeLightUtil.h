@@ -40,6 +40,7 @@ namespace t34
         double m_drive_x;
         double m_drive_y;
 
+        double m_current_id;
         double m_target_id;
 
         TargetMode m_target_mode;
@@ -57,6 +58,8 @@ namespace t34
         void Periodic();
 
         inline void SetTargetMode(TargetMode mode) { m_target_mode = mode; };
+
+        inline double GetTargetID() { return m_target_id; }
 
         double m_swerve_drive_speeds[3]{};
             // 0 -> x movement

@@ -52,6 +52,8 @@ namespace t34
 
         void SetMaxSpeedPercent(const double percent);
 
+        double GetMaxSpeedPercent();
+
         void Periodic();
 
         void Init();
