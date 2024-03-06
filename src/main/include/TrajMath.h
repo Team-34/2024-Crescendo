@@ -14,6 +14,7 @@ namespace t34
         double m_motor_output;
         double m_target_distance_meters;
         double m_target_height_meters;
+        double m_apriltag_height_meters;
         double m_limelight_height_meters;
         double m_shooter_angle_degrees;
         double m_limelight_angle_degrees;
@@ -30,6 +31,7 @@ namespace t34
         (
             double note_max_velocity_mps,
             double target_height_meters,
+            double apriltag_height_meters,
             double limelight_height_meters,
             double shooter_angle,
             double limelight_angle
@@ -48,6 +50,8 @@ namespace t34
         inline void InputMotorOutputPercent(const double percent) { m_motor_output = percent; }
 
         inline void SetTargetHeightMeters(const double meters) { m_target_height_meters = meters; }
+
+        inline void SetApriltagHeightMeters(const double meters) { m_apriltag_height_meters = meters; }
 
 
     };

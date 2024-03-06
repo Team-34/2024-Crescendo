@@ -39,6 +39,7 @@ void t34::LimelightUtil::Periodic()
     {
         case (TargetMode::kAmp):
             m_math_handler.SetTargetHeightMeters(0.864);
+            m_math_handler.SetApriltagHeightMeters(1.45);
             
             m_target_id = (m_current_id == 5 || m_current_id == 6) ? m_current_id : -1.0;
 
@@ -46,6 +47,7 @@ void t34::LimelightUtil::Periodic()
         
         case (TargetMode::kSpeaker):
             m_math_handler.SetTargetHeightMeters(1.9815);
+            m_math_handler.SetApriltagHeightMeters(1.435);
 
             m_target_id = ( m_current_id == 1 ||
                             m_current_id == 2 ||
@@ -55,8 +57,8 @@ void t34::LimelightUtil::Periodic()
             break;
     }
 
-    m_heading_error = -m_tx;
-    m_drive_x = fabs(m_tx) / 25.0;
+    m_heading_error = std::clamp(-m_tx, -1.0, 1.0);
+    m_drive_x = std::clamp((fabs(m_tx) / 25.0), -1.0, 1.0);
     m_drive_y = m_math_handler.IsInRange() ? 0.0 : 0.5;
 
     m_swerve_drive_speeds[0] = m_drive_x;

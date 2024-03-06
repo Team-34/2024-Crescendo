@@ -4,12 +4,14 @@ t34::TrajMath::TrajMath
 (
     double note_max_velocity_mps,
     double target_height_meters,
+    double apriltag_height_meters,
     double limelight_height_meters,
     double shooter_angle,
     double limelight_angle
 ):
     m_note_max_velocity_mps(note_max_velocity_mps),
     m_target_height_meters(target_height_meters),
+    m_apriltag_height_meters(apriltag_height_meters),
     m_limelight_height_meters(limelight_height_meters),
     m_shooter_angle_degrees(shooter_angle),
     m_limelight_angle_degrees(limelight_angle),
@@ -28,6 +30,7 @@ void t34::TrajMath::Periodic()
 void t34::TrajMath::PutTelemetry()
 {
     frc::SmartDashboard::PutNumber("Limelight degree: ", m_limelight_angle_degrees);
+    frc::SmartDashboard::PutNumber("Target height: ", (m_target_height_meters - m_limelight_height_meters) );
     frc::SmartDashboard::PutNumber("TrajMath tx: ", m_target_tx);
     frc::SmartDashboard::PutNumber("TrajMath ty: ", m_target_ty);
 }
@@ -74,8 +77,7 @@ bool t34::TrajMath::IsInRange()
 double t34::TrajMath::GetDistanceFromTarget()
 {
     return (
-        (m_target_height_meters - m_limelight_height_meters) / tan(
-            DEG_TO_RAD( m_limelight_angle_degrees )
-        )
+        //(m_target_height_meters - m_limelight_height_meters) / tan( DEG_TO_RAD(m_limelight_angle_degrees) )
+        (m_apriltag_height_meters - m_limelight_height_meters) / tan( DEG_TO_RAD(m_target_ty) )
     );
 }

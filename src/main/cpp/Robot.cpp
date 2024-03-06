@@ -199,16 +199,17 @@ void Robot::TeleopPeriodic() {
         rc->shooter.RunTopArmMotorPercent(0.4);
         rc->shooter.RunBottomArmMotorPercent(0.4);
     }
+    else if (rc->shooter.UsingPIDArmMovement() == false)
+    {
+        rc->shooter.RunTopArmMotorPercent(0.0);
+        rc->shooter.RunBottomArmMotorPercent(0.0);
+    }
 
     if (rc->shooter.UsingPIDArmMovement())
     {
         rc->shooter.MoveToAngleDeg(std::clamp(rc->arm_angle_setpoint, 0.0, 180.0));
     }
-    else
-    {
-        rc->shooter.RunTopArmMotorPercent(0.0);
-        rc->shooter.RunBottomArmMotorPercent(0.0);
-    }
+    
 
     //Run intake with the X button
     if (rc->ctrl->GetXButton())
