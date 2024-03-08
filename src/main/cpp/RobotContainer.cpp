@@ -35,7 +35,7 @@ RobotContainer::RobotContainer()
             1.435,
             0.2688,
             ((shooter.GetTopArmEncoderVal() + shooter.GetBottomArmEncoderVal()) * 0.5) / ARM_DEG_SCALAR,
-            0.0
+            30.0
         )
     , limelight_util
         (

@@ -6,8 +6,8 @@
 #include "Robot.h"
 
 #include "Gyro.h"
-
-
+#include <cmath>
+#include "LimelightHelpers.h"
 #include <frc2/command/CommandScheduler.h>
 #include <frc/smartdashboard/SmartDashboard.h>
 
@@ -49,6 +49,7 @@ void Robot::RobotPeriodic()
     frc::SmartDashboard::PutNumber("Auto drive r: ", rc->limelight_util.m_swerve_drive_speeds[2]);
     frc::SmartDashboard::PutNumber("Arm firing angle (degrees): ", rc->limelight_util.m_math_handler.GetFiringAngleDeg());
     frc::SmartDashboard::PutNumber("Target ID: ", rc->limelight_util.GetTargetID());
+    frc::SmartDashboard::PutNumber("Distace to apriltag target", log2( (2.5 / LimelightHelpers::getTA()) - 0.3));
     rc->limelight_util.m_math_handler.PutTelemetry();
     
 }
@@ -227,7 +228,7 @@ void Robot::TeleopPeriodic() {
         (
             frc::Translation2d(
                 units::meter_t(rc->limelight_util.m_swerve_drive_speeds[0]),
-                units::meter_t(rc->limelight_util.m_swerve_drive_speeds[1])
+                units::meter_t(0.0)
             ),
             rc->limelight_util.m_swerve_drive_speeds[2]
         );
