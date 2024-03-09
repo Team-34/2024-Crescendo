@@ -48,6 +48,10 @@ namespace t34
         void MoveToAngleDeg(const double angle);
 
         void SetMaxSpeedPercent(const double percent);
+        inline void SetMaxSpeedForAmp() { SetMaxSpeedPercent(0.1); }
+        inline void SetMaxSpeedForSpeaker() { SetMaxSpeedPercent(0.4); }
+        inline void SetMaxSpeedForTrap() { SetMaxSpeedPercent(0.7); }
+        inline void SetMaxSpeedForNoteCollection() { SetMaxSpeedPercent(0.0); }
 
         double GetMaxSpeedPercent() const;
 
