@@ -50,7 +50,7 @@ void t34::Shooter::SetMaxSpeedPercent(const double percent)
 }
 
 
-double t34::Shooter::GetMaxSpeedPercent()
+double t34::Shooter::GetMaxSpeedPercent() const
 {
     return m_max_speed_percent;
 }

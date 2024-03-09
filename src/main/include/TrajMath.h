@@ -41,11 +41,11 @@ namespace t34
 
         void PutTelemetry();
 
-        double GetFiringAngleDeg();
+        double GetFiringAngleDeg() const;
 
-        bool IsInRange();
+        bool IsInRange() const;
 
-        double GetDistanceFromTarget();
+        double GetDistanceFromTarget() const;
 
         inline void InputMotorOutputPercent(const double percent) { m_motor_output = percent; }
 

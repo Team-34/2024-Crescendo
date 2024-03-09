@@ -57,9 +57,13 @@ namespace t34
 
         void Periodic();
 
-        inline void SetTargetMode(TargetMode mode) { m_target_mode = mode; };
+        //inline void SetTargetMode(TargetMode mode) { m_target_mode = mode; }
 
-        inline double GetTargetID() { return m_target_id; }
+        inline void TargetSpeaker() { m_target_mode = TargetMode::kSpeaker; }
+        inline void TargetAmp() { m_target_mode = TargetMode::kAmp; }
+        inline void TargetTrap() { m_target_mode = TargetMode::kTrap; }
+
+        inline double GetTargetID() const { return m_target_id; }
 
         double m_swerve_drive_speeds[3]{};
             // 0 -> x movement

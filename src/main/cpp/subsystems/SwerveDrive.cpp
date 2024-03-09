@@ -13,7 +13,7 @@
 
 
 
-//using namespace pathplanner;
+using namespace pathplanner;
 
 namespace t34 {
 
@@ -23,7 +23,7 @@ namespace t34 {
     SwerveDrive::SwerveDrive() {
         SetName("SwerveDrive");
         m_gyro->Reset();
-/*
+
         // Configure the AutoBuilder last
         AutoBuilder::configureHolonomic(
             [this](){ return GetPose(); }, // Robot pose supplier
@@ -50,7 +50,6 @@ namespace t34 {
             },
             this // Reference to this subsystem to set requirements
         );
-*/
     }
 
     /**
@@ -131,6 +130,10 @@ namespace t34 {
      */
     frc::ChassisSpeeds SwerveDrive::GetRobotRelativeSpeeds() {
         frc::ChassisSpeeds temp;
+
+        double x_speed_avg;
+        double y_speed_avg;
+
         return temp; //frc::SwerveDriveKinematics<4>::ToChassisSpeeds(GetModuleStates());
     }
 

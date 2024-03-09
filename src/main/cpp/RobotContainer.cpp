@@ -27,7 +27,6 @@ RobotContainer::RobotContainer()
     , ctrl(new t34::T34XboxController(0))
     , shooter()
     , climber()
-    , autoflags()
     , traj_math
         (
             23.884,
@@ -47,24 +46,37 @@ RobotContainer::RobotContainer()
     
     ctrl->SetAllAxisDeadband(0.2);
 
-    // USE THIS LINE OF CODE: // NamedCommands::registerCommand("ShootSpeaker", std::move(/* put corrosponding function here */)); // <- This example method returns CommandPtr
-    // USE THIS LINE OF CODE: // NamedCommands::registerCommand("exampleCommand", std::move(/* put corrosponding function here */)); // <- This example method returns CommandPtr
-    // USE THIS LINE OF CODE: // NamedCommands::registerCommand("someOtherCommand", std::move(/* put corrosponding function here */.ToPtr()));
-    // USE THIS LINE OF CODE: // NamedCommands::registerCommand("someOtherCommandShared", std::make_shared<frc2::/* put some sort of command here */>());
+    //NamedCommands::registerCommand("ShootSpeaker", std::move(/* put corrosponding function here */)); // <- This example method returns CommandPtr
+    //NamedCommands::registerCommand("exampleCommand", std::move(/* put corrosponding function here */)); // <- This example method returns CommandPtr
+    //NamedCommands::registerCommand("someOtherCommand", std::move(/* put corrosponding function here */.ToPtr()));
+    //NamedCommands::registerCommand("someOtherCommandShared", std::make_shared<frc2::/* put some sort of command here */>());
 
     ConfigureBindings();
 
-    // Build an auto chooser. This will use Commands.none() as the default option.
-    // m_auto_chooser = pathplanner::AutoBuilder::b buildAutoChooser();
+    alliance_chooser.SetDefaultOption("Red Alliance", "Red");
+    alliance_chooser.AddOption("Blue Alliance", "Blue");
 
-    m_chooser.SetDefaultOption("path 13", "path 13");
-    m_chooser.AddOption("Back Up", "Back Up");
+
+    path_chooser.SetDefaultOption("None", "None");
+    path_chooser.AddOption("Faris room path", "TestingPathFarisRoom");
+
+    path_chooser.AddOption("Start at left, score 2 points", "Left_Score1_NoAmp_MoveOut");
+    path_chooser.AddOption("Start at left, score 3 points", "Left_Score2_NoAmp_MoveOut");
+    path_chooser.AddOption("Start at left, score 4 points", "Left_Score3_NoAmp_MoveOut");
+
+    path_chooser.AddOption("Start at mid, score 2 points", "Mid_Score1_NoAmp_MoveOut");
+    path_chooser.AddOption("Start at mid, score 3 points", "Mid_Score2_NoAmp_MoveOut");
+    path_chooser.AddOption("Start at mid, score 4 points", "Mid_Score3_NoAmp_MoveOut");
+
+    path_chooser.AddOption("Start at right, score 2 points", "Right_Score1_NoAmp_MoveOut");
+    path_chooser.AddOption("Start at right, score 3 points", "Right_Score2_NoAmp_MoveOut");
+    path_chooser.AddOption("Start at right, score 4 points", "Right_Score3_NoAmp_MoveOut");
 }
 
 
 frc2::CommandPtr RobotContainer::GetAutonomousCommand()
 {
-    const std::string path_file_name = m_chooser.GetSelected();
+    const std::string path_file_name = path_chooser.GetSelected();
     const auto path = pathplanner::PathPlannerPath::fromPathFile(path_file_name);
     return pathplanner::AutoBuilder::followPath(path);
 }

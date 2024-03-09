@@ -38,18 +38,30 @@ void Robot::RobotPeriodic()
     rc->swerve_drive->PutTelemetry();
     rc->shooter.PutTelemetry();
 
+    //Periodics
     rc->shooter.Periodic();
     rc->climber.Periodic();
-    rc->limelight_util.m_math_handler.Periodic();
     rc->limelight_util.Periodic();
+    //_________________________
 
-    frc::SmartDashboard::PutNumber("Distance from limelight target (meters): ", rc->limelight_util.m_math_handler.GetDistanceFromTarget());
+    // Swerve Auto Drive Outputs
     frc::SmartDashboard::PutNumber("Auto drive x: ", rc->limelight_util.m_swerve_drive_speeds[0]);
     frc::SmartDashboard::PutNumber("Auto drive y: ", rc->limelight_util.m_swerve_drive_speeds[1]);
     frc::SmartDashboard::PutNumber("Auto drive r: ", rc->limelight_util.m_swerve_drive_speeds[2]);
-    frc::SmartDashboard::PutNumber("Arm firing angle (degrees): ", rc->limelight_util.m_math_handler.GetFiringAngleDeg());
+    //_________________________
+
+
+    // Misc.
     frc::SmartDashboard::PutNumber("Target ID: ", rc->limelight_util.GetTargetID());
-    frc::SmartDashboard::PutNumber("Distace to apriltag target", log2( (2.5 / LimelightHelpers::getTA()) - 0.3));
+    frc::SmartDashboard::PutNumber("Distance from limelight target (meters): ", rc->limelight_util.m_math_handler.GetDistanceFromTarget());
+    //_________________________
+    /*
+    //checks if the approx. range is nearing 5 meters (the range the LL with pick up an AT before the resolution becomes too low)
+    if (log2( (2.5 / LimelightHelpers::getTA()) - 0.3) >= 5.0) {
+        frc::SmartDashboard::PutNumber("Over maximum detection range, current distance is: ", rc->limelight_util.m_math_handler.GetDistanceFromTarget());
+    }
+    //_________________________*/
+    
     rc->limelight_util.m_math_handler.PutTelemetry();
     
 }
@@ -91,6 +103,7 @@ void Robot::AutonomousInit() {
 
 void Robot::AutonomousPeriodic()
 {
+
 }
 
 void Robot::TeleopInit() {
@@ -160,21 +173,21 @@ void Robot::TeleopPeriodic() {
     //Set the robot's target mode with the D-Pad
     switch (rc->ctrl->GetPOV())
     {
-        case (0): // amp - up
+        case (POV_AMP): // amp - up
             rc->shooter.SetMaxSpeedPercent(0.1);
-            rc->limelight_util.SetTargetMode(t34::LimelightUtil::TargetMode::kAmp);
+            rc->limelight_util.TargetAmp();
             rc->arm_angle_setpoint = 87.18;
             break;
-        case (90): // speaker - right
+        case (POV_SPEAKER): // speaker - right
             rc->shooter.SetMaxSpeedPercent(0.4);
-            rc->limelight_util.SetTargetMode(t34::LimelightUtil::TargetMode::kSpeaker);
+            rc->limelight_util.TargetSpeaker();
             rc->shooter.MoveToAngleDeg(rc->limelight_util.m_math_handler.GetFiringAngleDeg());
             break;
-        case (180): // needs data - down
+        case (POV_TRAP): // needs data - down
             rc->shooter.SetMaxSpeedPercent(0.7);
-            rc->limelight_util.SetTargetMode(t34::LimelightUtil::TargetMode::kTrap);
+            rc->limelight_util.TargetTrap();
             break;
-        case (270): // collection mode - left
+        case (POV_COLLECTION): // collection mode - left
             rc->shooter.SetMaxSpeedPercent(0.0);
             rc->arm_angle_setpoint = 10.0;
             break;
@@ -228,7 +241,7 @@ void Robot::TeleopPeriodic() {
         (
             frc::Translation2d(
                 units::meter_t(rc->limelight_util.m_swerve_drive_speeds[0]),
-                units::meter_t(0.0)
+                units::meter_t(rc->limelight_util.m_swerve_drive_speeds[1])
             ),
             rc->limelight_util.m_swerve_drive_speeds[2]
         );

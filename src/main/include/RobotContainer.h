@@ -10,7 +10,6 @@
 #include "subsystems/Shooter.h"
 #include "subsystems/Climber.h"
 #include "commands/ControllerDriveCommand.h"
-#include "Autoflags.h"
 #include "subsystems/LimelightUtil.h"
 #include "Constants.h"
 #include <iostream>
@@ -35,7 +34,6 @@ public: // PROPERTIES
 
     t34::Shooter shooter;
     t34::Climber climber;
-    t34::Autoflags autoflags;
     t34::TrajMath traj_math;
     t34::LimelightUtil limelight_util;
 
@@ -54,7 +52,9 @@ public: // METHODS
 
 private: // DATA
     ExampleSubsystem m_subsystem;
-    frc::SendableChooser<std::string> m_chooser;
+    frc::SendableChooser<std::string> path_chooser;
+    frc::SendableChooser<std::string> alliance_chooser;
+    
 
     // frc2::CommandPtr m_exampleSelectCommand = frc2::cmd::Select<std::string>(
     //   [this] { return m_chooser.GetSelected(); },

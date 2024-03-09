@@ -39,9 +39,6 @@ namespace t34
         inline bool IsIntakeMovingBackward(const double motor_output) { return (-motor_output) < 0.0; }
 
     public:
-
-        t34::SwerveDrive m_swerveDrive;
-        
         Shooter();
 
         void RunShooterPercent(const double motor_output);
@@ -52,7 +49,7 @@ namespace t34
 
         void SetMaxSpeedPercent(const double percent);
 
-        double GetMaxSpeedPercent();
+        double GetMaxSpeedPercent() const;
 
         void Periodic();
 
@@ -60,8 +57,8 @@ namespace t34
 
         void PutTelemetry();
 
-        inline double GetTopArmEncoderVal() { return m_arm_encoder_top.GetPosition(); }
-        inline double GetBottomArmEncoderVal() { return m_arm_encoder_bottom.GetPosition(); }
+        inline double GetTopArmEncoderVal() const { return m_arm_encoder_top.GetPosition(); }
+        inline double GetBottomArmEncoderVal() const { return m_arm_encoder_bottom.GetPosition(); }
 
         inline void RunTopArmMotorPercent(const double motor_output) { m_arm_motor_top.Set(motor_output); }
         inline void RunBottomArmMotorPercent(const double motor_output) { m_arm_motor_bottom.Set(motor_output); }
@@ -70,7 +67,7 @@ namespace t34
         inline void RunRightFiringMotorPercent(const double motor_output) { m_firing_motor_right.Set(motor_output); }
 
         inline void TogglePIDArmMovement() { arm_using_pid = !arm_using_pid; }
-        inline bool UsingPIDArmMovement() { return arm_using_pid; }
+        inline bool UsingPIDArmMovement() const { return arm_using_pid; }
 
     };
 }

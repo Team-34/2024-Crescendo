@@ -16,6 +16,7 @@ t34::LimelightUtil::LimelightUtil(TrajMath math_handler, TargetMode target_mode)
     m_current_id(-1.0),
     m_target_id(-1.0),
     m_target_mode(target_mode) 
+    
 {}
 
 void t34::LimelightUtil::AdjustSteering()
@@ -34,6 +35,7 @@ void t34::LimelightUtil::Periodic()
     m_tx = LimelightHelpers::getTX(LIMELIGHT_TABLE_NAME);
     m_ty = LimelightHelpers::getTY(LIMELIGHT_TABLE_NAME);
     m_current_id = LimelightHelpers::getFiducialID(LIMELIGHT_TABLE_NAME);
+    m_math_handler.Periodic();
 
     switch (m_target_mode)
     {
@@ -51,8 +53,8 @@ void t34::LimelightUtil::Periodic()
 
             m_target_id = ( m_current_id == 1 ||
                             m_current_id == 2 ||
-                            m_current_id == 3 ||
-                            m_current_id == 4) ? m_current_id : -1.0;
+                            m_current_id == 7 ||
+                            m_current_id == 8) ? m_current_id : -1.0;
 
             break;
     }
@@ -64,4 +66,7 @@ void t34::LimelightUtil::Periodic()
     m_swerve_drive_speeds[0] = m_drive_x;
     m_swerve_drive_speeds[1] = m_drive_y;
     m_swerve_drive_speeds[2] = m_steering_adjust;
+
+    
+
 }

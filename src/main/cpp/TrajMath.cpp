@@ -31,11 +31,12 @@ void t34::TrajMath::PutTelemetry()
 {
     frc::SmartDashboard::PutNumber("Limelight degree: ", m_limelight_angle_degrees);
     frc::SmartDashboard::PutNumber("Target height: ", (m_target_height_meters - m_limelight_height_meters) );
+    frc::SmartDashboard::PutNumber("Firing Angle (degrees): ", GetFiringAngleDeg());
     frc::SmartDashboard::PutNumber("TrajMath tx: ", m_target_tx);
     frc::SmartDashboard::PutNumber("TrajMath ty: ", m_target_ty);
 }
 
-double t34::TrajMath::GetFiringAngleDeg()
+double t34::TrajMath::GetFiringAngleDeg() const
 {
     //                   ____________________
     //          ⎛  v² - √ v⁴ - g(gx² + 2v²y)   ⎞
@@ -64,20 +65,23 @@ double t34::TrajMath::GetFiringAngleDeg()
     return RAD_TO_DEG(θ);
 }
 
-bool t34::TrajMath::IsInRange()
+bool t34::TrajMath::IsInRange() const
 {
-    double rate = (
-        tan(m_shooter_angle_degrees) - 
-        (g * m_target_distance_meters) / (pow(m_shooter_angle_degrees, 2) * pow( (m_note_max_velocity_mps * m_motor_output), 2))
-    );
+    const double θ = DEG_TO_RAD(m_shooter_angle_degrees);
+    const double v2 = m_note_max_velocity_mps * m_note_max_velocity_mps;
+    const double x = m_target_distance_meters;
+    const double cosθ = cos(θ);
+    const double cos2θ = cosθ * cosθ;
 
-    return rate > 0.0;
+    const double rate_of_rise = -(((2 * g) / (2 * v2 * cos2θ)) * x) + tan(θ);
+
+    return rate_of_rise > 0; 
 }
 
-double t34::TrajMath::GetDistanceFromTarget()
+double t34::TrajMath::GetDistanceFromTarget() const
 {
     return (
         //(m_target_height_meters - m_limelight_height_meters) / tan( DEG_TO_RAD(m_limelight_angle_degrees) )
-        (m_apriltag_height_meters - m_limelight_height_meters) / tan( DEG_TO_RAD(m_target_ty) )
+        log2( (2.5 / LimelightHelpers::getTA())) - 0.3
     );
 }
