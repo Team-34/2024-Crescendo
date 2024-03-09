@@ -42,9 +42,9 @@ namespace t34 {
                 // This will flip the path being followed to the red side of the field.
                 // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
 
-                auto alliance = DriverStation::GetAlliance();
+                auto alliance = frc::DriverStation::GetAlliance();
                 if (alliance) {
-                    return alliance.value() == DriverStation::Alliance::kRed;
+                    return alliance.value() == frc::DriverStation::Alliance::kRed;
                 }
                 return false;
             },
@@ -133,6 +133,10 @@ namespace t34 {
 
         double x_speed_avg;
         double y_speed_avg;
+
+        frc::SwerveDriveKinematics<4> sm_kin();
+
+        temp = sm_kin().ToChassisSpeeds(GetModuleStates());
 
         return temp; //frc::SwerveDriveKinematics<4>::ToChassisSpeeds(GetModuleStates());
     }

@@ -1,6 +1,8 @@
 #pragma once
 
 #include <frc/controller/PIDController.h>
+
+#include <frc/DriverStation.h>
 #include "LimelightHelpers.h"
 #include "SwerveDrive.h"
 #include "Constants.h"

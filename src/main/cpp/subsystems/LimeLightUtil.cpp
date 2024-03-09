@@ -43,7 +43,9 @@ void t34::LimelightUtil::Periodic()
             m_math_handler.SetTargetHeightMeters(0.864);
             m_math_handler.SetApriltagHeightMeters(1.45);
             
-            m_target_id = (m_current_id == 5 || m_current_id == 6) ? m_current_id : -1.0;
+            m_target_id = (m_current_id == 5  && (frc::DriverStation::GetAlliance() == frc::DriverStation::Alliance::kRed) ||
+                           m_current_id == 6 && (frc::DriverStation::GetAlliance() == frc::DriverStation::Alliance::kBlue)
+                        ) ? m_current_id : -1.0;
 
             break;
         
@@ -51,10 +53,9 @@ void t34::LimelightUtil::Periodic()
             m_math_handler.SetTargetHeightMeters(1.9815);
             m_math_handler.SetApriltagHeightMeters(1.435);
 
-            m_target_id = ( m_current_id == 1 ||
-                            m_current_id == 2 ||
-                            m_current_id == 7 ||
-                            m_current_id == 8) ? m_current_id : -1.0;
+            m_target_id = ( m_current_id == 4 && (frc::DriverStation::GetAlliance() == frc::DriverStation::Alliance::kRed) ||
+                            m_current_id == 7 && (frc::DriverStation::GetAlliance() == frc::DriverStation::Alliance::kBlue)
+                        ) ? m_current_id : -1.0;
 
             break;
     }
