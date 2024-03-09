@@ -7,6 +7,7 @@
 #include "SwerveDrive.h"
 #include "Constants.h"
 #include "TrajMath.h"
+#include "commands/ControllerDriveCommand.h"
 
 namespace t34
 {

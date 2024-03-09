@@ -67,6 +67,10 @@ RobotContainer::RobotContainer()
     path_chooser.AddOption("Start at right, score 2 points", "Right_Score1_NoAmp_MoveOut");
     path_chooser.AddOption("Start at right, score 3 points", "Right_Score2_NoAmp_MoveOut");
     path_chooser.AddOption("Start at right, score 4 points", "Right_Score3_NoAmp_MoveOut");
+
+    path_chooser.AddOption("Start at left, score in amp", "Left_Score0_YesAmp_MoveAuto");
+    path_chooser.AddOption("Start at mid, score in amp", "Middle_Score0_YesAmp_MoveAuto");
+    path_chooser.AddOption("Start at left, score in amp", "Right_Score0_YesAmp_MoveAuto");
 }
 
 
