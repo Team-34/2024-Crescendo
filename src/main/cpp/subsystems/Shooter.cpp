@@ -68,6 +68,58 @@ void t34::Shooter::PutTelemetry()
 
 }
 
+void t34::Shooter::RaiseArm()
+{
+    if (UsingPIDArmMovement())
+    {
+        this->arm_angle_setpoint += 1.0;
+        MoveToAngleDeg(std::clamp(this->arm_angle_setpoint, 0.0, 180.0));
+
+    }
+    else
+    {
+        RunTopArmMotorPercent(0.4);
+        RunBottomArmMotorPercent(0.4);
+    }
+}
+
+void t34::Shooter::LowerArm()
+{
+    if (UsingPIDArmMovement())
+    {
+        this->arm_angle_setpoint -= 1.0;
+        MoveToAngleDeg(std::clamp(this->arm_angle_setpoint, 0.0, 180.0));
+    }
+    else
+    {
+        RunTopArmMotorPercent(-0.4);
+        RunBottomArmMotorPercent(-0.4);
+    }
+}
+
+void t34::Shooter::StopArm()
+{
+    if (UsingPIDArmMovement())
+    {
+        // Nothing to do in PID mode
+    }
+    else
+    {
+        RunTopArmMotorPercent(0.0);
+        RunBottomArmMotorPercent(0.0);
+    }
+}
+
+void t34::Shooter::RunIntake()
+{
+    RunIntakeMotorPercent(0.4);
+}
+
+void t34::Shooter::StopIntake()
+{
+    RunIntakeMotorPercent(0.0);
+}
+
 void t34::Shooter::Periodic()
 {
     

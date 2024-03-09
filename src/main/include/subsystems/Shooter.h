@@ -61,6 +61,20 @@ namespace t34
 
         void PutTelemetry();
 
+        void RaiseArm();
+        void LowerArm();
+        void StopArm();
+
+        void RunIntake();
+        void StopIntake();
+
+        void RaiseArm();
+        void LowerArm();
+        void StopArm();
+
+        void RunIntake();
+        void StopIntake();
+
         inline double GetTopArmEncoderVal() const { return m_arm_encoder_top.GetPosition(); }
         inline double GetBottomArmEncoderVal() const { return m_arm_encoder_bottom.GetPosition(); }
 

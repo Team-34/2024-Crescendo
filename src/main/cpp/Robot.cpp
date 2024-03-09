@@ -228,11 +228,11 @@ void Robot::TeleopPeriodic() {
     //Run intake with the X button
     if (rc->ctrl->GetXButton())
     {
-        rc->shooter.RunIntakeMotorPercent(0.4);
+        rc->shooter.RunIntake();
     }
     else
     {
-        rc->shooter.RunIntakeMotorPercent(0.0);
+        rc->shooter.StopIntake();
     }
 
     if (rc->ctrl->GetYButton()) // run swerve automatically using the limelight with the Y button
