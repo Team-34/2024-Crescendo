@@ -6,12 +6,10 @@ t34::Shooter::Shooter()
   m_arm_motor_top(14, rev::CANSparkMaxLowLevel::MotorType::kBrushless), 
   m_arm_motor_bottom(11, rev::CANSparkMaxLowLevel::MotorType::kBrushless),
   m_intake_motor(11),
-  m_arm_pid(0.7, 0.0, 0.25),
+  m_arm_pid(0.5, 0.0, 0.25),
   m_arm_encoder_top(m_arm_motor_top.GetEncoder(rev::CANEncoder::EncoderType::kHallSensor, 42)),
   m_arm_encoder_bottom(m_arm_motor_bottom.GetEncoder(rev::CANEncoder::EncoderType::kHallSensor, 42)),
   m_note_sensor(1),
-  //m_arm_angle_top(0.0),
-  //m_arm_angle_bottom(0.0),
   m_max_speed_percent(1.0)
 
   {}
@@ -49,6 +47,12 @@ void t34::Shooter::MoveToAngleDeg(const double angle)
 void t34::Shooter::SetMaxSpeedPercent(const double percent)
 {
     m_max_speed_percent = percent;
+}
+
+
+double t34::Shooter::GetMaxSpeedPercent() const
+{
+    return m_max_speed_percent;
 }
 
 void t34::Shooter::PutTelemetry()

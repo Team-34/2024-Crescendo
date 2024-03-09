@@ -1,0 +1,62 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 1.4476655980338986,
+      "y": 5.537577201280529
+    },
+    "rotation": 0
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Mid_Score2_NoAmp_MoveOut"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "ShootSpeaker"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "PiecePickup"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "ShootSpeaker"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "PickupRing"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "ShootSpeaker"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  "folder": "blue",
+  "choreoAuto": false
+}

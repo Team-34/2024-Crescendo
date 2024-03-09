@@ -1,10 +1,13 @@
 #pragma once
 
 #include <frc/controller/PIDController.h>
+
+#include <frc/DriverStation.h>
 #include "LimelightHelpers.h"
 #include "SwerveDrive.h"
 #include "Constants.h"
 #include "TrajMath.h"
+#include "commands/ControllerDriveCommand.h"
 
 namespace t34
 {
@@ -16,12 +19,19 @@ namespace t34
 
         enum class TargetMode
         {
+            kNone = -1,
+
             kSpeaker,
             kAmp,
             kTrap
         };
 
     private:
+
+        struct SwerveSpeeds
+        {
+            double x, y, r;
+        };
 
         frc::PIDController m_limelight_swerve_pid;
 
@@ -38,6 +48,9 @@ namespace t34
         double m_drive_x;
         double m_drive_y;
 
+        double m_current_id;
+        double m_target_id;
+
         TargetMode m_target_mode;
 
         void AdjustSteering();
@@ -45,6 +58,7 @@ namespace t34
     public:
 
         TrajMath m_math_handler;
+        SwerveSpeeds m_swerve_drive_speeds;
 
         LimelightUtil(TrajMath math_handler, TargetMode target_mode = TargetMode::kSpeaker);
 
@@ -52,13 +66,13 @@ namespace t34
 
         void Periodic();
 
-        inline void setTargetMode(TargetMode mode) { m_target_mode = mode; };
+        //inline void SetTargetMode(TargetMode mode) { m_target_mode = mode; }
 
-        double m_swerve_drive_speeds[3]{};
-            // 0 -> x movement
-            // 1 -> y movement
-            // 2 -> r movement
-            // Ex: swerve_drive->Drive(m_swerve_drive_speeds[0], m_swerve_drive_speeds[1], m_swerve_drive_speeds[2]);
+        inline void TargetSpeaker() { m_target_mode = TargetMode::kSpeaker; }
+        inline void TargetAmp() { m_target_mode = TargetMode::kAmp; }
+        inline void TargetTrap() { m_target_mode = TargetMode::kTrap; }
+
+        inline double GetTargetID() const { return m_target_id; }
 
     };
 }

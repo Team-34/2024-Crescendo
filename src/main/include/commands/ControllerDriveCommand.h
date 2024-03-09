@@ -12,6 +12,8 @@
 
 namespace t34 {
 
+    double ScaleToRange(double x, double in_min, double in_max, double out_min, double out_max);
+
     class ControllerDriveCommand
         : public frc2::CommandHelper<frc2::Command, ControllerDriveCommand> {
 

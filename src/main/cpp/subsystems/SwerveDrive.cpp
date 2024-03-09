@@ -1,7 +1,8 @@
-// #include <pathplanner/lib/auto/AutoBuilder.h>
-// #include <pathplanner/lib/util/HolonomicPathFollowerConfig.h>
-// #include <pathplanner/lib/util/PIDConstants.h>
-// #include <pathplanner/lib/util/ReplanningConfig.h>
+ #include <pathplanner/lib/auto/AutoBuilder.h>
+ #include <pathplanner/lib/util/PathPlannerLogging.h>
+ #include <pathplanner/lib/util/HolonomicPathFollowerConfig.h>
+ #include <pathplanner/lib/util/PIDConstants.h>
+ #include <pathplanner/lib/util/ReplanningConfig.h>
 
 #include <algorithm>
 
@@ -12,7 +13,7 @@
 
 
 
-//using namespace pathplanner;
+using namespace pathplanner;
 
 namespace t34 {
 
@@ -22,7 +23,7 @@ namespace t34 {
     SwerveDrive::SwerveDrive() {
         SetName("SwerveDrive");
         m_gyro->Reset();
-/*
+
         // Configure the AutoBuilder last
         AutoBuilder::configureHolonomic(
             [this](){ return GetPose(); }, // Robot pose supplier
@@ -30,8 +31,8 @@ namespace t34 {
             [this](){ return GetRobotRelativeSpeeds(); }, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
             [this](frc::ChassisSpeeds speeds){ DriveAuto(speeds); }, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
             HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live in your Constants class
-                PIDConstants(5.0, 0.0, 0.0), // Translation PID constants
-                PIDConstants(5.0, 0.0, 0.0), // Rotation PID constants
+                PIDConstants(t34::DRIVE_KP, t34::DRIVE_KI, t34::DRIVE_KD), // Translation PID constants
+                PIDConstants(t34::STEER_KP, t34::STEER_KI, t34::STEER_KD), // Rotation PID constants
                 4.5_mps, // Max module speed, in m/s
                 0.4_m, // Drive base radius in meters. Distance from robot center to furthest module.
                 ReplanningConfig() // Default path replanning config. See the API for the options here
@@ -41,15 +42,14 @@ namespace t34 {
                 // This will flip the path being followed to the red side of the field.
                 // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
 
-                auto alliance = DriverStation::GetAlliance();
+                auto alliance = frc::DriverStation::GetAlliance();
                 if (alliance) {
-                    return alliance.value() == DriverStation::Alliance::kRed;
+                    return alliance.value() == frc::DriverStation::Alliance::kRed;
                 }
                 return false;
             },
             this // Reference to this subsystem to set requirements
         );
-*/
     }
 
     /**
@@ -110,7 +110,7 @@ namespace t34 {
      * Currently not implemented.
      */
     void SwerveDrive::DriveAuto(frc::ChassisSpeeds speeds) {
-//        Drive(frc::Translation2d(speeds.vx, speeds.vy,  0_rad_per_s), speeds.omega.value(), false, false);
+        Drive(frc::Translation2d(speeds.vx, speeds.vy), speeds.omega.value(), false, false);
     }
 
     /**
@@ -129,8 +129,9 @@ namespace t34 {
      * with PathPlanner.
      */
     frc::ChassisSpeeds SwerveDrive::GetRobotRelativeSpeeds() {
-        frc::ChassisSpeeds temp;
-        return temp; //frc::SwerveDriveKinematics<4>::ToChassisSpeeds(GetModuleStates());
+        //frc::ChassisSpeeds temp;
+
+        return m_swerve_drive_kinematics.ToChassisSpeeds(GetModuleStates());
     }
 
     /**
