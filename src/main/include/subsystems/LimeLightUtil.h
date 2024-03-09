@@ -27,6 +27,11 @@ namespace t34
 
     private:
 
+        struct SwerveSpeeds
+        {
+            double x, y, r;
+        };
+
         frc::PIDController m_limelight_swerve_pid;
 
         std::shared_ptr<nt::NetworkTable> m_table;
@@ -52,6 +57,7 @@ namespace t34
     public:
 
         TrajMath m_math_handler;
+        SwerveSpeeds m_swerve_drive_speeds;
 
         LimelightUtil(TrajMath math_handler, TargetMode target_mode = TargetMode::kSpeaker);
 
@@ -66,12 +72,6 @@ namespace t34
         inline void TargetTrap() { m_target_mode = TargetMode::kTrap; }
 
         inline double GetTargetID() const { return m_target_id; }
-
-        double m_swerve_drive_speeds[3]{};
-            // 0 -> x movement
-            // 1 -> y movement
-            // 2 -> r movement
-            // Ex: swerve_drive->Drive(m_swerve_drive_speeds[0], m_swerve_drive_speeds[1], m_swerve_drive_speeds[2]);
 
     };
 }

@@ -31,8 +31,8 @@ namespace t34 {
             [this](){ return GetRobotRelativeSpeeds(); }, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
             [this](frc::ChassisSpeeds speeds){ DriveAuto(speeds); }, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
             HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live in your Constants class
-                PIDConstants(5.0, 0.0, 0.0), // Translation PID constants
-                PIDConstants(5.0, 0.0, 0.0), // Rotation PID constants
+                PIDConstants(t34::DRIVE_KP, t34::DRIVE_KI, t34::DRIVE_KD), // Translation PID constants
+                PIDConstants(t34::STEER_KP, t34::STEER_KI, t34::STEER_KD), // Rotation PID constants
                 4.5_mps, // Max module speed, in m/s
                 0.4_m, // Drive base radius in meters. Distance from robot center to furthest module.
                 ReplanningConfig() // Default path replanning config. See the API for the options here
@@ -110,7 +110,7 @@ namespace t34 {
      * Currently not implemented.
      */
     void SwerveDrive::DriveAuto(frc::ChassisSpeeds speeds) {
-//        Drive(frc::Translation2d(speeds.vx, speeds.vy,  0_rad_per_s), speeds.omega.value(), false, false);
+        Drive(frc::Translation2d(speeds.vx, speeds.vy), speeds.omega.value(), false, false);
     }
 
     /**
@@ -129,16 +129,9 @@ namespace t34 {
      * with PathPlanner.
      */
     frc::ChassisSpeeds SwerveDrive::GetRobotRelativeSpeeds() {
-        frc::ChassisSpeeds temp;
+        //frc::ChassisSpeeds temp;
 
-        double x_speed_avg;
-        double y_speed_avg;
-
-        frc::SwerveDriveKinematics<4> sm_kin();
-
-        temp = sm_kin().ToChassisSpeeds(GetModuleStates());
-
-        return temp; //frc::SwerveDriveKinematics<4>::ToChassisSpeeds(GetModuleStates());
+        return m_swerve_drive_kinematics.ToChassisSpeeds(GetModuleStates());
     }
 
     /**

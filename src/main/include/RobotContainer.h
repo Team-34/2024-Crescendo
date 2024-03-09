@@ -53,7 +53,6 @@ public: // METHODS
 private: // DATA
     ExampleSubsystem m_subsystem;
     frc::SendableChooser<std::string> path_chooser;
-    frc::SendableChooser<std::string> alliance_chooser;
     
 
     // frc2::CommandPtr m_exampleSelectCommand = frc2::cmd::Select<std::string>(

@@ -45,9 +45,9 @@ void Robot::RobotPeriodic()
     //_________________________
 
     // Swerve Auto Drive Outputs
-    frc::SmartDashboard::PutNumber("Auto drive x: ", rc->limelight_util.m_swerve_drive_speeds[0]);
-    frc::SmartDashboard::PutNumber("Auto drive y: ", rc->limelight_util.m_swerve_drive_speeds[1]);
-    frc::SmartDashboard::PutNumber("Auto drive r: ", rc->limelight_util.m_swerve_drive_speeds[2]);
+    frc::SmartDashboard::PutNumber("Auto drive x: ", rc->limelight_util.m_swerve_drive_speeds.x);
+    frc::SmartDashboard::PutNumber("Auto drive y: ", rc->limelight_util.m_swerve_drive_speeds.y);
+    frc::SmartDashboard::PutNumber("Auto drive r: ", rc->limelight_util.m_swerve_drive_speeds.r);
     //_________________________
 
 
@@ -240,10 +240,10 @@ void Robot::TeleopPeriodic() {
         rc->swerve_drive->Drive
         (
             frc::Translation2d(
-                units::meter_t(rc->limelight_util.m_swerve_drive_speeds[0]),
-                units::meter_t(rc->limelight_util.m_swerve_drive_speeds[1])
+                units::meter_t(rc->limelight_util.m_swerve_drive_speeds.x),
+                units::meter_t(rc->limelight_util.m_swerve_drive_speeds.y)
             ),
-            rc->limelight_util.m_swerve_drive_speeds[2]
+            rc->limelight_util.m_swerve_drive_speeds.r
         );
 
     }

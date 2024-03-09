@@ -64,9 +64,9 @@ void t34::LimelightUtil::Periodic()
     m_drive_x = std::clamp((fabs(m_tx) / 25.0), -1.0, 1.0);
     m_drive_y = m_math_handler.IsInRange() ? 0.0 : 0.5;
 
-    m_swerve_drive_speeds[0] = m_drive_x;
-    m_swerve_drive_speeds[1] = m_drive_y;
-    m_swerve_drive_speeds[2] = m_steering_adjust;
+    m_swerve_drive_speeds.x = m_drive_x;
+    m_swerve_drive_speeds.y = m_drive_y;
+    m_swerve_drive_speeds.r = m_steering_adjust;
 
     
 

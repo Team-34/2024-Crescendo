@@ -53,10 +53,6 @@ RobotContainer::RobotContainer()
 
     ConfigureBindings();
 
-    alliance_chooser.SetDefaultOption("Red Alliance", "Red");
-    alliance_chooser.AddOption("Blue Alliance", "Blue");
-
-
     path_chooser.SetDefaultOption("None", "None");
     path_chooser.AddOption("Faris room path", "TestingPathFarisRoom");
 
