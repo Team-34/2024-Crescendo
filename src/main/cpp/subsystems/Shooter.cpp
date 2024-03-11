@@ -34,9 +34,9 @@ void t34::Shooter::RunIntakeMotorPercent(const double motor_output)
     //}
 }
 
-void t34::Shooter::MoveToAngleDeg(const double angle) 
+void t34::Shooter::MoveToAngleDeg(const double degrees) 
 {
-    m_arm_pid.SetSetpoint(angle * ARM_DEG_SCALAR);
+    m_arm_pid.SetSetpoint(degrees * ARM_DEG_SCALAR);
     
     m_arm_motor_top.Set(m_arm_pid.Calculate(GetTopArmEncoderVal()));
     m_arm_motor_bottom.Set(m_arm_pid.Calculate(GetTopArmEncoderVal()));
@@ -72,9 +72,8 @@ void t34::Shooter::RaiseArm()
 {
     if (UsingPIDArmMovement())
     {
-        this->arm_angle_setpoint += 1.0;
-        MoveToAngleDeg(std::clamp(this->arm_angle_setpoint, 0.0, 180.0));
-
+        m_arm_angle_setpoint_degrees += 1.0;
+        MoveToAngleDeg(std::clamp(m_arm_angle_setpoint_degrees, 0.0, 180.0));
     }
     else
     {
@@ -87,8 +86,8 @@ void t34::Shooter::LowerArm()
 {
     if (UsingPIDArmMovement())
     {
-        this->arm_angle_setpoint -= 1.0;
-        MoveToAngleDeg(std::clamp(this->arm_angle_setpoint, 0.0, 180.0));
+        m_arm_angle_setpoint_degrees -= 1.0;
+        MoveToAngleDeg(std::clamp(m_arm_angle_setpoint_degrees, 0.0, 180.0));
     }
     else
     {

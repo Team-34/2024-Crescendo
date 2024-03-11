@@ -33,10 +33,11 @@ namespace t34
         //double m_arm_angle_bottom{};
         double m_max_speed_percent{};
 
-        bool arm_using_pid{};
+        double m_arm_angle_setpoint_degrees = 0.5;
+        bool m_arm_using_pid{};
 
-        inline bool IntakeHasNote() { return m_note_sensor.Get(); }
-        inline bool IsIntakeMovingBackward(const double motor_output) { return (-motor_output) < 0.0; }
+        inline bool IntakeHasNote() const { return m_note_sensor.Get(); }
+        inline bool IsIntakeMovingBackward(const double motor_output) const { return (-motor_output) < 0.0; }
 
     public:
         Shooter();
@@ -45,7 +46,7 @@ namespace t34
 
         void RunIntakeMotorPercent(const double motor_output);
 
-        void MoveToAngleDeg(const double angle);
+        void MoveToAngleDeg(const double degrees);
 
         void SetMaxSpeedPercent(const double percent);
         inline void SetMaxSpeedForAmp() { SetMaxSpeedPercent(0.1); }
@@ -68,13 +69,6 @@ namespace t34
         void RunIntake();
         void StopIntake();
 
-        void RaiseArm();
-        void LowerArm();
-        void StopArm();
-
-        void RunIntake();
-        void StopIntake();
-
         inline double GetTopArmEncoderVal() const { return m_arm_encoder_top.GetPosition(); }
         inline double GetBottomArmEncoderVal() const { return m_arm_encoder_bottom.GetPosition(); }
 
@@ -84,8 +78,8 @@ namespace t34
         inline void RunLeftFiringMotorPercent(const double motor_output) { m_firing_motor_left.Set(motor_output); }
         inline void RunRightFiringMotorPercent(const double motor_output) { m_firing_motor_right.Set(motor_output); }
 
-        inline void TogglePIDArmMovement() { arm_using_pid = !arm_using_pid; }
-        inline bool UsingPIDArmMovement() const { return arm_using_pid; }
+        inline void TogglePIDArmMovement() { m_arm_using_pid = !m_arm_using_pid; }
+        inline bool UsingPIDArmMovement() const { return m_arm_using_pid; }
 
     };
 }
