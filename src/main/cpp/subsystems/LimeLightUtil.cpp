@@ -41,7 +41,7 @@ void t34::LimelightUtil::Periodic()
     {
         case (TargetMode::kAmp):
             m_math_handler.SetTargetHeightMeters(0.864);
-            m_math_handler.SetApriltagHeightMeters(1.45);
+            m_math_handler.SetAprilTagHeightMeters(1.45);
             
             m_target_id = (m_current_id == 5  && (frc::DriverStation::GetAlliance() == frc::DriverStation::Alliance::kRed) ||
                            m_current_id == 6 && (frc::DriverStation::GetAlliance() == frc::DriverStation::Alliance::kBlue)
@@ -51,7 +51,7 @@ void t34::LimelightUtil::Periodic()
         
         case (TargetMode::kSpeaker):
             m_math_handler.SetTargetHeightMeters(1.9815);
-            m_math_handler.SetApriltagHeightMeters(1.435);
+            m_math_handler.SetAprilTagHeightMeters(1.435);
 
             m_target_id = ( m_current_id == 4 && (frc::DriverStation::GetAlliance() == frc::DriverStation::Alliance::kRed) ||
                             m_current_id == 7 && (frc::DriverStation::GetAlliance() == frc::DriverStation::Alliance::kBlue)

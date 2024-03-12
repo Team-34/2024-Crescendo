@@ -39,7 +39,7 @@ void Robot::RobotPeriodic()
     rc->shooter.PutTelemetry();
 
     //Periodics
-    rc->shooter.Periodic();
+    rc->shooter.Periodic(); // Should this go in TeleopPeriodic?
     rc->climber.Periodic();
     rc->limelight_util.Periodic();
     //_________________________
@@ -151,7 +151,6 @@ void Robot::TeleopPeriodic() {
 
     // toggle PID vs basic motor output arm movement with the A button
     if (rc->ctrl->GetAButtonReleased()) { 
-        rc->arm_angle_setpoint = ((rc->shooter.GetTopArmEncoderVal() + rc->shooter.GetBottomArmEncoderVal()) * 0.5) / ARM_DEG_SCALAR;
         rc->shooter.TogglePIDArmMovement();
     }
 
@@ -174,65 +173,45 @@ void Robot::TeleopPeriodic() {
     switch (rc->ctrl->GetPOV())
     {
         case (POV_AMP): // amp - up
-            rc->shooter.SetMaxSpeedPercent(0.1);
             rc->limelight_util.TargetAmp();
-            rc->arm_angle_setpoint = 87.18;
+            rc->shooter.TargetAmp();
             break;
         case (POV_SPEAKER): // speaker - right
-            rc->shooter.SetMaxSpeedPercent(0.4);
             rc->limelight_util.TargetSpeaker();
-            rc->shooter.MoveToAngleDeg(rc->limelight_util.m_math_handler.GetFiringAngleDeg());
+            rc->shooter.TargetSpeaker(rc->limelight_util.m_math_handler.GetFiringAngleDeg());
             break;
         case (POV_TRAP): // needs data - down
-            rc->shooter.SetMaxSpeedPercent(0.7);
             rc->limelight_util.TargetTrap();
+            rc->shooter.TargetTrap();
             break;
         case (POV_COLLECTION): // collection mode - left
-            rc->shooter.SetMaxSpeedPercent(0.0);
-            rc->arm_angle_setpoint = 10.0;
+            rc->shooter.CollectNotes();
             break;
     }
 
     //Move the arm with the bumpers
         //Right bumper increases angle, left bumper decreases angle
-    if (rc->ctrl->GetLeftBumper() && rc->shooter.UsingPIDArmMovement())
+    if (rc->ctrl->GetLeftBumper())
     {
-        rc->arm_angle_setpoint -= 1.0;
+        rc->shooter.LowerArm();
     }
-    else if (rc->ctrl->GetLeftBumper() && rc->shooter.UsingPIDArmMovement() == false)
+    else if (rc->ctrl->GetRightBumper())
     {
-        rc->shooter.RunTopArmMotorPercent(-0.4);
-        rc->shooter.RunBottomArmMotorPercent(-0.4);
+        rc->shooter.RaiseArm();
     }
-    else if (rc->ctrl->GetRightBumper() && rc->shooter.UsingPIDArmMovement())
+    else
     {
-        rc->arm_angle_setpoint += 1.0;
+        rc->shooter.StopArm();
     }
-    else if (rc->ctrl->GetRightBumper() && rc->shooter.UsingPIDArmMovement() == false)
-    {
-        rc->shooter.RunTopArmMotorPercent(0.4);
-        rc->shooter.RunBottomArmMotorPercent(0.4);
-    }
-    else if (rc->shooter.UsingPIDArmMovement() == false)
-    {
-        rc->shooter.RunTopArmMotorPercent(0.0);
-        rc->shooter.RunBottomArmMotorPercent(0.0);
-    }
-
-    if (rc->shooter.UsingPIDArmMovement())
-    {
-        rc->shooter.MoveToAngleDeg(std::clamp(rc->arm_angle_setpoint, 0.0, 180.0));
-    }
-    
 
     //Run intake with the X button
     if (rc->ctrl->GetXButton())
     {
-        rc->shooter.RunIntakeMotorPercent(0.4);
+        rc->shooter.RunIntake();
     }
     else
     {
-        rc->shooter.RunIntakeMotorPercent(0.0);
+        rc->shooter.StopIntake();
     }
 
     if (rc->ctrl->GetYButton()) // run swerve automatically using the limelight with the Y button
@@ -245,9 +224,7 @@ void Robot::TeleopPeriodic() {
             ),
             rc->limelight_util.m_swerve_drive_speeds.r
         );
-
     }
-
 }
 
 /**
