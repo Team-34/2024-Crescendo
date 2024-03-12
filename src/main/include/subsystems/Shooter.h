@@ -66,6 +66,11 @@ namespace t34
         void LowerArm();
         void StopArm();
 
+        void TargetAmp();
+        void TargetSpeaker(const double degrees);
+        void TargetTrap();
+        void CollectNotes();
+
         void RunIntake();
         void StopIntake();
 
@@ -78,7 +83,8 @@ namespace t34
         inline void RunLeftFiringMotorPercent(const double motor_output) { m_firing_motor_left.Set(motor_output); }
         inline void RunRightFiringMotorPercent(const double motor_output) { m_firing_motor_right.Set(motor_output); }
 
-        inline void TogglePIDArmMovement() { m_arm_using_pid = !m_arm_using_pid; }
+        // inline void TogglePIDArmMovement() { m_arm_using_pid = !m_arm_using_pid; }
+        void TogglePIDArmMovement();
         inline bool UsingPIDArmMovement() const { return m_arm_using_pid; }
 
     };

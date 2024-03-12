@@ -110,7 +110,7 @@ namespace t34 {
      * Currently not implemented.
      */
     void SwerveDrive::DriveAuto(frc::ChassisSpeeds speeds) {
-        Drive(frc::Translation2d(speeds.vx, speeds.vy), speeds.omega.value(), false, false);
+        // Drive(frc::Translation2d(speeds.vx, speeds.vy), speeds.omega.value(), false, false);
     }
 
     /**
