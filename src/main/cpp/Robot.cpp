@@ -39,7 +39,7 @@ void Robot::RobotPeriodic()
     rc->shooter.PutTelemetry();
 
     //Periodics
-    rc->shooter.Periodic();
+    rc->shooter.Periodic(); // Should this go in TeleopPeriodic?
     rc->climber.Periodic();
     rc->limelight_util.Periodic();
     //_________________________
@@ -203,8 +203,6 @@ void Robot::TeleopPeriodic() {
     {
         rc->shooter.StopArm();
     }
-
-    rc->shooter.Periodic();
 
     //Run intake with the X button
     if (rc->ctrl->GetXButton())
