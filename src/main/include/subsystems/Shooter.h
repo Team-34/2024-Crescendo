@@ -27,6 +27,8 @@ namespace t34
         frc::PIDController m_arm_pid;
 
         frc::DigitalInput m_note_sensor;
+        frc::DigitalInput m_arm_sensor;
+
 
 
         //double m_arm_angle_top{};
@@ -34,8 +36,7 @@ namespace t34
         double m_max_speed_percent{};
 
         bool arm_using_pid{};
-
-        inline bool IntakeHasNote() { return m_note_sensor.Get(); }
+        
         inline bool IsIntakeMovingBackward(const double motor_output) { return (-motor_output) < 0.0; }
 
     public:
@@ -61,6 +62,8 @@ namespace t34
 
         void PutTelemetry();
 
+        void SetZero();
+
         inline double GetTopArmEncoderVal() const { return m_arm_encoder_top.GetPosition(); }
         inline double GetBottomArmEncoderVal() const { return m_arm_encoder_bottom.GetPosition(); }
 
@@ -72,6 +75,9 @@ namespace t34
 
         inline void TogglePIDArmMovement() { arm_using_pid = !arm_using_pid; }
         inline bool UsingPIDArmMovement() const { return arm_using_pid; }
+
+        inline bool IntakeHasNote() { return !m_note_sensor.Get(); }
+        inline bool IsArmAtZero() { return !m_arm_sensor.Get(); }
 
     };
 }

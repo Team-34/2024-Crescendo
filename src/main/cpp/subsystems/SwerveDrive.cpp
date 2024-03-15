@@ -24,32 +24,32 @@ namespace t34 {
         SetName("SwerveDrive");
         m_gyro->Reset();
 
-        // Configure the AutoBuilder last
-        AutoBuilder::configureHolonomic(
-            [this](){ return GetPose(); }, // Robot pose supplier
-            [this](frc::Pose2d pose){ ResetOdometry(pose); }, // Method to reset odometry (will be called if your auto has a starting pose)
-            [this](){ return GetRobotRelativeSpeeds(); }, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
-            [this](frc::ChassisSpeeds speeds){ DriveAuto(speeds); }, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
-            HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live in your Constants class
-                PIDConstants(t34::DRIVE_KP, t34::DRIVE_KI, t34::DRIVE_KD), // Translation PID constants
-                PIDConstants(t34::STEER_KP, t34::STEER_KI, t34::STEER_KD), // Rotation PID constants
-                4.5_mps, // Max module speed, in m/s
-                0.4_m, // Drive base radius in meters. Distance from robot center to furthest module.
-                ReplanningConfig() // Default path replanning config. See the API for the options here
-            ),
-            []() {
-                // Boolean supplier that controls when the path will be mirrored for the red alliance
-                // This will flip the path being followed to the red side of the field.
-                // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
+        // // Configure the AutoBuilder last
+        // AutoBuilder::configureHolonomic(
+        //     [this](){ return GetPose(); }, // Robot pose supplier
+        //     [this](frc::Pose2d pose){ ResetOdometry(pose); }, // Method to reset odometry (will be called if your auto has a starting pose)
+        //     [this](){ return GetRobotRelativeSpeeds(); }, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
+        //     [this](frc::ChassisSpeeds speeds){ DriveAuto(speeds); }, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
+        //     HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live in your Constants class
+        //         PIDConstants(t34::DRIVE_KP, t34::DRIVE_KI, t34::DRIVE_KD), // Translation PID constants
+        //         PIDConstants(t34::STEER_KP, t34::STEER_KI, t34::STEER_KD), // Rotation PID constants
+        //         4.5_mps, // Max module speed, in m/s
+        //         0.4_m, // Drive base radius in meters. Distance from robot center to furthest module.
+        //         ReplanningConfig() // Default path replanning config. See the API for the options here
+        //     ),
+        //     []() {
+        //         // Boolean supplier that controls when the path will be mirrored for the red alliance
+        //         // This will flip the path being followed to the red side of the field.
+        //         // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
 
-                auto alliance = frc::DriverStation::GetAlliance();
-                if (alliance) {
-                    return alliance.value() == frc::DriverStation::Alliance::kRed;
-                }
-                return false;
-            },
-            this // Reference to this subsystem to set requirements
-        );
+        //         auto alliance = frc::DriverStation::GetAlliance();
+        //         if (alliance) {
+        //             return alliance.value() == frc::DriverStation::Alliance::kRed;
+        //         }
+        //         return false;
+        //     },
+        //     this // Reference to this subsystem to set requirements
+        // );
     }
 
     /**
@@ -110,7 +110,7 @@ namespace t34 {
      * Currently not implemented.
      */
     void SwerveDrive::DriveAuto(frc::ChassisSpeeds speeds) {
-        Drive(frc::Translation2d(speeds.vx, speeds.vy), speeds.omega.value(), false, false);
+        //Drive(frc::Translation2d(speeds.vx, speeds.vy), speeds.omega.value(), false, false);
     }
 
     /**

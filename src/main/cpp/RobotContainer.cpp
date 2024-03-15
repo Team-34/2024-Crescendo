@@ -41,7 +41,7 @@ RobotContainer::RobotContainer()
             traj_math,
             t34::LimelightUtil::TargetMode::kSpeaker
         )
-    , arm_angle_setpoint(0.5)
+    , arm_angle_setpoint(90)
     , DefaultCommand(swerve_drive, ctrl) {
     
     ctrl->SetAllAxisDeadband(0.2);

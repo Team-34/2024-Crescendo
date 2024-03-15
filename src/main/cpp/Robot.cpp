@@ -54,6 +54,8 @@ void Robot::RobotPeriodic()
     // Misc.
     frc::SmartDashboard::PutNumber("Target ID: ", rc->limelight_util.GetTargetID());
     frc::SmartDashboard::PutNumber("Distance from limelight target (meters): ", rc->limelight_util.m_math_handler.GetDistanceFromTarget());
+    frc::SmartDashboard::PutBoolean("Infrared Sensor detection", rc->shooter.IntakeHasNote());
+    frc::SmartDashboard::PutBoolean("Arm detection", rc->shooter.IsArmAtZero());
     //_________________________
     /*
     //checks if the approx. range is nearing 5 meters (the range the LL with pick up an AT before the resolution becomes too low)
@@ -103,7 +105,7 @@ void Robot::AutonomousInit() {
 
 void Robot::AutonomousPeriodic()
 {
-
+    
 }
 
 void Robot::TeleopInit() {
@@ -117,6 +119,7 @@ void Robot::TeleopInit() {
     m_autonomous_command->Cancel();
     m_autonomous_command.reset();
   }
+
 }
 
 /**
@@ -173,21 +176,20 @@ void Robot::TeleopPeriodic() {
     //Set the robot's target mode with the D-Pad
     switch (rc->ctrl->GetPOV())
     {
-        case (POV_AMP): // amp - up
+        case (POV_AMP): //  up
             rc->shooter.SetMaxSpeedPercent(0.1);
             rc->limelight_util.TargetAmp();
             rc->arm_angle_setpoint = 87.18;
             break;
-        case (POV_SPEAKER): // speaker - right
-            rc->shooter.SetMaxSpeedPercent(0.4);
+        case (POV_SPEAKER): // right
+            rc->shooter.SetMaxSpeedPercent(0.7);
             rc->limelight_util.TargetSpeaker();
             rc->shooter.MoveToAngleDeg(rc->limelight_util.m_math_handler.GetFiringAngleDeg());
             break;
-        case (POV_TRAP): // needs data - down
-            rc->shooter.SetMaxSpeedPercent(0.7);
-            rc->limelight_util.TargetTrap();
+        case (POV_REST): // 
+            rc->shooter.MoveToAngleDeg(45);
             break;
-        case (POV_COLLECTION): // collection mode - left
+        case (POV_COLLECTION): // left
             rc->shooter.SetMaxSpeedPercent(0.0);
             rc->arm_angle_setpoint = 10.0;
             break;
@@ -195,40 +197,53 @@ void Robot::TeleopPeriodic() {
 
     //Move the arm with the bumpers
         //Right bumper increases angle, left bumper decreases angle
-    if (rc->ctrl->GetLeftBumper() && rc->shooter.UsingPIDArmMovement())
+
+    if (rc->shooter.IsArmAtZero())
     {
-        rc->arm_angle_setpoint -= 1.0;
-    }
-    else if (rc->ctrl->GetLeftBumper() && rc->shooter.UsingPIDArmMovement() == false)
-    {
-        rc->shooter.RunTopArmMotorPercent(-0.4);
-        rc->shooter.RunBottomArmMotorPercent(-0.4);
-    }
-    else if (rc->ctrl->GetRightBumper() && rc->shooter.UsingPIDArmMovement())
-    {
-        rc->arm_angle_setpoint += 1.0;
-    }
-    else if (rc->ctrl->GetRightBumper() && rc->shooter.UsingPIDArmMovement() == false)
-    {
-        rc->shooter.RunTopArmMotorPercent(0.4);
-        rc->shooter.RunBottomArmMotorPercent(0.4);
-    }
-    else if (rc->shooter.UsingPIDArmMovement() == false)
-    {
+        rc->shooter.SetZero();
+
         rc->shooter.RunTopArmMotorPercent(0.0);
         rc->shooter.RunBottomArmMotorPercent(0.0);
     }
-
-    if (rc->shooter.UsingPIDArmMovement())
+    else
     {
-        rc->shooter.MoveToAngleDeg(std::clamp(rc->arm_angle_setpoint, 0.0, 180.0));
+
+        if (rc->ctrl->GetLeftBumper() && rc->shooter.UsingPIDArmMovement())
+        {
+            rc->arm_angle_setpoint -= 0.25;
+        }
+        else if (rc->ctrl->GetLeftBumper() && rc->shooter.UsingPIDArmMovement() == false)
+        {
+            rc->shooter.RunTopArmMotorPercent(-0.2);
+            rc->shooter.RunBottomArmMotorPercent(-0.2);
+        }
+        else if (rc->ctrl->GetRightBumper() && rc->shooter.UsingPIDArmMovement())
+        {
+            rc->arm_angle_setpoint += 0.25;
+        }
+        else if (rc->ctrl->GetRightBumper() && rc->shooter.UsingPIDArmMovement() == false)
+        {
+            rc->shooter.RunTopArmMotorPercent(0.4);
+            rc->shooter.RunBottomArmMotorPercent(0.4);
+        }
+        else if (rc->shooter.UsingPIDArmMovement() == false)
+        {
+            rc->shooter.RunTopArmMotorPercent(0.0);
+            rc->shooter.RunBottomArmMotorPercent(0.0);
+        }
+
+
+        if (rc->shooter.UsingPIDArmMovement())
+        {
+            rc->shooter.MoveToAngleDeg(std::clamp(rc->arm_angle_setpoint, 0.0, 90.0));
+        }
     }
     
 
     //Run intake with the X button
     if (rc->ctrl->GetXButton())
     {
-        rc->shooter.RunIntakeMotorPercent(0.4);
+        rc->shooter.RunIntakeMotorPercent(-0.4);
     }
     else
     {
