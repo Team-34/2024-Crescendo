@@ -77,7 +77,7 @@ namespace t34
         inline bool UsingPIDArmMovement() const { return arm_using_pid; }
 
         inline bool IntakeHasNote() { return !m_note_sensor.Get(); }
-        inline bool IsArmAtZero() { return !m_arm_sensor.Get(); }
+        //inline bool IsArmAtZero() { return !m_arm_sensor.Get(); }
 
     };
 }

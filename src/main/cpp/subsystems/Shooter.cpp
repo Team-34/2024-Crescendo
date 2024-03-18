@@ -12,7 +12,7 @@ t34::Shooter::Shooter()
   m_note_sensor(0),
   m_arm_sensor(1),
   m_max_speed_percent(1.0),
-  arm_using_pid(true)
+  arm_using_pid(false)
   {}
 
 void t34::Shooter::RunShooterPercent(const double motor_output)
@@ -20,7 +20,7 @@ void t34::Shooter::RunShooterPercent(const double motor_output)
     m_firing_motor_left.Set(std::clamp(motor_output, -m_max_speed_percent, m_max_speed_percent));
     m_firing_motor_right.Set(std::clamp(motor_output, -m_max_speed_percent, m_max_speed_percent));
 
-    m_intake_motor.Set(ctre::phoenix::motorcontrol::ControlMode::PercentOutput, 0.4);
+    m_intake_motor.Set(ctre::phoenix::motorcontrol::ControlMode::PercentOutput, 0.7);
 }
 
 void t34::Shooter::SetZero()
@@ -32,15 +32,15 @@ void t34::Shooter::SetZero()
 void t34::Shooter::RunIntakeMotorPercent(const double motor_output)
 {
 
-    //m_intake_motor.Set(ctre::phoenix::motorcontrol::ControlMode::PercentOutput, motor_output);
-    if (IntakeHasNote())// && IsIntakeMovingBackward(motor_output))
-    {
-        m_intake_motor.Set(ctre::phoenix::motorcontrol::ControlMode::PercentOutput, 0.0);
-    }
-    else
-    {
-        m_intake_motor.Set(ctre::phoenix::motorcontrol::ControlMode::PercentOutput, -motor_output);
-    }
+    m_intake_motor.Set(ctre::phoenix::motorcontrol::ControlMode::PercentOutput, motor_output);
+    //if (IntakeHasNote())// && IsIntakeMovingBackward(motor_output))
+    //{
+    //    m_intake_motor.Set(ctre::phoenix::motorcontrol::ControlMode::PercentOutput, 0.0);
+    //}
+    //else
+    //{
+    //    m_intake_motor.Set(ctre::phoenix::motorcontrol::ControlMode::PercentOutput, -motor_output);
+    //}
 }
 
 void t34::Shooter::MoveToAngleDeg(const double angle) 

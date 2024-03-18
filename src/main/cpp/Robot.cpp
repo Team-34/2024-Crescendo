@@ -13,7 +13,7 @@
 
 void Robot::RobotInit() {
     rc = RobotContainer::Get();
-    frc2::CommandScheduler::GetInstance().SetDefaultCommand(rc->swerve_drive.get(), std::move(rc->DefaultCommand));
+    
 
     rc->shooter.Init();
     rc->climber.Init();
@@ -55,7 +55,8 @@ void Robot::RobotPeriodic()
     frc::SmartDashboard::PutNumber("Target ID: ", rc->limelight_util.GetTargetID());
     frc::SmartDashboard::PutNumber("Distance from limelight target (meters): ", rc->limelight_util.m_math_handler.GetDistanceFromTarget());
     frc::SmartDashboard::PutBoolean("Infrared Sensor detection", rc->shooter.IntakeHasNote());
-    frc::SmartDashboard::PutBoolean("Arm detection", rc->shooter.IsArmAtZero());
+    frc::SmartDashboard::PutNumber("Swerve mod 0 distance: ", rc->swerve_drive->GetModulePositions()[0].distance());
+    //frc::SmartDashboard::PutBoolean("Arm detection", rc->shooter.IsArmAtZero());
     //_________________________
     /*
     //checks if the approx. range is nearing 5 meters (the range the LL with pick up an AT before the resolution becomes too low)
@@ -87,11 +88,15 @@ void Robot::AutonomousInit() {
 
     m_autonomous_command = rc->GetAutonomousCommand();
 
+    
+
+
     if (m_autonomous_command)
     {
         m_autonomous_command->Schedule();
     }
 
+//
     // m_autoSelected = m_chooser.GetSelected();
     // frc::SmartDashboard::PutString("Auto selected: ", m_autoSelected);
 
@@ -105,7 +110,23 @@ void Robot::AutonomousInit() {
 
 void Robot::AutonomousPeriodic()
 {
-    
+    //rc->auto_current_dist = rc->swerve_drive->GetModulePositions()[0].distance();
+//
+    //if (rc->auto_current_dist < rc->auto_end_dist)
+    //{
+    //    rc->swerve_drive->GetModuleStates()[0].speed = rc->auto_speed;
+    //    rc->swerve_drive->GetModuleStates()[1].speed = rc->auto_speed;
+    //    rc->swerve_drive->GetModuleStates()[2].speed = rc->auto_speed;
+    //    rc->swerve_drive->GetModuleStates()[3].speed = rc->auto_speed;
+    //}
+    //else
+    //{                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         
+    //    rc->swerve_drive->GetModuleStates()[0].speed = units::velocity::meters_per_second_t(0.0);
+    //    rc->swerve_drive->GetModuleStates()[1].speed = units::velocity::meters_per_second_t(0.0);
+    //    rc->swerve_drive->GetModuleStates()[2].speed = units::velocity::meters_per_second_t(0.0);
+    //    rc->swerve_drive->GetModuleStates()[3].speed = units::velocity::meters_per_second_t(0.0);
+    //}
+
 }
 
 void Robot::TeleopInit() {
@@ -119,6 +140,8 @@ void Robot::TeleopInit() {
     m_autonomous_command->Cancel();
     m_autonomous_command.reset();
   }
+
+  frc2::CommandScheduler::GetInstance().SetDefaultCommand(rc->swerve_drive.get(), std::move(rc->DefaultCommand));
 
 }
 
@@ -153,9 +176,14 @@ void Robot::TeleopPeriodic() {
     }
 
     // toggle PID vs basic motor output arm movement with the A button
-    if (rc->ctrl->GetAButtonReleased()) { 
-        rc->arm_angle_setpoint = ((rc->shooter.GetTopArmEncoderVal() + rc->shooter.GetBottomArmEncoderVal()) * 0.5) / ARM_DEG_SCALAR;
-        rc->shooter.TogglePIDArmMovement();
+    //if (rc->ctrl->GetAButtonReleased()) { 
+    //    rc->arm_angle_setpoint = ((rc->shooter.GetTopArmEncoderVal() + rc->shooter.GetBottomArmEncoderVal()) * 0.5) / ARM_DEG_SCALAR;
+    //    rc->shooter.TogglePIDArmMovement();
+    //}
+
+    if (rc->ctrl->GetXButton() == false && (rc->ctrl->GetRightTriggerAxis() < rc->ctrl->GetRightTriggerDB()))
+    {
+        rc->shooter.RunIntakeMotorPercent(0.0);
     }
 
     //Run the shooter with the triggers
@@ -182,7 +210,7 @@ void Robot::TeleopPeriodic() {
             rc->arm_angle_setpoint = 87.18;
             break;
         case (POV_SPEAKER): // right
-            rc->shooter.SetMaxSpeedPercent(0.7);
+            rc->shooter.SetMaxSpeedPercent(1.0);
             rc->limelight_util.TargetSpeaker();
             rc->shooter.MoveToAngleDeg(rc->limelight_util.m_math_handler.GetFiringAngleDeg());
             break;
@@ -196,54 +224,45 @@ void Robot::TeleopPeriodic() {
     }
 
     //Move the arm with the bumpers
-        //Right bumper increases angle, left bumper decreases angle
+      //Right bumper increases angle, left bumper decreases angle
 
-    if (rc->shooter.IsArmAtZero())
+    if (rc->ctrl->GetLeftBumper() && rc->shooter.UsingPIDArmMovement())
     {
-        rc->shooter.SetZero();
-
+        rc->arm_angle_setpoint -= 0.25;
+    }
+    else if (rc->ctrl->GetLeftBumper() && rc->shooter.UsingPIDArmMovement() == false)
+    {
+        rc->shooter.RunTopArmMotorPercent(0.25);
+        rc->shooter.RunBottomArmMotorPercent(0.25);
+    }
+    else if (rc->ctrl->GetRightBumper() && rc->shooter.UsingPIDArmMovement())
+    {
+        rc->arm_angle_setpoint += 0.25;
+    }
+    else if (rc->ctrl->GetRightBumper() && rc->shooter.UsingPIDArmMovement() == false)
+    {
+        rc->shooter.RunTopArmMotorPercent(-0.3);
+        rc->shooter.RunBottomArmMotorPercent(-0.3);
+    }
+    else if (rc->shooter.UsingPIDArmMovement() == false)
+    {
         rc->shooter.RunTopArmMotorPercent(0.0);
         rc->shooter.RunBottomArmMotorPercent(0.0);
     }
-    else
+
+    if (rc->shooter.UsingPIDArmMovement())
     {
-
-        if (rc->ctrl->GetLeftBumper() && rc->shooter.UsingPIDArmMovement())
-        {
-            rc->arm_angle_setpoint -= 0.25;
-        }
-        else if (rc->ctrl->GetLeftBumper() && rc->shooter.UsingPIDArmMovement() == false)
-        {
-            rc->shooter.RunTopArmMotorPercent(-0.2);
-            rc->shooter.RunBottomArmMotorPercent(-0.2);
-        }
-        else if (rc->ctrl->GetRightBumper() && rc->shooter.UsingPIDArmMovement())
-        {
-            rc->arm_angle_setpoint += 0.25;
-        }
-        else if (rc->ctrl->GetRightBumper() && rc->shooter.UsingPIDArmMovement() == false)
-        {
-            rc->shooter.RunTopArmMotorPercent(0.4);
-            rc->shooter.RunBottomArmMotorPercent(0.4);
-        }
-        else if (rc->shooter.UsingPIDArmMovement() == false)
-        {
-            rc->shooter.RunTopArmMotorPercent(0.0);
-            rc->shooter.RunBottomArmMotorPercent(0.0);
-        }
-
-
-        if (rc->shooter.UsingPIDArmMovement())
-        {
-            rc->shooter.MoveToAngleDeg(std::clamp(rc->arm_angle_setpoint, 0.0, 90.0));
-        }
+        rc->shooter.MoveToAngleDeg(std::clamp(rc->arm_angle_setpoint, 0.0, 90.0));
     }
-    
 
-    //Run intake with the X button
+    //Run intake forward with the X button, backward with A button
     if (rc->ctrl->GetXButton())
     {
-        rc->shooter.RunIntakeMotorPercent(-0.4);
+        rc->shooter.RunIntakeMotorPercent(0.75);
+    }
+    else if (rc->ctrl->GetAButton())
+    {
+        rc->shooter.RunIntakeMotorPercent(-0.75);
     }
     else
     {

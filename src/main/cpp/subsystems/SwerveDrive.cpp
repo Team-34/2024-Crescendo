@@ -4,6 +4,8 @@
  #include <pathplanner/lib/util/PIDConstants.h>
  #include <pathplanner/lib/util/ReplanningConfig.h>
 
+ #include <frc/smartdashboard/SmartDashboard.h>
+
 #include <algorithm>
 
 #include <frc/DriverStation.h>
@@ -80,6 +82,7 @@ namespace t34 {
      *                       robot centric mode.
      */
     void SwerveDrive::Drive(frc::Translation2d translation, double rotation, bool field_relative, bool is_open_loop) {
+        
         m_field_oriented = field_relative;
         frc::ChassisSpeeds speeds;
         if (field_relative) {
@@ -259,7 +262,8 @@ namespace t34 {
             frc::SwerveModulePosition{ m_swerve_modules[1].GetPosition().distance, m_swerve_modules[1].GetCanCoder() },
             frc::SwerveModulePosition{ m_swerve_modules[2].GetPosition().distance, m_swerve_modules[2].GetCanCoder() },
             frc::SwerveModulePosition{ m_swerve_modules[3].GetPosition().distance, m_swerve_modules[3].GetCanCoder() }
-        });  
+        });
+        frc::SmartDashboard::PutData(this); 
     }
 
     /**
