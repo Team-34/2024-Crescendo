@@ -41,7 +41,15 @@ RobotContainer::RobotContainer()
             traj_math,
             t34::LimelightUtil::TargetMode::kSpeaker
         )
-    , arm_angle_setpoint(0.5)
+    , arm_angle_setpoint(90)
+    , auto_start_dist_1(0.0)
+    , auto_end_dist_1(0.0)
+    , auto_start_dist_2(0.0)
+    , auto_end_dist_2(0.0)
+    , auto_finished_driving_1(false)
+    , auto_finished_aiming(true)
+    , auto_finished_driving_2(true)
+    , auto_finished_shooting(true)
     , DefaultCommand(swerve_drive, ctrl) {
     
     ctrl->SetAllAxisDeadband(0.2);
@@ -76,9 +84,81 @@ RobotContainer::RobotContainer()
 
 frc2::CommandPtr RobotContainer::GetAutonomousCommand()
 {
-    const std::string path_file_name = path_chooser.GetSelected();
-    const auto path = pathplanner::PathPlannerPath::fromPathFile(path_file_name);
-    return pathplanner::AutoBuilder::followPath(path);
+    //this->auto_start_dist_1 = 0.0;
+    //this->auto_end_dist_1 = 80.15;
+//
+    //this->auto_start_dist_2 = 0.0;
+    //this->auto_end_dist_2 = 74.0;
+//
+    //this->auto_current_dist = this->swerve_drive->GetModulePositions()[0].distance();
+
+    return frc2::InstantCommand
+    (
+        [this]
+        {
+            //this->auto_current_dist = this->swerve_drive->GetModulePositions()[0].distance();
+//
+//
+            //if (this->auto_current_dist < this->auto_end_dist_1 && this->auto_finished_driving_1 == false)
+            //{
+                this->swerve_drive->Drive(frc::Translation2d{
+                units::meter_t(0.0),
+                units::meter_t(-1.0)},//std::copysign(ScaleToRange(-(345.0 * 345.0), 0.0, 1.0, 0.0, 0.4), 345.0))),
+                0.0);
+            //}
+            //else
+            //{
+            //    this->auto_finished_driving_1 = true;
+            //    this->auto_finished_driving_2 = false;
+////
+            //    this->auto_end_dist_2 += this->auto_current_dist;
+            //}
+    //////////////////////
+            //if (this->auto_current_dist < this->auto_end_dist_1 && this->auto_finished_driving_2 == false)
+            //{
+            //    this->swerve_drive->Drive(frc::Translation2d{
+            //    units::meter_t(-0.5),
+            //    units::meter_t(0.0)},//std::copysign(ScaleToRange(-(345.0 * 345.0), 0.0, 1.0, 0.0, 0.4), 345.0))),
+            //    0.0);
+            //}
+            //else
+            //{
+            //    this->auto_finished_driving_1 = true;
+            //    this->auto_finished_aiming = false;
+            //}
+    /////////////////////
+            //if (this->auto_finished_aiming == false)
+            //{
+            //    if (this->shooter.GetTopArmEncoderVal() <= (85.0))
+            //    {
+            //        this->shooter.RunTopArmMotorPercent(0.3);
+            //        this->shooter.RunBottomArmMotorPercent(0.3);
+            //    }
+            //    else if (this->shooter.GetTopArmEncoderVal() >= (89.0))
+            //    {
+            //        this->shooter.RunTopArmMotorPercent(-0.15);
+            //        this->shooter.RunBottomArmMotorPercent(-0.15);
+            //    }
+            //    else
+            //    {
+            //        this->shooter.RunTopArmMotorPercent(0.0);
+            //        this->shooter.RunBottomArmMotorPercent(0.0);
+            //        this->auto_finished_aiming = true;
+            //    }
+            //}
+    //////////////////////
+            //if (this->auto_finished_aiming)
+            //{
+            //    this->shooter.RunShooterPercent(0.1);
+            //    this->shooter.RunIntakeMotorPercent(0.6);
+            //}
+        },
+        frc2::Requirements( {swerve_drive.get()} )
+    ).ToPtr();
+
+    //const std::string path_file_name = path_chooser.GetSelected();
+    //const auto path = pathplanner::PathPlannerPath::fromPathFile(path_file_name);
+    //return pathplanner::AutoBuilder::followPath(path);
 }
 
 void RobotContainer::ConfigureBindings() {

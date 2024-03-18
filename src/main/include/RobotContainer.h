@@ -19,10 +19,7 @@
 #include <memory>
 #include <frc2/command/CommandPtr.h>
 #include <frc/smartdashboard/SendableChooser.h>
-#include "subsystems/SwerveDrive.h"
-#include "subsystems/Shooter.h"
 #include <pathplanner/lib/auto/NamedCommands.h>
-#include <memory>
 
 using namespace pathplanner;
 using namespace t34;
@@ -39,6 +36,17 @@ public: // PROPERTIES
 
     double arm_angle_setpoint;
 
+    double auto_start_dist_1;
+    double auto_start_dist_2;
+    double auto_end_dist_1;
+    double auto_end_dist_2;
+    double auto_current_dist;
+    bool auto_finished_driving_1;
+    bool auto_finished_driving_2;
+    bool auto_finished_aiming;
+    bool auto_finished_shooting;
+
+
     t34::ControllerDriveCommand DefaultCommand;
 
    
@@ -47,6 +55,7 @@ public: // METHODS
 
     static RobotContainer* Get();
     frc2::CommandPtr GetAutonomousCommand();
+
 
     
 
