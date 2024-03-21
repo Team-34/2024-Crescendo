@@ -80,40 +80,61 @@ namespace t34 {
      * @param rotation A value represent rotation speed.
      * @param field_relative true if field relative mode or false for 
      *                       robot centric mode.
+     * @param is_open_loop Determines if the drive motor is set directly or 
+     *                     by velocity.
      */
     void SwerveDrive::Drive(frc::Translation2d translation, double rotation, bool field_relative, bool is_open_loop) {
         
         m_field_oriented = field_relative;
-        frc::ChassisSpeeds speeds;
-        if (field_relative) {
-            speeds = frc::ChassisSpeeds::FromFieldRelativeSpeeds(
-                                    units::velocity::meters_per_second_t((translation.Y().value() / DRIVE_MAX_SPEED) * m_speed_scalar), 
-                                    units::velocity::meters_per_second_t((translation.X().value() / DRIVE_MAX_SPEED )* m_speed_scalar), 
-                                    units::radians_per_second_t(((rotation / STEER_MAX_SPEED) * m_speed_scalar)), 
-                                    frc::Rotation2d(units::degree_t(m_gyro->GetYaw() * -1.0)) // SHOULD THIS BE INVERTED????
-                                );
+        frc::ChassisSpeeds robot_relative_speeds;
+        if (field_relative)
+        {
+            robot_relative_speeds = frc::ChassisSpeeds::FromFieldRelativeSpeeds(
+                units::velocity::meters_per_second_t((translation.Y().value() / DRIVE_MAX_SPEED) * m_speed_scalar), 
+                units::velocity::meters_per_second_t((translation.X().value() / DRIVE_MAX_SPEED) * m_speed_scalar), 
+                units::radians_per_second_t(((rotation / STEER_MAX_SPEED) * m_speed_scalar)), 
+                frc::Rotation2d(units::degree_t(m_gyro->GetYaw() * -1.0)) // SHOULD THIS BE INVERTED????
+            );
         } 
-        else {
+        else
+        {
             // PROBABLY NEED TO SWAP X & Y: NOT YET TESTED
-            speeds.vx = units::velocity::meters_per_second_t(-translation.X().value() / DRIVE_MAX_SPEED);
-            speeds.vy = units::velocity::meters_per_second_t(translation.Y().value() / DRIVE_MAX_SPEED);
-            speeds.omega = units::radians_per_second_t(rotation);
+            robot_relative_speeds.vx = units::velocity::meters_per_second_t(-translation.X().value() / DRIVE_MAX_SPEED);
+            robot_relative_speeds.vy = units::velocity::meters_per_second_t(translation.Y().value() / DRIVE_MAX_SPEED);
+            robot_relative_speeds.omega = units::radians_per_second_t(rotation);
         }
 
-        auto sms = m_swerve_drive_kinematics.ToSwerveModuleStates(speeds);
+        Drive(robot_relative_speeds, is_open_loop);
+    } 
+
+    /**
+     * Then sends this data to each module which in-turn 
+     * sets the appropriate motor outputs.
+     * 
+     * @param robot_relative_speeds Robot-relative chassis speeds.
+     * @param is_open_loop Determines if the drive motor is set directly or 
+     *                     by velocity.
+     */
+    void SwerveDrive::Drive(frc::ChassisSpeeds robot_relative_speeds, bool is_open_loop)
+    {
+        auto sms = m_swerve_drive_kinematics.ToSwerveModuleStates(robot_relative_speeds);
 
         frc::SwerveDriveKinematics<4>::DesaturateWheelSpeeds(&sms, units::meters_per_second_t(DRIVE_MAX_SPEED));
 
-        for(size_t i = 0; i < m_swerve_modules.size(); ++i) {
+        for(size_t i = 0; i < m_swerve_modules.size(); ++i)
+        {
             m_swerve_modules[i].SetDesiredState(sms[i], is_open_loop);
         }
     } 
 
     /**
-     * Currently not implemented.
+     * Called by PathPlanner.
+     * 
+     * @param robot_relative_speeds Robot-relative chassis speeds.
      */
-    void SwerveDrive::DriveAuto(frc::ChassisSpeeds speeds) {
-        //Drive(frc::Translation2d(speeds.vx, speeds.vy), speeds.omega.value(), false, false);
+    void SwerveDrive::DriveAuto(frc::ChassisSpeeds robot_relative_speeds)
+    {
+        Drive(robot_relative_speeds, false);
     }
 
     /**

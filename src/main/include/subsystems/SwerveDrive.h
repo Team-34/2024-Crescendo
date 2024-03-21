@@ -14,7 +14,8 @@ namespace t34 {
 
         void ToggleFarisMode();
         void Drive(frc::Translation2d translation, double rotation, bool field_relative = true, bool is_open_loop = false);
-        void DriveAuto(frc::ChassisSpeeds speeds);
+        void Drive(frc::ChassisSpeeds robot_relative_speeds, bool is_open_loop);
+        void DriveAuto(frc::ChassisSpeeds robot_relative_speeds);
         void Stop();
 
 
