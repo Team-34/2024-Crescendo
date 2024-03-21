@@ -54,7 +54,8 @@ RobotContainer::RobotContainer()
     
     ctrl->SetAllAxisDeadband(0.2);
 
-    //NamedCommands::registerCommand("ShootSpeaker", std::move(/* put corrosponding function here */)); // <- This example method returns CommandPtr
+    //NamedCommands::registerCommand("ShootAmp", std::move(autos::IntakeNote(this))); 
+    // <- This example method returns CommandPtr
     //NamedCommands::registerCommand("exampleCommand", std::move(/* put corrosponding function here */)); // <- This example method returns CommandPtr
     //NamedCommands::registerCommand("someOtherCommand", std::move(/* put corrosponding function here */.ToPtr()));
     //NamedCommands::registerCommand("someOtherCommandShared", std::make_shared<frc2::/* put some sort of command here */>());

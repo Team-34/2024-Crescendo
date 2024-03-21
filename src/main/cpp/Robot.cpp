@@ -150,14 +150,8 @@ void Robot::TeleopInit() {
  */
 void Robot::TeleopPeriodic() {
     static t34::Gyro* gyro = t34::Gyro::Get();
-    //static std::shared_ptr<t34::SwerveDrive> drive = m_rc->swerve_drive;
-    //static std::shared_ptr<t34::T34XboxController> drive_controller = m_rc->ctrl;
     
     rc->limelight_util.m_math_handler.InputMotorOutputPercent(rc->shooter.GetMaxSpeedPercent());
-
-    // PROCESS CONTROLLER BUTTONS
-    // Buttons are implemented this way out of simplicity.
-    // Consider using button trigger events with commands instead.
 
     // Assign Back Button to Faris Mode.
     if (rc->ctrl->GetBackButtonReleased())
@@ -176,10 +170,10 @@ void Robot::TeleopPeriodic() {
     }
 
     // toggle PID vs basic motor output arm movement with the A button
-    //if (rc->ctrl->GetAButtonReleased()) { 
-    //    rc->arm_angle_setpoint = ((rc->shooter.GetTopArmEncoderVal() + rc->shooter.GetBottomArmEncoderVal()) * 0.5) / ARM_DEG_SCALAR;
-    //    rc->shooter.TogglePIDArmMovement();
-    //}
+    if (rc->ctrl->GetAButtonReleased()) { 
+        rc->arm_angle_setpoint = ((rc->shooter.GetTopArmEncoderVal() + rc->shooter.GetBottomArmEncoderVal()) * 0.5) / ARM_DEG_SCALAR;
+        rc->shooter.TogglePIDArmMovement();
+    }
 
     if (rc->ctrl->GetXButton() == false && (rc->ctrl->GetRightTriggerAxis() < rc->ctrl->GetRightTriggerDB()))
     {

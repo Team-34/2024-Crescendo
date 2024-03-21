@@ -1,6 +1,8 @@
 #pragma once
 
 #include <rev/CANSparkMax.h>
+#include <rev/CANPIDController.h>
+#include <rev/SparkMaxPIDController.h>
 #include <ctre/phoenix/motorcontrol/can/TalonSRX.h>
 #include <units/math.h>
 #include <frc/controller/PIDController.h>
@@ -19,21 +21,23 @@ namespace t34
         rev::CANSparkMax m_arm_motor_top;
         rev::CANSparkMax m_arm_motor_bottom;
 
+        rev::SparkMaxPIDController m_arm_pidctrl_top;
+        rev::SparkMaxPIDController m_arm_pidctrl_bottom;
+
         rev::SparkMaxRelativeEncoder m_arm_encoder_top;
         rev::SparkMaxRelativeEncoder m_arm_encoder_bottom;
 
         ctre::phoenix::motorcontrol::can::TalonSRX m_intake_motor;
 
-        frc::PIDController m_arm_pid;
-
-        frc::DigitalInput m_note_sensor;
-        frc::DigitalInput m_arm_sensor;
+        frc::DigitalInput m_note_sensor{2};
+        frc::DigitalInput m_arm_sensor{1};
 
 
 
         //double m_arm_angle_top{};
         //double m_arm_angle_bottom{};
         double m_max_speed_percent{};
+        double m_arm_setpoint{};
 
         bool arm_using_pid{};
         
@@ -76,8 +80,8 @@ namespace t34
         inline void TogglePIDArmMovement() { arm_using_pid = !arm_using_pid; }
         inline bool UsingPIDArmMovement() const { return arm_using_pid; }
 
-        inline bool IntakeHasNote() { return !m_note_sensor.Get(); }
-        //inline bool IsArmAtZero() { return !m_arm_sensor.Get(); }
+        inline bool IntakeHasNote() { return m_note_sensor.Get(); }
+        inline bool IsArmAtZero() { return m_arm_sensor.Get(); }
 
     };
 }
