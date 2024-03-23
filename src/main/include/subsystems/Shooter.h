@@ -7,12 +7,13 @@
 #include <frc/DigitalInput.h>
 #include <frc/smartdashboard/SmartDashboard.h>
 #include "subsystems/SwerveDrive.h"
+#include <frc2/command/CommandPtr.h>
 
 #include "Constants.h"
 
 namespace t34
 {
-    class Shooter
+    class Shooter : public frc2::SubsystemBase
     {
         rev::CANSparkMax m_firing_motor_left;
         rev::CANSparkMax m_firing_motor_right;
@@ -51,6 +52,7 @@ namespace t34
         void RunIntakeMotorPercent(const double motor_output);
 
         void MoveToAngleDeg(const double angle);
+        inline void LowerArmForNoteCollection() { this->MoveToAngleDeg(12.0); }
 
         void SetMaxSpeedPercent(const double percent);
         inline void SetMaxSpeedForAmp() { SetMaxSpeedPercent(0.1); }

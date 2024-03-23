@@ -84,7 +84,6 @@ void t34::Shooter::MoveToAngleDeg(const double angle)
 
     m_arm_pidctrl_top.SetReference(m_arm_angle_setpoint, rev::ControlType::kPosition);
     m_arm_pidctrl_bottom.SetReference(m_arm_angle_setpoint, rev::ControlType::kPosition);
-    
 }
 
 void t34::Shooter::SetMaxSpeedPercent(const double percent)
