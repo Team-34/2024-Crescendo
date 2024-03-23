@@ -187,21 +187,21 @@ void Robot::TeleopPeriodic() {
     //Set the robot's target mode with the D-Pad
     switch (rc->ctrl->GetPOV())
     {
-        case (POV_AMP): //  up
+        case (POV_UP): //  amp
             rc->shooter.SetMaxSpeedPercent(0.1);
             rc->limelight_util.TargetAmp();
             rc->arm_angle_setpoint = 87.18;
             break;
-        case (POV_SPEAKER): // right
+        case (POV_RIGHT): // speaker
             rc->shooter.SetMaxSpeedPercent(1.0);
             rc->limelight_util.TargetSpeaker();
             //rc->shooter.MoveToAngleDeg(rc->limelight_util.m_math_handler.GetFiringAngleDeg());
             rc->arm_angle_setpoint = 45.0;
             break;
-        case (POV_REST): // 
+        case (POV_DOWN): // rest
             rc->arm_angle_setpoint = 90;
             break;
-        case (POV_COLLECTION): // left
+        case (POV_LEFT): // note collection
             rc->shooter.SetMaxSpeedPercent(0.0);
             rc->arm_angle_setpoint = 12.0;
             break;
