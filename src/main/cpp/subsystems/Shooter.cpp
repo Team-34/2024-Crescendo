@@ -8,20 +8,21 @@ t34::Shooter::Shooter()
   m_intake_motor(11),
   m_arm_encoder_top(m_arm_motor_top.GetEncoder(rev::CANEncoder::EncoderType::kHallSensor, 42)),
   m_arm_encoder_bottom(m_arm_motor_bottom.GetEncoder(rev::CANEncoder::EncoderType::kHallSensor, 42)),
-  m_note_sensor(2),
-  m_arm_sensor(1),
+  m_note_sensor(9),
+  m_arm_sensor(8),
   m_max_speed_percent(1.0),
+  m_arm_angle_setpoint(90.0),
   arm_using_pid(false),
   m_arm_pidctrl_top(m_arm_motor_top.GetPIDController()),
   m_arm_pidctrl_bottom(m_arm_motor_bottom.GetPIDController())
   {
-    m_arm_pidctrl_top.SetP(0.05);
+    m_arm_pidctrl_top.SetP(0.5);
     m_arm_pidctrl_top.SetI(0.0);
-    m_arm_pidctrl_top.SetD(0.02);
+    m_arm_pidctrl_top.SetD(0.05);
 
-    m_arm_pidctrl_bottom.SetP(0.05);
+    m_arm_pidctrl_bottom.SetP(0.5);
     m_arm_pidctrl_bottom.SetI(0.0);
-    m_arm_pidctrl_bottom.SetD(0.02);
+    m_arm_pidctrl_bottom.SetD(0.05);
   }
 
 void t34::Shooter::RunShooterPercent(const double motor_output)
@@ -40,7 +41,7 @@ void t34::Shooter::SetZero()
 
 void t34::Shooter::RunIntakeMotorPercent(const double motor_output)
 {
-    double clamp_val = -1.0;
+    double clamp_val = 1.0;
 
     if (IntakeHasNote())
     {
@@ -48,7 +49,7 @@ void t34::Shooter::RunIntakeMotorPercent(const double motor_output)
     }
 
     m_intake_motor.Set(ctre::phoenix::motorcontrol::ControlMode::PercentOutput,
-                        std::clamp(motor_output, clamp_val, 1.0));
+                        std::clamp(motor_output, -1.0, clamp_val));
 
     //m_intake_motor.Set(ctre::phoenix::motorcontrol::ControlMode::PercentOutput, motor_output);
     //if (IntakeHasNote())// && IsIntakeMovingBackward(motor_output))
@@ -63,10 +64,10 @@ void t34::Shooter::RunIntakeMotorPercent(const double motor_output)
 
 void t34::Shooter::MoveToAngleDeg(const double angle) 
 {
-    m_arm_setpoint = angle * ARM_DEG_SCALAR;
+    m_arm_angle_setpoint = angle * ARM_DEG_SCALAR;
 
-    m_arm_pidctrl_top.SetReference(m_arm_setpoint, rev::ControlType::kPosition);
-    m_arm_pidctrl_bottom.SetReference(m_arm_setpoint, rev::ControlType::kPosition);
+    m_arm_pidctrl_top.SetReference(m_arm_angle_setpoint, rev::ControlType::kPosition);
+    m_arm_pidctrl_bottom.SetReference(m_arm_angle_setpoint, rev::ControlType::kPosition);
     
 }
 
@@ -87,7 +88,7 @@ void t34::Shooter::PutTelemetry()
     frc::SmartDashboard::PutNumber("Arm Bottom Relative Encoder: ", GetBottomArmEncoderVal() / ARM_DEG_SCALAR);
     
     frc::SmartDashboard::PutNumber("Max Speed: ", m_max_speed_percent);
-    frc::SmartDashboard::PutNumber("Arm Setpoint: ", m_arm_setpoint);
+    frc::SmartDashboard::PutNumber("Arm Setpoint: ", m_arm_angle_setpoint * 36.2903);
 
     //frc::SmartDashboard::PutBoolean("IsIntakeMovingBackwards: ", IsIntakeMovingBackward(m_intake_motor.GetMotorOutputPercent()));
     frc::SmartDashboard::PutBoolean("UsingPIDArmMovement: ", UsingPIDArmMovement());

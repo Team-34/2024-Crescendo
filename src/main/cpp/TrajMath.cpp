@@ -62,7 +62,7 @@ double t34::TrajMath::GetFiringAngleDeg() const
     const auto denominator = gx;
     const auto θ = atan(numerator / denominator);
 
-    return RAD_TO_DEG(θ);
+    return m_target_distance_meters;//RAD_TO_DEG(θ);
 }
 
 bool t34::TrajMath::IsInRange() const

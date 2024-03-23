@@ -54,9 +54,9 @@ void Robot::RobotPeriodic()
     // Misc.
     frc::SmartDashboard::PutNumber("Target ID: ", rc->limelight_util.GetTargetID());
     frc::SmartDashboard::PutNumber("Distance from limelight target (meters): ", rc->limelight_util.m_math_handler.GetDistanceFromTarget());
-    frc::SmartDashboard::PutBoolean("Infrared Sensor detection", rc->shooter.IntakeHasNote());
+    frc::SmartDashboard::PutBoolean("Note Sensor detection", rc->shooter.IntakeHasNote());
+    frc::SmartDashboard::PutBoolean("Arm Sensor detection", rc->shooter.IsArmAtZero());
     frc::SmartDashboard::PutNumber("Swerve mod 0 distance: ", rc->swerve_drive->GetModulePositions()[0].distance());
-    //frc::SmartDashboard::PutBoolean("Arm detection", rc->shooter.IsArmAtZero());
     //_________________________
     /*
     //checks if the approx. range is nearing 5 meters (the range the LL with pick up an AT before the resolution becomes too low)
@@ -110,22 +110,7 @@ void Robot::AutonomousInit() {
 
 void Robot::AutonomousPeriodic()
 {
-    //rc->auto_current_dist = rc->swerve_drive->GetModulePositions()[0].distance();
-//
-    //if (rc->auto_current_dist < rc->auto_end_dist)
-    //{
-    //    rc->swerve_drive->GetModuleStates()[0].speed = rc->auto_speed;
-    //    rc->swerve_drive->GetModuleStates()[1].speed = rc->auto_speed;
-    //    rc->swerve_drive->GetModuleStates()[2].speed = rc->auto_speed;
-    //    rc->swerve_drive->GetModuleStates()[3].speed = rc->auto_speed;
-    //}
-    //else
-    //{                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         
-    //    rc->swerve_drive->GetModuleStates()[0].speed = units::velocity::meters_per_second_t(0.0);
-    //    rc->swerve_drive->GetModuleStates()[1].speed = units::velocity::meters_per_second_t(0.0);
-    //    rc->swerve_drive->GetModuleStates()[2].speed = units::velocity::meters_per_second_t(0.0);
-    //    rc->swerve_drive->GetModuleStates()[3].speed = units::velocity::meters_per_second_t(0.0);
-    //}
+    
 
 }
 
@@ -152,6 +137,10 @@ void Robot::TeleopPeriodic() {
     static t34::Gyro* gyro = t34::Gyro::Get();
     
     rc->limelight_util.m_math_handler.InputMotorOutputPercent(rc->shooter.GetMaxSpeedPercent());
+
+    // PROCESS CONTROLLER BUTTONS
+    // Buttons are implemented this way out of simplicity.
+    // Consider using button trigger events with commands instead.
 
     // Assign Back Button to Faris Mode.
     if (rc->ctrl->GetBackButtonReleased())
@@ -206,14 +195,15 @@ void Robot::TeleopPeriodic() {
         case (POV_SPEAKER): // right
             rc->shooter.SetMaxSpeedPercent(1.0);
             rc->limelight_util.TargetSpeaker();
-            rc->shooter.MoveToAngleDeg(rc->limelight_util.m_math_handler.GetFiringAngleDeg());
+            //rc->shooter.MoveToAngleDeg(rc->limelight_util.m_math_handler.GetFiringAngleDeg());
+            rc->arm_angle_setpoint = 45.0;
             break;
         case (POV_REST): // 
-            rc->shooter.MoveToAngleDeg(45);
+            rc->arm_angle_setpoint = 90;
             break;
         case (POV_COLLECTION): // left
             rc->shooter.SetMaxSpeedPercent(0.0);
-            rc->arm_angle_setpoint = 10.0;
+            rc->arm_angle_setpoint = 12.0;
             break;
     }
 
@@ -222,7 +212,7 @@ void Robot::TeleopPeriodic() {
 
     if (rc->ctrl->GetLeftBumper() && rc->shooter.UsingPIDArmMovement())
     {
-        rc->arm_angle_setpoint -= 0.25;
+        rc->arm_angle_setpoint -= 1.0 ;
     }
     else if (rc->ctrl->GetLeftBumper() && rc->shooter.UsingPIDArmMovement() == false)
     {
@@ -231,7 +221,7 @@ void Robot::TeleopPeriodic() {
     }
     else if (rc->ctrl->GetRightBumper() && rc->shooter.UsingPIDArmMovement())
     {
-        rc->arm_angle_setpoint += 0.25;
+        rc->arm_angle_setpoint += 1.0;
     }
     else if (rc->ctrl->GetRightBumper() && rc->shooter.UsingPIDArmMovement() == false)
     {
@@ -244,37 +234,44 @@ void Robot::TeleopPeriodic() {
         rc->shooter.RunBottomArmMotorPercent(0.0);
     }
 
+    if (rc->shooter.IsArmAtZero())
+    {
+        rc->shooter.SetZero();
+        rc->arm_angle_setpoint = ((rc->shooter.GetTopArmEncoderVal() + rc->shooter.GetBottomArmEncoderVal()) * 0.5) / ARM_DEG_SCALAR;
+    }
+
     if (rc->shooter.UsingPIDArmMovement())
     {
         rc->shooter.MoveToAngleDeg(std::clamp(rc->arm_angle_setpoint, 0.0, 90.0));
+
     }
 
     //Run intake forward with the X button, backward with A button
     if (rc->ctrl->GetXButton())
     {
-        rc->shooter.RunIntakeMotorPercent(0.75);
+        rc->shooter.RunIntakeMotorPercent(0.5);
     }
-    else if (rc->ctrl->GetAButton())
+    else if (rc->ctrl->GetYButton())
     {
-        rc->shooter.RunIntakeMotorPercent(-0.75);
+        rc->shooter.RunIntakeMotorPercent(-0.5);
     }
     else
     {
         rc->shooter.RunIntakeMotorPercent(0.0);
     }
 
-    if (rc->ctrl->GetYButton()) // run swerve automatically using the limelight with the Y button
-    {
-        rc->swerve_drive->Drive
-        (
-            frc::Translation2d(
-                units::meter_t(rc->limelight_util.m_swerve_drive_speeds.x), 
-                units::meter_t(rc->limelight_util.m_swerve_drive_speeds.y)
-            ),
-            rc->limelight_util.m_swerve_drive_speeds.r
-        );
-
-    }
+    //if (rc->ctrl->GetYButton()) // run swerve automatically using the limelight with the Y button
+    //{
+    //    rc->swerve_drive->Drive
+    //    (
+    //        frc::Translation2d(
+    //            units::meter_t(rc->limelight_util.m_swerve_drive_speeds.x), 
+    //            units::meter_t(rc->limelight_util.m_swerve_drive_speeds.y)
+    //        ),
+    //        rc->limelight_util.m_swerve_drive_speeds.r
+    //    );
+//
+    //}
 
 }
 
