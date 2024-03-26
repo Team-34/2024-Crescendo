@@ -118,10 +118,18 @@ namespace t34 {
 
         //double y = units::convert<units::meters_per_second_t, units::meter_t> (speeds.vy.to<double>());
 
-        units::meter_t x = units::meter_t(speeds.vx.to<double>());
-        units::meter_t y = units::meter_t(speeds.vy.to<double>());
+        //units::meter_t x = units::meter_t(speeds.vx.to<double>());
+        //units::meter_t y = units::meter_t(speeds.vy.to<double>());
+//
+        //Drive(frc::Translation2d(units::meter_t(x), units::meter_t(y)), speeds.omega.value(), false, false);
 
-        Drive(frc::Translation2d(x, y), speeds.omega.value(), false, false);
+        auto sms = m_swerve_drive_kinematics.ToSwerveModuleStates(speeds);
+
+        frc::SwerveDriveKinematics<4>::DesaturateWheelSpeeds(&sms, units::meters_per_second_t(DRIVE_MAX_SPEED));
+
+        for(size_t i = 0; i < m_swerve_modules.size(); ++i) {
+            m_swerve_modules[i].SetDesiredState(sms[i], false);
+        }
 
 
     }

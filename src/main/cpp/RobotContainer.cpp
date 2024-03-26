@@ -93,19 +93,19 @@ frc2::CommandPtr RobotContainer::GetAutonomousCommand()
 //
     //this->auto_current_dist = this->swerve_drive->GetModulePositions()[0].distance();
 
-    return frc2::InstantCommand
-    (
-        [this]
-        {
+    //return frc2::InstantCommand
+    //(
+        //[this]
+        //{
             //this->auto_current_dist = this->swerve_drive->GetModulePositions()[0].distance();
 //
 //
             //if (this->auto_current_dist < this->auto_end_dist_1 && this->auto_finished_driving_1 == false)
             //{
-                this->swerve_drive->Drive(frc::Translation2d{
-                units::meter_t(0.0),
-                units::meter_t(-1.0)},//std::copysign(ScaleToRange(-(345.0 * 345.0), 0.0, 1.0, 0.0, 0.4), 345.0))),
-                0.0);
+                //this->swerve_drive->Drive(frc::Translation2d{
+                //units::meter_t(0.0),
+                //units::meter_t(-1.0)},//std::copysign(ScaleToRange(-(345.0 * 345.0), 0.0, 1.0, 0.0, 0.4), 345.0))),
+                //0.0);
             //}
             //else
             //{
@@ -153,13 +153,13 @@ frc2::CommandPtr RobotContainer::GetAutonomousCommand()
             //    this->shooter.RunShooterPercent(0.1);
             //    this->shooter.RunIntakeMotorPercent(0.6);
             //}
-        },
-        frc2::Requirements( {swerve_drive.get()} )
-    ).ToPtr();
+        //},
+        //frc2::Requirements( {swerve_drive.get()} )
+    //).ToPtr();
 
-    //const std::string path_file_name = path_chooser.GetSelected();
-    //const auto path = pathplanner::PathPlannerPath::fromPathFile(path_file_name);
-    //return pathplanner::AutoBuilder::followPath(path);
+    const std::string path_file_name = path_chooser.GetSelected();
+    const auto path = pathplanner::PathPlannerPath::fromPathFile(path_file_name);
+    return pathplanner::AutoBuilder::followPath(path);
 }
 
 void RobotContainer::ConfigureBindings() {

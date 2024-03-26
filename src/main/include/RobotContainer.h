@@ -46,6 +46,7 @@ public: // PROPERTIES
     bool auto_finished_aiming;
     bool auto_finished_shooting;
 
+    frc::SendableChooser<std::string> path_chooser;
 
     t34::ControllerDriveCommand DefaultCommand;
 
@@ -61,7 +62,6 @@ public: // METHODS
 
 private: // DATA
     ExampleSubsystem m_subsystem;
-    frc::SendableChooser<std::string> path_chooser;
     
 
     // frc2::CommandPtr m_exampleSelectCommand = frc2::cmd::Select<std::string>(
