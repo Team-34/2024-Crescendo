@@ -22,10 +22,10 @@ constexpr double SHOOTER_OFFSET_ANGLE_DEG{ 29 };
 
 const std::string LIMELIGHT_TABLE_NAME{ "" };
 
-const int POV_AMP{ 0 };
-const int POV_SPEAKER{ 90 };
-const int POV_REST{ 180 };
-const int POV_COLLECTION{ 270 };
+const int POV_UP{ 0 };
+const int POV_RIGHT{ 90 };
+const int POV_DOWN{ 180 };
+const int POV_LEFT{ 270 };
 
 #define DEG_TO_RAD(x) (x * PI_DIV_180)
 #define RAD_TO_DEG(x) (x * _180_DIV_PI)
