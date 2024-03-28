@@ -201,7 +201,7 @@ void Robot::TeleopPeriodic() {
             //rc->shooter.MoveToAngleDeg(rc->limelight_util.m_math_handler.GetFiringAngleDeg());
             rc->arm_angle_setpoint = 45.0;
             break;
-        case (POV_REST): // left
+        case (POV_REST): // down
             rc->arm_angle_setpoint = 90;
             break;
         case (POV_COLLECTION): // left
@@ -266,15 +266,17 @@ void Robot::TeleopPeriodic() {
 
     //if (rc->ctrl->GetYButton()) // run swerve automatically using the limelight with the Y button
     //{
-    //    rc->swerve_drive->Drive
-    //    (
-    //        frc::Translation2d(
-    //            units::meter_t(rc->limelight_util.m_swerve_drive_speeds.x), 
-    //            units::meter_t(rc->limelight_util.m_swerve_drive_speeds.y)
-    //        ),
-    //        rc->limelight_util.m_swerve_drive_speeds.r
-    //    );
-//
+    //    frc2::InstantCommand([this]
+    //    {
+    //        rc->swerve_drive->Drive(
+    //            frc::Translation2d(
+    //                units::meter_t(rc->limelight_util.m_swerve_drive_speeds.x),
+    //                units::meter_t(rc->limelight_util.m_swerve_drive_speeds.y)
+    //                ), rc->limelight_util.m_swerve_drive_speeds.r
+    //        );
+
+    //    }).Schedule();
+
     //}
 
 }

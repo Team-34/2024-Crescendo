@@ -71,8 +71,8 @@ namespace t34
         inline double GetTopArmEncoderVal() const { return m_arm_encoder_top.GetPosition(); }
         inline double GetBottomArmEncoderVal() const { return m_arm_encoder_bottom.GetPosition(); }
 
-        inline void RunTopArmMotorPercent(const double motor_output) { m_arm_motor_top.Set(motor_output); }
-        inline void RunBottomArmMotorPercent(const double motor_output) { m_arm_motor_bottom.Set(motor_output); }
+        void RunTopArmMotorPercent(const double motor_output);// { m_arm_motor_top.Set(motor_output); }
+        void RunBottomArmMotorPercent(const double motor_output);// { m_arm_motor_bottom.Set(motor_output); }
 
         inline void RunLeftFiringMotorPercent(const double motor_output) { m_firing_motor_left.Set(motor_output); }
         inline void RunRightFiringMotorPercent(const double motor_output) { m_firing_motor_right.Set(motor_output); }

@@ -33,6 +33,22 @@ void t34::Shooter::RunShooterPercent(const double motor_output)
     m_intake_motor.Set(ctre::phoenix::motorcontrol::ControlMode::PercentOutput, 0.7);
 }
 
+void t34::Shooter::RunTopArmMotorPercent(const double motor_output)
+{
+    double clamp_val = m_arm_sensor.Get() ? 0.0 : -1.0;
+
+    m_arm_motor_top.Set(std::clamp(motor_output, clamp_val, 1.0));
+
+}
+
+void t34::Shooter::RunBottomArmMotorPercent(const double motor_output)
+{
+    double clamp_val = m_arm_sensor.Get() ? 0.0 : -1.0;
+
+    m_arm_motor_bottom.Set(std::clamp(motor_output, clamp_val, 1.0));
+
+}
+
 void t34::Shooter::SetZero()
 {
     m_arm_encoder_top.SetPosition(0.0);
@@ -64,7 +80,7 @@ void t34::Shooter::RunIntakeMotorPercent(const double motor_output)
 
 void t34::Shooter::MoveToAngleDeg(const double angle) 
 {
-    m_arm_angle_setpoint = angle * ARM_DEG_SCALAR;
+    m_arm_angle_setpoint = (angle + SHOOTER_OFFSET_ANGLE_DEG) * ARM_DEG_SCALAR;
 
     m_arm_pidctrl_top.SetReference(m_arm_angle_setpoint, rev::ControlType::kPosition);
     m_arm_pidctrl_bottom.SetReference(m_arm_angle_setpoint, rev::ControlType::kPosition);
@@ -106,5 +122,5 @@ void t34::Shooter::Init()
     m_arm_encoder_bottom.SetPositionConversionFactor(ARM_ENC_CONVERSION_FACTOR);
 
     m_arm_encoder_top.SetPosition(2.4803999);
-    m_arm_encoder_bottom.SetPosition(2.4803999);
+    m_arm_encoder_bottom.SetPosition(m_arm_encoder_top.GetPosition());
 }

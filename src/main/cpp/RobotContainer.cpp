@@ -41,7 +41,7 @@ RobotContainer::RobotContainer()
             traj_math,
             t34::LimelightUtil::TargetMode::kSpeaker
         )
-    , arm_angle_setpoint(90)
+    , arm_angle_setpoint(90.0)
     , auto_start_dist_1(0.0)
     , auto_end_dist_1(0.0)
     , auto_start_dist_2(0.0)
@@ -159,6 +159,7 @@ frc2::CommandPtr RobotContainer::GetAutonomousCommand()
 
     const std::string path_file_name = path_chooser.GetSelected();
     const auto path = pathplanner::PathPlannerPath::fromPathFile(path_file_name);
+
     return pathplanner::AutoBuilder::followPath(path);
 }
 
