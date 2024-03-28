@@ -18,6 +18,7 @@
 
 #include <memory>
 #include <frc2/command/CommandPtr.h>
+#include <frc2/command/InstantCommand.h>
 #include <frc/smartdashboard/SendableChooser.h>
 #include <pathplanner/lib/auto/NamedCommands.h>
 
@@ -46,6 +47,7 @@ public: // PROPERTIES
     bool auto_finished_aiming;
     bool auto_finished_shooting;
 
+    frc::SendableChooser<std::string> path_chooser;
 
     t34::ControllerDriveCommand DefaultCommand;
 
@@ -61,7 +63,6 @@ public: // METHODS
 
 private: // DATA
     ExampleSubsystem m_subsystem;
-    frc::SendableChooser<std::string> path_chooser;
     
 
     // frc2::CommandPtr m_exampleSelectCommand = frc2::cmd::Select<std::string>(

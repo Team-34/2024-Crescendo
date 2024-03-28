@@ -61,12 +61,12 @@ void t34::LimelightUtil::Periodic()
     }
 
     m_heading_error = std::clamp(-m_tx, -1.0, 1.0);
-    m_drive_x = std::clamp((fabs(m_tx) / 25.0), -1.0, 1.0);
+    m_drive_x = std::clamp((m_tx / 25.0), -1.0, 1.0);
     m_drive_y = m_math_handler.IsInRange() ? 0.0 : 0.5;
 
-    m_drive_x = std::copysign(ScaleToRange(-(m_drive_x * m_drive_x), 0.0, 1.0, 0.0, DRIVE_MAX_SPEED), m_drive_x);
-    m_drive_y = std::copysign(ScaleToRange(-(m_drive_y * m_drive_y), 0.0, 1.0, 0.0, DRIVE_MAX_SPEED), m_drive_y);
-    m_steering_adjust = std::copysign(ScaleToRange(-(m_steering_adjust * m_steering_adjust), 0.0, 1.0, 0.0, STEER_MAX_SPEED), m_steering_adjust);
+    //m_drive_x = std::copysign(ScaleToRange(-(m_drive_x * m_drive_x), 0.0, 1.0, 0.0, DRIVE_MAX_SPEED), m_drive_x);
+    //m_drive_y = std::copysign(ScaleToRange(-(m_drive_y * m_drive_y), 0.0, 1.0, 0.0, DRIVE_MAX_SPEED), m_drive_y);
+    //m_steering_adjust = std::copysign(ScaleToRange(-(m_steering_adjust * m_steering_adjust), 0.0, 1.0, 0.0, STEER_MAX_SPEED), m_steering_adjust);
 
     m_swerve_drive_speeds.x = m_drive_x;
     m_swerve_drive_speeds.y = m_drive_y;

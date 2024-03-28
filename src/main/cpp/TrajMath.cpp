@@ -50,7 +50,7 @@ double t34::TrajMath::GetFiringAngleDeg() const
     const auto v = m_note_max_velocity_mps * m_motor_output;
     const auto v2 = v * v;
     const auto v4 = v2 * v2;
-    const auto x  = m_target_distance_meters;
+    const auto x = GetDistanceFromTarget();
     const auto x2 = x * x;
     const auto y  = m_target_height_meters;
 
@@ -62,7 +62,7 @@ double t34::TrajMath::GetFiringAngleDeg() const
     const auto denominator = gx;
     const auto θ = atan(numerator / denominator);
 
-    return m_target_distance_meters;//RAD_TO_DEG(θ);
+    return RAD_TO_DEG(θ);
 }
 
 bool t34::TrajMath::IsInRange() const

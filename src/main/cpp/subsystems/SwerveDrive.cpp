@@ -30,8 +30,26 @@ namespace t34 {
          AutoBuilder::configureHolonomic(
              [this](){ return GetPose(); }, // Robot pose supplier
              [this](frc::Pose2d pose){ ResetOdometry(pose); }, // Method to reset odometry (will be called if your auto has a starting pose)
-             [this](){ return GetRobotRelativeSpeeds(); }, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
-             [this](frc::ChassisSpeeds speeds){ DriveAuto(speeds); }, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
+             [this]()
+            { 
+               //frc::ChassisSpeeds speeds{ GetRobotRelativeSpeeds() }; 
+               //units::meters_per_second_t temp_vx{speeds.vx};
+//
+               //speeds.vx = -speeds.vy;
+               //speeds.vy = temp_vx;
+//
+               //return speeds;
+                return GetRobotRelativeSpeeds();
+            }, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
+             [this](frc::ChassisSpeeds speeds)
+            {
+                //units::meters_per_second_t temp_vx{speeds.vx};
+//
+                //speeds.vx = -speeds.vy;
+                //speeds.vy = temp_vx;
+
+                DriveAuto(speeds); 
+            }, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
              HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live in your Constants class
                  PIDConstants(t34::DRIVE_KP, t34::DRIVE_KI, t34::DRIVE_KD), // Translation PID constants
                  PIDConstants(t34::STEER_KP, t34::STEER_KI, t34::STEER_KD), // Rotation PID constants
@@ -118,10 +136,18 @@ namespace t34 {
 
         //double y = units::convert<units::meters_per_second_t, units::meter_t> (speeds.vy.to<double>());
 
-        units::meter_t x = units::meter_t(speeds.vx.to<double>());
-        units::meter_t y = units::meter_t(speeds.vy.to<double>());
+        //units::meter_t x = units::meter_t(speeds.vx.to<double>());
+        //units::meter_t y = units::meter_t(speeds.vy.to<double>());
+//
+        //Drive(frc::Translation2d(units::meter_t(x), units::meter_t(y)), speeds.omega.value(), false, false);
 
-        Drive(frc::Translation2d(x, y), speeds.omega.value(), false, false);
+        auto sms = m_swerve_drive_kinematics.ToSwerveModuleStates(speeds);
+
+        frc::SwerveDriveKinematics<4>::DesaturateWheelSpeeds(&sms, units::meters_per_second_t(DRIVE_MAX_SPEED));
+
+        for(size_t i = 0; i < m_swerve_modules.size(); ++i) {
+            m_swerve_modules[i].SetDesiredState(sms[i], false);
+        }
 
 
     }
