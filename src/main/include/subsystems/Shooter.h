@@ -2,6 +2,7 @@
 
 #include <rev/CANSparkMax.h>
 #include <ctre/phoenix/motorcontrol/can/TalonSRX.h>
+#include <units/angle.h>
 #include <units/math.h>
 #include <frc/controller/PIDController.h>
 #include <frc/DigitalInput.h>
@@ -51,8 +52,8 @@ namespace t34
 
         void RunIntakeMotorPercent(const double motor_output);
 
-        void MoveToAngleDeg(const double angle);
-        inline void LowerArmForNoteCollection() { this->MoveToAngleDeg(12.0); }
+        void MoveToShooterAngleDeg(const double angle);
+        inline void LowerArmForNoteCollection() { this->MoveToShooterAngleDeg(12.0); }
 
         void SetMaxSpeedPercent(const double percent);
         inline void SetMaxSpeedForAmp() { SetMaxSpeedPercent(0.1); }
@@ -82,8 +83,13 @@ namespace t34
         inline void TogglePIDArmMovement() { arm_using_pid = !arm_using_pid; }
         inline bool UsingPIDArmMovement() const { return arm_using_pid; }
 
-        inline bool IntakeHasNote() { return m_note_sensor.Get(); }
+        inline bool IntakeSeesNote() { return m_note_sensor.Get(); }
         inline bool IsArmAtZero() { return m_arm_sensor.Get(); }
+
+        inline double GetShooterAngleDeg() { return m_arm_encoder_top.GetPosition() / ARM_DEG_SCALAR; }
+        inline units::degree_t GetShooterAngle() { return units::degree_t(GetShooterAngleDeg()); }
+
+        // inline double CheckingBottomArmMotorEncoderValues() { return m_arm_encoder_bottom.GetPosition(); }
 
     };
 }

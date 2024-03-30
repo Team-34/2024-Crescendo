@@ -14,15 +14,15 @@ void t34::CollectNote::Initialize()
 
 void t34::CollectNote::Execute()
 {
-    
+    m_shooter->RunIntakeMotorPercent(0.5);
 }
 
 void t34::CollectNote::End(bool interrupted)
 {
-
+    m_shooter->RunIntakeMotorPercent(0.0);
 }
 
 bool t34::CollectNote::IsFinished()
 {
-
+    return m_shooter->IntakeSeesNote();
 }

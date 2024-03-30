@@ -59,7 +59,7 @@ void t34::Shooter::RunIntakeMotorPercent(const double motor_output)
 {
     double clamp_val = 1.0;
 
-    if (IntakeHasNote())
+    if (IntakeSeesNote())
     {
         clamp_val = 0.0;
     }
@@ -68,7 +68,7 @@ void t34::Shooter::RunIntakeMotorPercent(const double motor_output)
                         std::clamp(motor_output, -1.0, clamp_val));
 
     //m_intake_motor.Set(ctre::phoenix::motorcontrol::ControlMode::PercentOutput, motor_output);
-    //if (IntakeHasNote())// && IsIntakeMovingBackward(motor_output))
+    //if (IntakeSeesNote())// && IsIntakeMovingBackward(motor_output))
     //{
     //    m_intake_motor.Set(ctre::phoenix::motorcontrol::ControlMode::PercentOutput, 0.0);
     //}
@@ -78,7 +78,7 @@ void t34::Shooter::RunIntakeMotorPercent(const double motor_output)
     //}
 }
 
-void t34::Shooter::MoveToAngleDeg(const double angle) 
+void t34::Shooter::MoveToShooterAngleDeg(const double angle) 
 {
     m_arm_angle_setpoint = (angle + SHOOTER_OFFSET_ANGLE_DEG) * ARM_DEG_SCALAR;
 

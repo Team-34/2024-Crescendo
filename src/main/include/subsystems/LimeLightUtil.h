@@ -74,5 +74,7 @@ namespace t34
 
         inline double GetTargetID() const { return m_target_id; }
 
+        inline bool IsTargetAcquired() const { return m_target_id != -1.0; }
+
     };
 }

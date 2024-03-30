@@ -54,7 +54,7 @@ void Robot::RobotPeriodic()
     // Misc.
     frc::SmartDashboard::PutNumber("Target ID: ", rc->limelight_util.GetTargetID());
     frc::SmartDashboard::PutNumber("Distance from limelight target (meters): ", rc->limelight_util.m_math_handler.GetDistanceFromTarget());
-    frc::SmartDashboard::PutBoolean("Note Sensor detection", rc->shooter.IntakeHasNote());
+    frc::SmartDashboard::PutBoolean("Note Sensor detection", rc->shooter.IntakeSeesNote());
     frc::SmartDashboard::PutBoolean("Arm Sensor detection", rc->shooter.IsArmAtZero());
     //_________________________
     /*
@@ -198,7 +198,7 @@ void Robot::TeleopPeriodic() {
         case (POV_RIGHT): // speaker
             rc->shooter.SetMaxSpeedPercent(1.0);
             rc->limelight_util.TargetSpeaker();
-            //rc->shooter.MoveToAngleDeg(rc->limelight_util.m_math_handler.GetFiringAngleDeg());
+            //rc->shooter.MoveToShooterAngleDeg(rc->limelight_util.m_math_handler.GetFiringAngleDeg());
             rc->arm_angle_setpoint = 45.0;
             break;
         case (POV_DOWN): // rest
@@ -246,7 +246,7 @@ void Robot::TeleopPeriodic() {
 
     if (rc->shooter.UsingPIDArmMovement())
     {
-        rc->shooter.MoveToAngleDeg(std::clamp(rc->arm_angle_setpoint, 12.0, 90.0));
+        rc->shooter.MoveToShooterAngleDeg(std::clamp(rc->arm_angle_setpoint, 12.0, 90.0));
 
     }
 

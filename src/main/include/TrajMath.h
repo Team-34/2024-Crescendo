@@ -1,6 +1,7 @@
 #pragma once
 
 #include <math.h>
+#include <units/angle.h>
 #include <frc/smartdashboard/SmartDashboard.h>
 
 #include "Constants.h"
@@ -10,8 +11,8 @@ namespace t34
 {
     class TrajMath
     {
-        double m_note_max_velocity_mps;
-        double m_motor_output;
+        double m_note_max_velocity_mps = 11.884;
+        double m_motor_output = 1;
         double m_target_distance_meters;
         double m_target_height_meters;
         double m_apriltag_height_meters;
@@ -42,6 +43,7 @@ namespace t34
         void PutTelemetry();
 
         double GetFiringAngleDeg() const;
+        inline units::degree_t GetFiringAngle() const { return units::degree_t(GetFiringAngleDeg()); }
 
         bool IsInRange() const;
 
