@@ -19,6 +19,7 @@
 #include <memory>
 #include <frc2/command/CommandPtr.h>
 #include <frc2/command/InstantCommand.h>
+#include <frc2/command/RunCommand.h>
 #include <frc/smartdashboard/SendableChooser.h>
 #include <pathplanner/lib/auto/NamedCommands.h>
 

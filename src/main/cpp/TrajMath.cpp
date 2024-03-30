@@ -21,7 +21,6 @@ t34::TrajMath::TrajMath
 
 void t34::TrajMath::Periodic()
 {
-
     m_target_ty = LimelightHelpers::getTY(LIMELIGHT_TABLE_NAME);
     m_target_tx = LimelightHelpers::getTX(LIMELIGHT_TABLE_NAME);
     m_limelight_angle_degrees = m_target_ty * LIMELIGHT_DEGREE_SCALAR;
@@ -47,7 +46,7 @@ double t34::TrajMath::GetFiringAngleDeg() const
     //   Solving Ballistic Trajectories <https://www.forrestthewoods.com/blog/solving_ballistic_trajectories/>
     //   See section “Firing Angle to Hit Stationary Target.”
 
-    const auto v = m_note_max_velocity_mps * m_motor_output;
+    const auto v = m_note_max_velocity_mps * 0.7;
     const auto v2 = v * v;
     const auto v4 = v2 * v2;
     const auto x = GetDistanceFromTarget();
@@ -62,7 +61,19 @@ double t34::TrajMath::GetFiringAngleDeg() const
     const auto denominator = gx;
     const auto θ = atan(numerator / denominator);
 
-    return RAD_TO_DEG(θ);
+    frc::SmartDashboard::PutNumber("v", v);
+    frc::SmartDashboard::PutNumber("v2", v2);
+    frc::SmartDashboard::PutNumber("v4", v4);
+    frc::SmartDashboard::PutNumber("x", x);
+    frc::SmartDashboard::PutNumber("x2", x2);
+    frc::SmartDashboard::PutNumber("y", y);
+    frc::SmartDashboard::PutNumber("gx", gx);
+    frc::SmartDashboard::PutNumber("gx2", gx2);
+    frc::SmartDashboard::PutNumber("v2y", v2y);
+    frc::SmartDashboard::PutNumber("Numerator", numerator);
+    frc::SmartDashboard::PutNumber("Denominator", denominator);
+
+    return std::clamp(RAD_TO_DEG(θ), 0.0, 90.0);
 }
 
 bool t34::TrajMath::IsInRange() const

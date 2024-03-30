@@ -12,6 +12,7 @@ t34::Shooter::Shooter()
   m_arm_sensor(8),
   m_max_speed_percent(1.0),
   m_arm_angle_setpoint(90.0),
+  m_tolerance(1.0),
   arm_using_pid(false),
   m_arm_pidctrl_top(m_arm_motor_top.GetPIDController()),
   m_arm_pidctrl_bottom(m_arm_motor_bottom.GetPIDController())
@@ -78,14 +79,46 @@ void t34::Shooter::RunIntakeMotorPercent(const double motor_output)
     //}
 }
 
-void t34::Shooter::MoveToAngleDeg(const double angle) 
+void t34::Shooter::ConfigForAmp()
 {
-    m_arm_angle_setpoint = (angle + SHOOTER_OFFSET_ANGLE_DEG) * ARM_DEG_SCALAR;
 
-    m_arm_pidctrl_top.SetReference(m_arm_angle_setpoint, rev::ControlType::kPosition);
-    m_arm_pidctrl_bottom.SetReference(m_arm_angle_setpoint, rev::ControlType::kPosition);
-    
+    SetSetpoint(87.18);
+    SetMaxSpeedPercent(0.1);
 }
+
+void t34::Shooter::ConfigForSpeaker(double shooter_firing_angle)
+{
+
+    SetSetpoint(shooter_firing_angle - SHOOTER_OFFSET_ANGLE_DEG);
+    SetMaxSpeedPercent(0.7);
+}
+
+void t34::Shooter::ConfigForRest()
+{
+    SetSetpoint(90.0);
+}
+
+void t34::Shooter::ConfigForNoteCollection()
+{
+    SetSetpoint(12.0);
+    SetMaxSpeedPercent(0.0);
+}
+
+//void t34::Shooter::MoveArmToAngleDeg(const double angle) 
+//{
+//    m_arm_angle_setpoint = angle * ARM_DEG_SCALAR;
+//
+//    m_arm_pidctrl_top.SetReference(m_arm_angle_setpoint, rev::ControlType::kPosition);
+//    m_arm_pidctrl_bottom.SetReference(m_arm_angle_setpoint, rev::ControlType::kPosition);
+//    
+//}
+//
+//void t34::Shooter::MoveShooterToAngleDeg(const double angle) 
+//{
+//    m_arm_angle_setpoint = ((angle - SHOOTER_OFFSET_ANGLE_DEG) * ARM_DEG_SCALAR);
+//
+//    MoveArmToAngleDeg(angle);
+//}
 
 void t34::Shooter::SetMaxSpeedPercent(const double percent)
 {
@@ -113,6 +146,12 @@ void t34::Shooter::PutTelemetry()
 
 void t34::Shooter::Periodic()
 {
+
+    if (UsingPIDArmMovement())
+    {
+        m_arm_pidctrl_top.SetReference(m_arm_angle_setpoint * ARM_DEG_SCALAR, rev::ControlType::kPosition);
+        m_arm_pidctrl_bottom.SetReference(m_arm_angle_setpoint * ARM_DEG_SCALAR, rev::ControlType::kPosition);
+    }
     
 }
 

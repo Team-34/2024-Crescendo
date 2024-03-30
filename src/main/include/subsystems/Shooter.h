@@ -38,6 +38,7 @@ namespace t34
         //double m_arm_angle_bottom{};
         double m_max_speed_percent{};
         double m_arm_angle_setpoint{};
+        double m_tolerance{};
 
         bool arm_using_pid{};
         
@@ -50,13 +51,14 @@ namespace t34
 
         void RunIntakeMotorPercent(const double motor_output);
 
-        void MoveToAngleDeg(const double angle);
+        void MoveShooterToAngleDeg(const double angle);
+        void MoveArmToAngleDeg(const double angle);
 
         void SetMaxSpeedPercent(const double percent);
-        inline void SetMaxSpeedForAmp() { SetMaxSpeedPercent(0.1); }
-        inline void SetMaxSpeedForSpeaker() { SetMaxSpeedPercent(0.4); }
-        inline void SetMaxSpeedForTrap() { SetMaxSpeedPercent(0.7); }
-        inline void SetMaxSpeedForNoteCollection() { SetMaxSpeedPercent(0.0); }
+        void ConfigForAmp();
+        void ConfigForSpeaker(double shooter_firing_angle);
+        void ConfigForRest();
+        void ConfigForNoteCollection();
 
         double GetMaxSpeedPercent() const;
 
@@ -67,6 +69,8 @@ namespace t34
         void PutTelemetry();
 
         void SetZero();
+
+        inline void SetSetpoint(double setpoint) {m_arm_angle_setpoint = setpoint;}
 
         inline double GetTopArmEncoderVal() const { return m_arm_encoder_top.GetPosition(); }
         inline double GetBottomArmEncoderVal() const { return m_arm_encoder_bottom.GetPosition(); }

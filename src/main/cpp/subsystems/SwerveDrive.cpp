@@ -30,31 +30,13 @@ namespace t34 {
          AutoBuilder::configureHolonomic(
              [this](){ return GetPose(); }, // Robot pose supplier
              [this](frc::Pose2d pose){ ResetOdometry(pose); }, // Method to reset odometry (will be called if your auto has a starting pose)
-             [this]()
-            { 
-               //frc::ChassisSpeeds speeds{ GetRobotRelativeSpeeds() }; 
-               //units::meters_per_second_t temp_vx{speeds.vx};
-//
-               //speeds.vx = -speeds.vy;
-               //speeds.vy = temp_vx;
-//
-               //return speeds;
-                return GetRobotRelativeSpeeds();
-            }, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
-             [this](frc::ChassisSpeeds speeds)
-            {
-                //units::meters_per_second_t temp_vx{speeds.vx};
-//
-                //speeds.vx = -speeds.vy;
-                //speeds.vy = temp_vx;
-
-                DriveAuto(speeds); 
-            }, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
+             [this](){ return GetRobotRelativeSpeeds(); }, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
+             [this](frc::ChassisSpeeds speeds){ DriveAuto(speeds); }, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
              HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live in your Constants class
                  PIDConstants(t34::DRIVE_KP, t34::DRIVE_KI, t34::DRIVE_KD), // Translation PID constants
                  PIDConstants(t34::STEER_KP, t34::STEER_KI, t34::STEER_KD), // Rotation PID constants
-                 4.5_mps, // Max module speed, in m/s
-                 0.4_m, // Drive base radius in meters. Distance from robot center to furthest module.
+                 t34::DRIVE_MAX_SPEED * 1_mps, // Max module speed, in m/s ---was 4.5_mps
+                 t34::SWERVE_MODULE_FROM_CENTER * 1_m, // Drive base radius in meters. Distance from robot center to furthest module.
                  ReplanningConfig() // Default path replanning config. See the API for the options here
              ),
              []() {
@@ -132,14 +114,12 @@ namespace t34 {
      */
     void SwerveDrive::DriveAuto(frc::ChassisSpeeds speeds) {
 
-        //double x = units::convert<units::meters_per_second_t, units::meter_t> (speeds.vx.to<double>());
+        //units::meters_per_second_t temp_vx{speeds.vx};
+        //
+        //speeds.vx = -speeds.vy;
+        //speeds.vy = temp_vx;
 
-        //double y = units::convert<units::meters_per_second_t, units::meter_t> (speeds.vy.to<double>());
-
-        //units::meter_t x = units::meter_t(speeds.vx.to<double>());
-        //units::meter_t y = units::meter_t(speeds.vy.to<double>());
-//
-        //Drive(frc::Translation2d(units::meter_t(x), units::meter_t(y)), speeds.omega.value(), false, false);
+        speeds.omega *= -1.0;
 
         auto sms = m_swerve_drive_kinematics.ToSwerveModuleStates(speeds);
 
@@ -179,6 +159,14 @@ namespace t34 {
      * @return Pose2d Object that contains translational and rotational elements.
      */
     frc::Pose2d SwerveDrive::GetPose() {
+        //frc::Pose2d pose = m_swerve_odometry.GetPose();
+//
+        //return frc::Pose2d(frc::Translation2d(
+        //    pose.Translation().Y(), 
+        //    pose.Translation().X()),
+        //    pose.Rotation()
+        //);
+
         return m_swerve_odometry.GetPose();
     }
 

@@ -142,7 +142,7 @@ void Robot::TeleopInit() {
 void Robot::TeleopPeriodic() {
     static t34::Gyro* gyro = t34::Gyro::Get();
     
-    rc->limelight_util.m_math_handler.InputMotorOutputPercent(rc->shooter.GetMaxSpeedPercent());
+    rc->traj_math.InputMotorOutputPercent(rc->shooter.GetMaxSpeedPercent());
 
     // PROCESS CONTROLLER BUTTONS
     // Buttons are implemented this way out of simplicity.
@@ -194,22 +194,18 @@ void Robot::TeleopPeriodic() {
     switch (rc->ctrl->GetPOV())
     {
         case (POV_UP): //  amp
-            rc->shooter.SetMaxSpeedPercent(0.1);
             rc->limelight_util.TargetAmp();
-            rc->arm_angle_setpoint = 87.18;
+            rc->shooter.ConfigForAmp();
             break;
         case (POV_RIGHT): // speaker
-            rc->shooter.SetMaxSpeedPercent(1.0);
             rc->limelight_util.TargetSpeaker();
-            //rc->shooter.MoveToAngleDeg(rc->limelight_util.m_math_handler.GetFiringAngleDeg());
-            rc->arm_angle_setpoint = 45.0;
+            rc->shooter.ConfigForSpeaker(rc->traj_math.GetFiringAngleDeg());
             break;
         case (POV_DOWN): // rest
-            rc->arm_angle_setpoint = 90;
+            rc->shooter.ConfigForRest();
             break;
         case (POV_LEFT): // note collection
-            rc->shooter.SetMaxSpeedPercent(0.0);
-            rc->arm_angle_setpoint = 12.0;
+            rc->shooter.ConfigForNoteCollection();
             break;
     }
 
@@ -240,19 +236,6 @@ void Robot::TeleopPeriodic() {
         rc->shooter.RunBottomArmMotorPercent(0.0);
     }
 
-    //if (rc->shooter.IsArmAtZero())
-    //{
-    //    rc->shooter.SetZero();
-//
-    //    rc->arm_angle_setpoint = ((rc->shooter.GetTopArmEncoderVal() + rc->shooter.GetBottomArmEncoderVal()) * 0.5) / ARM_DEG_SCALAR;
-    //}
-
-    if (rc->shooter.UsingPIDArmMovement())
-    {
-        rc->shooter.MoveToAngleDeg(std::clamp(rc->arm_angle_setpoint, (-SHOOTER_OFFSET_ANGLE_DEG + 12.0), (90.0 - SHOOTER_OFFSET_ANGLE_DEG)));
-
-    }
-
     //Run intake forward with the X button, backward with A button
     if (rc->ctrl->GetXButton())
     {
@@ -280,6 +263,8 @@ void Robot::TeleopPeriodic() {
 //
     //  }).Schedule();
     //}
+
+    rc->shooter.Periodic();
 
 }
 
