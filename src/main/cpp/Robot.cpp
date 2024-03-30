@@ -56,6 +56,9 @@ void Robot::RobotPeriodic()
     frc::SmartDashboard::PutNumber("Distance from limelight target (meters): ", rc->limelight_util.m_math_handler.GetDistanceFromTarget());
     frc::SmartDashboard::PutBoolean("Note Sensor detection", rc->shooter.IntakeHasNote());
     frc::SmartDashboard::PutBoolean("Arm Sensor detection", rc->shooter.IsArmAtZero());
+
+    frc::SmartDashboard::PutNumber("Raw Arm Encoder Val: ", rc->shooter.GetTopArmEncoderVal() / ARM_ENC_CONVERSION_FACTOR);
+
     //_________________________
     /*
     //checks if the approx. range is nearing 5 meters (the range the LL with pick up an AT before the resolution becomes too low)
@@ -217,7 +220,7 @@ void Robot::TeleopPeriodic() {
     {
         rc->arm_angle_setpoint -= 1.0 ;
     }
-    else if (rc->ctrl->GetLeftBumper() && rc->shooter.UsingPIDArmMovement() == false && rc->shooter.IsArmAtZero() == false)
+    else if (rc->ctrl->GetRightBumper() && rc->shooter.UsingPIDArmMovement() == false)
     {
         rc->shooter.RunTopArmMotorPercent(0.25);
         rc->shooter.RunBottomArmMotorPercent(0.25);
@@ -226,7 +229,7 @@ void Robot::TeleopPeriodic() {
     {
         rc->arm_angle_setpoint += 1.0;
     }
-    else if (rc->ctrl->GetRightBumper() && rc->shooter.UsingPIDArmMovement() == false)
+    else if (rc->ctrl->GetLeftBumper() && rc->shooter.UsingPIDArmMovement() == false && rc->shooter.IsArmAtZero() == false)
     {
         rc->shooter.RunTopArmMotorPercent(-0.3);
         rc->shooter.RunBottomArmMotorPercent(-0.3);
@@ -246,7 +249,7 @@ void Robot::TeleopPeriodic() {
 
     if (rc->shooter.UsingPIDArmMovement())
     {
-        rc->shooter.MoveToAngleDeg(std::clamp(rc->arm_angle_setpoint, 12.0, 90.0));
+        rc->shooter.MoveToAngleDeg(std::clamp(rc->arm_angle_setpoint, (-SHOOTER_OFFSET_ANGLE_DEG + 12.0), (90.0 - SHOOTER_OFFSET_ANGLE_DEG)));
 
     }
 
@@ -266,17 +269,16 @@ void Robot::TeleopPeriodic() {
 
     //if (rc->ctrl->GetYButton()) // run swerve automatically using the limelight with the Y button
     //{
-    //    frc2::InstantCommand([this]
-    //    {
-    //        rc->swerve_drive->Drive(
-    //            frc::Translation2d(
-    //                units::meter_t(rc->limelight_util.m_swerve_drive_speeds.x),
-    //                units::meter_t(rc->limelight_util.m_swerve_drive_speeds.y)
-    //                ), rc->limelight_util.m_swerve_drive_speeds.r
-    //        );
-
-    //    }).Schedule();
-
+    //  frc2::Command([this]
+    //  {
+    //      rc->swerve_drive->Drive(
+    //          frc::Translation2d(
+    //              units::meter_t(rc->limelight_util.m_swerve_drive_speeds.x),
+    //              units::meter_t(rc->limelight_util.m_swerve_drive_speeds.y)
+    //              ), rc->limelight_util.m_swerve_drive_speeds.r
+    //      );
+//
+    //  }).Schedule();
     //}
 
 }
