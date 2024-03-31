@@ -23,7 +23,10 @@ namespace t34
         t34::LimelightUtil &m_limelight;
         t34::TrajMath &m_trajectory;
 
-        bool m_intake_sees_note_previous;
-        bool m_intake_sees_note_current;
+        /** Did the intake see the note last time through the loop? */
+        bool m_intake_saw_note;
+
+        /** Does the intake see the note this time through the loop? */
+        bool m_intake_sees_note;
     };
 }

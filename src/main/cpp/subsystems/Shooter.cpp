@@ -86,6 +86,13 @@ void t34::Shooter::MoveToShooterAngleDeg(const double angle)
     m_arm_pidctrl_bottom.SetReference(m_arm_angle_setpoint, rev::ControlType::kPosition);
 }
 
+bool t34::Shooter::IsShooterAt(units::degree_t degrees)
+{
+    const auto THRESHOLD = 0.5_deg;
+    const auto delta = GetShooterAngle() - degrees;
+    return units::math::abs(delta) < THRESHOLD;
+}
+
 void t34::Shooter::SetMaxSpeedPercent(const double percent)
 {
     m_max_speed_percent = percent;

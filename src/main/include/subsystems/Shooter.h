@@ -49,6 +49,7 @@ namespace t34
         Shooter();
 
         void RunShooterPercent(const double motor_output);
+        inline void StopShooter() { RunShooterPercent(0.0); }
 
         void RunIntakeMotorPercent(const double motor_output);
 
@@ -88,8 +89,6 @@ namespace t34
 
         inline double GetShooterAngleDeg() { return m_arm_encoder_top.GetPosition() / ARM_DEG_SCALAR; }
         inline units::degree_t GetShooterAngle() { return units::degree_t(GetShooterAngleDeg()); }
-
-        // inline double CheckingBottomArmMotorEncoderValues() { return m_arm_encoder_bottom.GetPosition(); }
-
+        bool IsShooterAt(units::degree_t degrees);
     };
 }
