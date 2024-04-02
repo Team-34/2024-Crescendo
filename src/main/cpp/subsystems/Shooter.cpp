@@ -34,20 +34,24 @@ void t34::Shooter::RunShooterPercent(const double motor_output)
     m_intake_motor.Set(ctre::phoenix::motorcontrol::ControlMode::PercentOutput, 0.7);
 }
 
-void t34::Shooter::RunTopArmMotorPercent(const double motor_output)
+void t34::Shooter::RunTopArmMotorPercent(double motor_output)
 {
-    double clamp_val = m_arm_sensor.Get() ? 0.0 : -1.0;
+    double bottom_clamp = m_arm_sensor.Get() ? 0.0 : -1.0;
 
-    m_arm_motor_top.Set(std::clamp(motor_output, clamp_val, 1.0));
+    double top_clamp = ((GetTopArmEncoderVal() / ARM_DEG_SCALAR) > 90.0) ? 0.0 : 1.0;
+
+
+   m_arm_motor_top.Set(std::clamp(motor_output, bottom_clamp, top_clamp));
 
 }
 
-void t34::Shooter::RunBottomArmMotorPercent(const double motor_output)
+void t34::Shooter::RunBottomArmMotorPercent(double motor_output)
 {
-    double clamp_val = m_arm_sensor.Get() ? 0.0 : -1.0;
+    double bottom_clamp = m_arm_sensor.Get() ? 0.0 : -1.0;
 
-    m_arm_motor_bottom.Set(std::clamp(motor_output, clamp_val, 1.0));
+    double top_clamp = ((GetBottomArmEncoderVal() / ARM_DEG_SCALAR) > 90.0) ? 0.0 : 1.0;
 
+    m_arm_motor_bottom.Set(std::clamp(motor_output, bottom_clamp, top_clamp));
 }
 
 void t34::Shooter::SetZero()
@@ -137,7 +141,7 @@ void t34::Shooter::PutTelemetry()
     frc::SmartDashboard::PutNumber("Arm Bottom Relative Encoder: ", GetBottomArmEncoderVal() / ARM_DEG_SCALAR);
     
     frc::SmartDashboard::PutNumber("Max Speed: ", m_max_speed_percent);
-    frc::SmartDashboard::PutNumber("Arm Setpoint: ", m_arm_angle_setpoint * 36.2903);
+    frc::SmartDashboard::PutNumber("Arm Setpoint: ", m_arm_angle_setpoint / ARM_DEG_SCALAR);
 
     //frc::SmartDashboard::PutBoolean("IsIntakeMovingBackwards: ", IsIntakeMovingBackward(m_intake_motor.GetMotorOutputPercent()));
     frc::SmartDashboard::PutBoolean("UsingPIDArmMovement: ", UsingPIDArmMovement());
@@ -147,10 +151,14 @@ void t34::Shooter::PutTelemetry()
 void t34::Shooter::Periodic()
 {
 
+    double motor_output = 
+    (fabs(m_kp * ( ( (m_arm_angle_setpoint / ARM_DEG_SCALAR) - GetTopArmEncoderVal()) / m_arm_angle_setpoint)) < m_tolerance) ? 
+    0.0 : (m_kp *  ( (m_arm_angle_setpoint / ARM_DEG_SCALAR) - GetTopArmEncoderVal()));
+
     if (UsingPIDArmMovement())
     {
-        m_arm_pidctrl_top.SetReference(m_arm_angle_setpoint * ARM_DEG_SCALAR, rev::ControlType::kPosition);
-        m_arm_pidctrl_bottom.SetReference(m_arm_angle_setpoint * ARM_DEG_SCALAR, rev::ControlType::kPosition);
+        m_arm_motor_top.Set(motor_output);
+        m_arm_motor_bottom.Set(motor_output);
     }
     
 }

@@ -39,10 +39,13 @@ namespace t34
         double m_max_speed_percent{};
         double m_arm_angle_setpoint{};
         double m_tolerance{};
+        double m_kp{};
 
         bool arm_using_pid{};
         
         inline bool IsIntakeMovingBackward(const double motor_output) { return (-motor_output) < 0.0; }
+
+        
 
     public:
         Shooter();
@@ -72,11 +75,14 @@ namespace t34
 
         inline void SetSetpoint(double setpoint) {m_arm_angle_setpoint = setpoint;}
 
+        inline void MoveUp() { m_arm_angle_setpoint += 0.1; }
+        inline void MoveDown() { m_arm_angle_setpoint -= 0.1; }
+
         inline double GetTopArmEncoderVal() const { return m_arm_encoder_top.GetPosition(); }
         inline double GetBottomArmEncoderVal() const { return m_arm_encoder_bottom.GetPosition(); }
 
-        void RunTopArmMotorPercent(const double motor_output);// { m_arm_motor_top.Set(motor_output); }
-        void RunBottomArmMotorPercent(const double motor_output);// { m_arm_motor_bottom.Set(motor_output); }
+        void RunTopArmMotorPercent(double motor_output);// { m_arm_motor_top.Set(motor_output); }
+        void RunBottomArmMotorPercent(double motor_output);// { m_arm_motor_bottom.Set(motor_output); }
 
         inline void RunLeftFiringMotorPercent(const double motor_output) { m_firing_motor_left.Set(motor_output); }
         inline void RunRightFiringMotorPercent(const double motor_output) { m_firing_motor_right.Set(motor_output); }
@@ -87,5 +93,7 @@ namespace t34
         inline bool IntakeHasNote() { return m_note_sensor.Get(); }
         inline bool IsArmAtZero() { return m_arm_sensor.Get(); }
 
+        inline void SetTolerance(const double t) {m_tolerance = t; }
+        inline void SetkP(const double kP) {m_kp = kP; }
     };
 }

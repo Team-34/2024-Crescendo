@@ -132,7 +132,11 @@ void Robot::TeleopInit() {
     m_autonomous_command.reset();
   }
 
+    rc->shooter.SetTolerance(0.03);
+    rc->shooter.SetkP(0.5);
+
   frc2::CommandScheduler::GetInstance().SetDefaultCommand(rc->swerve_drive.get(), std::move(rc->DefaultCommand));
+
 
 }
 
@@ -214,7 +218,7 @@ void Robot::TeleopPeriodic() {
 
     if (rc->ctrl->GetLeftBumper() && rc->shooter.UsingPIDArmMovement() && rc->shooter.IsArmAtZero() == false)
     {
-        rc->arm_angle_setpoint -= 1.0 ;
+        rc->shooter.MoveDown();
     }
     else if (rc->ctrl->GetRightBumper() && rc->shooter.UsingPIDArmMovement() == false)
     {
@@ -223,7 +227,7 @@ void Robot::TeleopPeriodic() {
     }
     else if (rc->ctrl->GetRightBumper() && rc->shooter.UsingPIDArmMovement())
     {
-        rc->arm_angle_setpoint += 1.0;
+        rc->shooter.MoveUp();
     }
     else if (rc->ctrl->GetLeftBumper() && rc->shooter.UsingPIDArmMovement() == false && rc->shooter.IsArmAtZero() == false)
     {
