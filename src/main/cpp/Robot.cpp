@@ -92,6 +92,8 @@ void Robot::DisabledPeriodic() {}
  */
 void Robot::AutonomousInit() {
 
+    t34::Gyro::Get()->ZeroYaw();
+
     m_autonomous_command = rc->GetAutonomousCommand();
 
     
@@ -132,6 +134,8 @@ void Robot::TeleopInit() {
     m_autonomous_command.reset();
   }
 
+    //rc->swerve_drive->
+
     rc->shooter.SetTolerance(0.03);
     rc->shooter.SetkP(0.5);
 
@@ -169,7 +173,7 @@ void Robot::TeleopPeriodic() {
     }
 
     // toggle PID vs basic motor output arm movement with the A button
-    if (rc->ctrl->GetAButtonReleased()) { 
+    if (rc->ctrl->GetYButtonReleased()) { 
         rc->arm_angle_setpoint = ((rc->shooter.GetTopArmEncoderVal() + rc->shooter.GetBottomArmEncoderVal()) * 0.5) / ARM_DEG_SCALAR;
         rc->shooter.TogglePIDArmMovement();
     }
@@ -179,18 +183,22 @@ void Robot::TeleopPeriodic() {
     //    rc->shooter.RunIntakeMotorPercent(0.0);
     //}
 
+    static bool bypass = false;
     //Run the shooter with the triggers
         //Right is forward, left is back
     if (rc->ctrl->GetLeftTriggerAxis() > 0.2)
     {
+        bypass = false;
         rc->shooter.RunShooterPercent(-(rc->ctrl->GetLeftTriggerAxis()));
     }
     else if (rc->ctrl->GetRightTriggerAxis() > 0.2)
     {
+        bypass = true;
         rc->shooter.RunShooterPercent(rc->ctrl->GetRightTriggerAxis());
     }
     else
     {
+        bypass = false;
         rc->shooter.RunShooterPercent(0.0);
     }
 
@@ -243,15 +251,16 @@ void Robot::TeleopPeriodic() {
     //Run intake forward with the X button, backward with A button
     if (rc->ctrl->GetXButton())
     {
-        rc->shooter.RunIntakeMotorPercent(0.5);
+        rc->shooter.RunIntakeMotorPercent(-0.5, (rc->ctrl->GetRightTriggerDB() > 0.2) );
     }
-    else if (rc->ctrl->GetYButton())
+    else if (rc->ctrl->GetAButton())
     {
-        rc->shooter.RunIntakeMotorPercent(-0.5);
+        rc->shooter.RunIntakeMotorPercent(0.5);
     }
     else
     {
-        rc->shooter.RunIntakeMotorPercent(0.0);
+        if (!bypass)
+            rc->shooter.RunIntakeMotorPercent(0.0, bypass);
     }
 
     //if (rc->ctrl->GetYButton()) // run swerve automatically using the limelight with the Y button

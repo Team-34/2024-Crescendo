@@ -73,7 +73,7 @@ double t34::TrajMath::GetFiringAngleDeg() const
     frc::SmartDashboard::PutNumber("Numerator", numerator);
     frc::SmartDashboard::PutNumber("Denominator", denominator);
 
-    return std::clamp(RAD_TO_DEG(θ), 0.0, 90.0);
+    return (SHOOTER_OFFSET_ANGLE_DEG - RAD_TO_DEG(θ));
 }
 
 bool t34::TrajMath::IsInRange() const

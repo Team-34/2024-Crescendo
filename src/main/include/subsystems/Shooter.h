@@ -52,7 +52,7 @@ namespace t34
 
         void RunShooterPercent(const double motor_output);
 
-        void RunIntakeMotorPercent(const double motor_output);
+        void RunIntakeMotorPercent(const double motor_output, const bool bypass_sensor = false);
 
         void MoveShooterToAngleDeg(const double angle);
         void MoveArmToAngleDeg(const double angle);
@@ -75,8 +75,8 @@ namespace t34
 
         inline void SetSetpoint(double setpoint) {m_arm_angle_setpoint = setpoint;}
 
-        inline void MoveUp() { m_arm_angle_setpoint += 0.1; }
-        inline void MoveDown() { m_arm_angle_setpoint -= 0.1; }
+        inline void MoveUp() { m_arm_angle_setpoint += 0.5; }
+        inline void MoveDown() { m_arm_angle_setpoint -= 0.5; }
 
         inline double GetTopArmEncoderVal() const { return m_arm_encoder_top.GetPosition(); }
         inline double GetBottomArmEncoderVal() const { return m_arm_encoder_bottom.GetPosition(); }
