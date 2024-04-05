@@ -157,10 +157,10 @@ void Robot::TeleopPeriodic() {
     // Consider using button trigger events with commands instead.
 
     // Assign Back Button to Faris Mode.
-    if (rc->ctrl->GetBackButtonReleased())
-    {
-        rc->swerve_drive->ToggleFarisMode();
-    }
+    //if (rc->ctrl->GetBackButtonReleased())
+    //{
+    //    rc->swerve_drive->ToggleFarisMode();
+    //}
 
     // Assign Start Button to Zeroing Yaw.
     // Note: This is for emergency use only!
@@ -186,12 +186,22 @@ void Robot::TeleopPeriodic() {
     static bool bypass = false;
     //Run the shooter with the triggers
         //Right is forward, left is back
+    //if (rc->ctrl->GetLeftTriggerAxis() > 0.2)
+    //{
+    //    bypass = false;
+    //    rc->shooter.RunShooterPercent(-(rc->ctrl->GetLeftTriggerAxis()));
+    //}
+    //else 
     if (rc->ctrl->GetLeftTriggerAxis() > 0.2)
     {
-        bypass = false;
-        rc->shooter.RunShooterPercent(-(rc->ctrl->GetLeftTriggerAxis()));
+        rc->swerve_drive->SetFarisMode(true);
     }
-    else if (rc->ctrl->GetRightTriggerAxis() > 0.2)
+    else
+    {
+        rc->swerve_drive->SetFarisMode(false);
+    }
+
+    if (rc->ctrl->GetRightTriggerAxis() > 0.2)
     {
         bypass = true;
         rc->shooter.RunShooterPercent(rc->ctrl->GetRightTriggerAxis());
@@ -205,19 +215,21 @@ void Robot::TeleopPeriodic() {
     //Set the robot's target mode with the D-Pad
     switch (rc->ctrl->GetPOV())
     {
-        case (POV_UP): //  amp
+        case (POV_UP): //  rest
+            rc->shooter.ConfigForRest();
+            
+            break;
+        case (POV_RIGHT): // amp
             rc->limelight_util.TargetAmp();
             rc->shooter.ConfigForAmp();
             break;
-        case (POV_RIGHT): // speaker
+        case (POV_DOWN): // note collection
+            
+            rc->shooter.ConfigForNoteCollection();
+            break;
+        case (POV_LEFT): // max speed
             rc->limelight_util.TargetSpeaker();
             rc->shooter.ConfigForSpeaker(rc->traj_math.GetFiringAngleDeg());
-            break;
-        case (POV_DOWN): // rest
-            rc->shooter.ConfigForRest();
-            break;
-        case (POV_LEFT): // note collection
-            rc->shooter.ConfigForNoteCollection();
             break;
     }
 
@@ -251,7 +263,7 @@ void Robot::TeleopPeriodic() {
     //Run intake forward with the X button, backward with A button
     if (rc->ctrl->GetXButton())
     {
-        rc->shooter.RunIntakeMotorPercent(-0.5, (rc->ctrl->GetRightTriggerDB() > 0.2) );
+        rc->shooter.RunIntakeMotorPercent(-0.5, bypass );
     }
     else if (rc->ctrl->GetAButton())
     {

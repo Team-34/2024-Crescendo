@@ -13,6 +13,7 @@ namespace t34 {
         ~SwerveDrive() {};
 
         void ToggleFarisMode();
+        void SetFarisMode(const bool state);
         void Drive(frc::Translation2d translation, double rotation, bool field_relative = true, bool is_open_loop = false);
         void DriveAuto(frc::ChassisSpeeds speeds);
         void Stop();
@@ -40,7 +41,7 @@ namespace t34 {
 
     private: // DATA
         bool m_field_oriented{ true };
-        bool m_faris_mode{ true };
+        bool m_faris_mode{ false };
         double m_speed_scalar{ FARIS_SPEED_MODE_SCALAR };
 
         frc::MedianFilter<double> m_filter{ 5 };

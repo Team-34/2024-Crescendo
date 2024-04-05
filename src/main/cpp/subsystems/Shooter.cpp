@@ -13,7 +13,7 @@ t34::Shooter::Shooter()
   m_max_speed_percent(1.0),
   m_arm_angle_setpoint(82.0),
   m_tolerance(1.0),
-  arm_using_pid(false),
+  arm_using_pid(true),
   m_arm_pidctrl_top(m_arm_motor_top.GetPIDController()),
   m_arm_pidctrl_bottom(m_arm_motor_bottom.GetPIDController())
   {
@@ -31,7 +31,7 @@ void t34::Shooter::RunShooterPercent(const double motor_output)
     m_firing_motor_left.Set(std::clamp(motor_output, -m_max_speed_percent, m_max_speed_percent));
     m_firing_motor_right.Set(std::clamp(motor_output, -m_max_speed_percent, m_max_speed_percent));
 
-    RunIntakeMotorPercent(motor_output, true);
+    //RunIntakeMotorPercent(motor_output, true);
 }
 
 void t34::Shooter::RunTopArmMotorPercent(double motor_output)
@@ -85,8 +85,8 @@ void t34::Shooter::ConfigForAmp()
 void t34::Shooter::ConfigForSpeaker(double shooter_firing_angle)
 {
 
-    SetSetpoint(shooter_firing_angle);
-    SetMaxSpeedPercent(0.7);
+    //SetSetpoint(shooter_firing_angle);
+    SetMaxSpeedPercent(1.0);
 }
 
 void t34::Shooter::ConfigForRest()
@@ -96,7 +96,7 @@ void t34::Shooter::ConfigForRest()
 
 void t34::Shooter::ConfigForNoteCollection()
 {
-    SetSetpoint(12.0);
+    SetSetpoint(25.0);
     SetMaxSpeedPercent(0.0);
 }
 
