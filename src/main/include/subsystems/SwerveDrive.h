@@ -13,7 +13,6 @@ namespace t34 {
         ~SwerveDrive() {};
 
         void ToggleFarisMode();
-        void SetFarisMode(const bool state);
         void Drive(frc::Translation2d translation, double rotation, bool field_relative = true, bool is_open_loop = false);
         void DriveAuto(frc::ChassisSpeeds speeds);
         void Stop();

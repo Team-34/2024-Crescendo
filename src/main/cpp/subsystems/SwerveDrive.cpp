@@ -70,15 +70,6 @@ namespace t34 {
         }
     }
 
-    void SwerveDrive::SetFarisMode(const bool state) {
-        if (state) {
-            m_speed_scalar = std::clamp<double>(FARIS_SPEED_MODE_SCALAR, 0.1, 1.0);
-        }
-        else {
-            m_speed_scalar = 1.0;
-        }
-    }
-
     /**
      * Computes the speed (velocity) and the angle for each 
      * swerve module for either for field relative or robot centric

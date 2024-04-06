@@ -85,19 +85,20 @@ void t34::Shooter::ConfigForAmp()
 void t34::Shooter::ConfigForSpeaker(double shooter_firing_angle)
 {
 
-    //SetSetpoint(shooter_firing_angle);
+    SetSetpoint(67.5);
     SetMaxSpeedPercent(1.0);
 }
 
 void t34::Shooter::ConfigForRest()
 {
     SetSetpoint(90.0);
+    SetMaxSpeedPercent(1.0);
 }
 
 void t34::Shooter::ConfigForNoteCollection()
 {
-    SetSetpoint(25.0);
-    SetMaxSpeedPercent(0.0);
+    SetSetpoint(23.0);
+    SetMaxSpeedPercent(1.0);
 }
 
 //void t34::Shooter::MoveArmToAngleDeg(const double angle) 
