@@ -157,10 +157,10 @@ void Robot::TeleopPeriodic() {
     // Consider using button trigger events with commands instead.
 
     // Assign Back Button to Faris Mode.
-    //if (rc->ctrl->GetBackButtonReleased())
-    //{
-    //    rc->swerve_drive->ToggleFarisMode();
-    //}
+    if (rc->ctrl->GetBackButtonReleased())
+    {
+        rc->swerve_drive->ToggleFarisMode();
+    }
 
     // Assign Start Button to Zeroing Yaw.
     // Note: This is for emergency use only!
@@ -185,23 +185,13 @@ void Robot::TeleopPeriodic() {
 
     static bool bypass = false;
     //Run the shooter with the triggers
-        //Right is forward, left is back
-    //if (rc->ctrl->GetLeftTriggerAxis() > 0.2)
-    //{
-    //    bypass = false;
-    //    rc->shooter.RunShooterPercent(-(rc->ctrl->GetLeftTriggerAxis()));
-    //}
-    //else 
+      //Right is forward, left is back
     if (rc->ctrl->GetLeftTriggerAxis() > 0.2)
     {
-        rc->swerve_drive->SetFarisMode(true);
+        bypass = false;
+        rc->shooter.RunShooterPercent(-(rc->ctrl->GetLeftTriggerAxis()));
     }
-    else
-    {
-        rc->swerve_drive->SetFarisMode(false);
-    }
-
-    if (rc->ctrl->GetRightTriggerAxis() > 0.2)
+    else if (rc->ctrl->GetRightTriggerAxis() > 0.2)
     {
         bypass = true;
         rc->shooter.RunShooterPercent(rc->ctrl->GetRightTriggerAxis());
@@ -260,14 +250,14 @@ void Robot::TeleopPeriodic() {
         rc->shooter.RunBottomArmMotorPercent(0.0);
     }
 
-    //Run intake forward with the X button, backward with A button
+    //Run intake backward with the X button, forward with A button
     if (rc->ctrl->GetXButton())
     {
-        rc->shooter.RunIntakeMotorPercent(-0.5, bypass );
+        rc->shooter.RunIntakeMotorPercent(-0.5);
     }
     else if (rc->ctrl->GetAButton())
     {
-        rc->shooter.RunIntakeMotorPercent(0.5);
+        rc->shooter.RunIntakeMotorPercent(0.5, bypass);
     }
     else
     {
