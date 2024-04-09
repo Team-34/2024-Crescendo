@@ -80,10 +80,23 @@ void t34::Shooter::RunIntakeMotorPercent(const double motor_output)
 
 void t34::Shooter::MoveToShooterAngleDeg(const double angle) 
 {
+
+    /*
+
+        β = The desired shooting angle
+        θ = The arm angle
+
+        β = 59° - θ
+        So:
+        θ = 59° - β 
+
+    */
+
     m_arm_angle_setpoint = (angle + SHOOTER_OFFSET_ANGLE_DEG) * ARM_DEG_SCALAR;
 
     m_arm_pidctrl_top.SetReference(m_arm_angle_setpoint, rev::ControlType::kPosition);
     m_arm_pidctrl_bottom.SetReference(m_arm_angle_setpoint, rev::ControlType::kPosition);
+
 }
 
 bool t34::Shooter::IsShooterAt(units::degree_t degrees)
