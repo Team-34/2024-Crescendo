@@ -219,7 +219,7 @@ void Robot::TeleopPeriodic() {
             break;
         case (POV_LEFT): // max speed
             rc->limelight_util.TargetSpeaker();
-            rc->shooter.ConfigForSpeaker(rc->traj_math.GetFiringAngleDeg());
+            rc->shooter.ConfigForSpeaker(rc->traj_math.GetArmFiringAngleDeg());
             break;
     }
 
@@ -253,11 +253,11 @@ void Robot::TeleopPeriodic() {
     //Run intake backward with the X button, forward with A button
     if (rc->ctrl->GetXButton())
     {
-        rc->shooter.RunIntakeMotorPercent(-0.5);
+        rc->shooter.RunIntakeMotorPercent(-0.7);
     }
     else if (rc->ctrl->GetAButton())
     {
-        rc->shooter.RunIntakeMotorPercent(0.5, bypass);
+        rc->shooter.RunIntakeMotorPercent(0.7, bypass);
     }
     else
     {

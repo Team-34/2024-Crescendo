@@ -22,7 +22,10 @@ namespace t34 {
 
     ControllerDriveCommand::ControllerDriveCommand(std::shared_ptr<SwerveDrive> drive, std::shared_ptr<T34XboxController> controller)
         : m_swerve_drive(drive)
-        , m_controller(controller) {
+        , m_controller(controller)
+        , m_x_limiter( units::scalar_t(1.1).value() / 1_s)
+        , m_y_limiter( units::scalar_t(1.1).value() / 1_s)
+        , m_r_limiter( units::scalar_t(2.0).value() / 1_s) {
         
         AddRequirements(drive.get());
 
@@ -37,6 +40,10 @@ namespace t34 {
         double x    = m_controller->GetLeftStickXDB();
         double y    = m_controller->GetLeftStickYDB();
         double rot  = m_controller->GetRightStickXDB();
+
+        x = m_x_limiter.Calculate(units::scalar_t(x));
+        y = m_y_limiter.Calculate(units::scalar_t(y));
+        rot = m_r_limiter.Calculate(units::scalar_t(rot));
 
         if (IsInputZero(x, y, rot)) {
             m_swerve_drive->Stop();

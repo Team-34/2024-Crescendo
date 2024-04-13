@@ -11,7 +11,7 @@ t34::Shooter::Shooter()
   m_note_sensor(9),
   m_arm_sensor(8),
   m_max_speed_percent(1.0),
-  m_arm_angle_setpoint(82.0),
+  m_arm_angle_setpoint(90.0),
   m_tolerance(1.0),
   arm_using_pid(true),
   m_arm_pidctrl_top(m_arm_motor_top.GetPIDController()),
@@ -79,13 +79,14 @@ void t34::Shooter::ConfigForAmp()
 {
 
     SetSetpoint(87.18);
-    SetMaxSpeedPercent(0.1);
+    SetMaxSpeedPercent(0.15);
 }
 
 void t34::Shooter::ConfigForSpeaker(double shooter_firing_angle)
 {
 
-    SetSetpoint(67.5);
+    //SetSetpoint(67.5);
+    SetSetpoint(shooter_firing_angle);
     SetMaxSpeedPercent(1.0);
 }
 
@@ -93,6 +94,7 @@ void t34::Shooter::ConfigForRest()
 {
     SetSetpoint(90.0);
     SetMaxSpeedPercent(1.0);
+    
 }
 
 void t34::Shooter::ConfigForNoteCollection()
@@ -170,6 +172,6 @@ void t34::Shooter::Init()
     m_arm_motor_top.SetSmartCurrentLimit(20);
     m_arm_motor_bottom.SetSmartCurrentLimit(20);
 
-    m_firing_motor_left.SetSmartCurrentLimit(20);
-    m_firing_motor_right.SetSmartCurrentLimit(20);
+    m_firing_motor_left.SetSmartCurrentLimit(30);
+    m_firing_motor_right.SetSmartCurrentLimit(30);
 }

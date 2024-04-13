@@ -29,7 +29,7 @@ RobotContainer::RobotContainer()
     , climber()
     , traj_math
         (
-            23.884,
+            14.062,
             1.9815,
             1.435,
             0.2688,

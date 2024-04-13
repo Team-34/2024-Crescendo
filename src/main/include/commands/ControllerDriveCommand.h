@@ -6,6 +6,7 @@
 #include <frc2/command/Command.h>
 #include <frc2/command/CommandHelper.h>
 #include <frc/smartdashboard/SmartDashboard.h>
+#include <frc/filter/SlewRateLimiter.h>
 
 #include "subsystems/SwerveDrive.h"
 #include "T34Controller.hpp"
@@ -29,6 +30,10 @@ namespace t34 {
         std::shared_ptr<SwerveDrive> m_swerve_drive;
         std::shared_ptr<T34XboxController> m_controller;
         double m_driving_speed;
+
+        frc::SlewRateLimiter<units::scalar> m_x_limiter;
+        frc::SlewRateLimiter<units::scalar> m_y_limiter;
+        frc::SlewRateLimiter<units::scalar> m_r_limiter;
 
         std::chrono::time_point<std::chrono::steady_clock> m_last_zero;
     };

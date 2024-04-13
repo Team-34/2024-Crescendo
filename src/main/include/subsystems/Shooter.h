@@ -75,8 +75,8 @@ namespace t34
 
         inline void SetSetpoint(double setpoint) {m_arm_angle_setpoint = setpoint;}
 
-        inline void MoveUp() { m_arm_angle_setpoint += 0.5; }
-        inline void MoveDown() { m_arm_angle_setpoint -= 0.5; }
+        inline void MoveUp() { m_arm_angle_setpoint += 1.0; }
+        inline void MoveDown() { m_arm_angle_setpoint -= 1.0; }
 
         inline double GetTopArmEncoderVal() const { return m_arm_encoder_top.GetPosition(); }
         inline double GetBottomArmEncoderVal() const { return m_arm_encoder_bottom.GetPosition(); }
