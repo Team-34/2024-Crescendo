@@ -195,6 +195,7 @@ void Robot::TeleopPeriodic() {
     {
         bypass = true;
         rc->shooter.RunShooterPercent(rc->ctrl->GetRightTriggerAxis());
+        //rc->shooter.Shoot(rc->ctrl->GetRightTriggerAxis());
     }
     else
     {

@@ -7,6 +7,7 @@
 #include <frc/DigitalInput.h>
 #include <frc/smartdashboard/SmartDashboard.h>
 #include "subsystems/SwerveDrive.h"
+#include <chrono>
 
 #include "Constants.h"
 
@@ -29,12 +30,12 @@ namespace t34
 
         ctre::phoenix::motorcontrol::can::TalonSRX m_intake_motor;
 
-        //frc::PIDController m_arm_pid;
-
         frc::DigitalInput m_note_sensor{9};
         frc::DigitalInput m_arm_sensor{8};
 
-
+        std::chrono::time_point<std::chrono::system_clock> m_current_time;
+        std::chrono::time_point<std::chrono::system_clock> m_since_runshooter;
+    
 
         //double m_arm_angle_top{};
         //double m_arm_angle_bottom{};
@@ -44,10 +45,9 @@ namespace t34
         double m_kp{};
 
         bool arm_using_pid{};
+        bool reset_time{};
         
         inline bool IsIntakeMovingBackward(const double motor_output) { return (-motor_output) < 0.0; }
-
-        
 
     public:
         Shooter();
@@ -65,6 +65,8 @@ namespace t34
         void ConfigForRest();
         void ConfigForNoteCollection();
 
+        void Shoot(double motor_output);
+
         double GetMaxSpeedPercent() const;
 
         void Periodic();
@@ -79,6 +81,8 @@ namespace t34
 
         inline void MoveUp() { m_arm_angle_setpoint += 1.0; }
         inline void MoveDown() { m_arm_angle_setpoint -= 1.0; }
+
+        inline void ToggleResetTime() { reset_time = !reset_time; }
 
         inline double GetTopArmEncoderVal() const { return m_arm_encoder_top.GetPosition(); }
         inline double GetBottomArmEncoderVal() const { return m_arm_encoder_bottom.GetPosition(); }

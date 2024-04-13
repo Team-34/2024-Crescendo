@@ -99,7 +99,7 @@ namespace t34 {
     constexpr int     DRIVE_CONTINUOUS_CURRENT_LIMIT    { 35 };
     constexpr int     DRIVE_PEAK_CURRENT_LIMIT          { 60 };
     constexpr double  DRIVE_PEAK_CURRENT_DURATION       { 0.1 };
-    constexpr double  DRIVE_KP                          { 0.5 }; //0.5
+    constexpr double  DRIVE_KP                          { 1.0 }; //0.5
     constexpr double  DRIVE_KI                          { 0.0 }; //3.0
     constexpr double  DRIVE_KD                          { 0.0 }; //0.0
     constexpr double  DRIVE_KF                          { 0.0 };

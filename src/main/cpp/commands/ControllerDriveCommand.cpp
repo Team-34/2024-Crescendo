@@ -61,26 +61,11 @@ namespace t34 {
             return;
         }
         
-        // Get the x speed. We are inverting this because Xbox controllers return
-        // negative values when we push forward.
-        const auto x_speed = -m_x_speed_limiter.Calculate(x);
+        double x_speed = std::copysign(ScaleToRange(-(x * x), 0.0, 1.0, 0.0, DRIVE_MAX_SPEED), x);
+        double y_speed = std::copysign(ScaleToRange(-(y * y), 0.0, 1.0, 0.0, DRIVE_MAX_SPEED), y);
+        double r_speed = std::copysign(ScaleToRange(-(rot * rot), 0.0, 1.0, 0.0, STEER_MAX_SPEED), rot);
 
-        // Get the y speed or sideways/strafe speed. We are inverting this because
-        // we want a positive value when we pull to the left. Xbox controllers
-        // return positive values when you pull to the right by default.
-        const auto y_speed = -m_y_speed_limiter.Calculate(y);
-
-        // Get the rate of angular rotation. We are inverting this because we want a
-        // positive value when we pull to the left (remember, CCW is positive in
-        // mathematics). Xbox controllers return positive values when you pull to
-        // the right by default.
-        const auto rot_speed = -m_rot_speed_limiter.Calculate(rot);
-
-        // double x_speed = std::copysign(ScaleToRange(-(x * x), 0.0, 1.0, 0.0, DRIVE_MAX_SPEED), x);
-        // double y_speed = std::copysign(ScaleToRange(-(y * y), 0.0, 1.0, 0.0, DRIVE_MAX_SPEED), y);
-        // double r_speed = std::copysign(ScaleToRange(-(rot * rot), 0.0, 1.0, 0.0, STEER_MAX_SPEED), rot);
-
-        m_swerve_drive->Drive(frc::Translation2d{ units::meter_t(x_speed.to<double>()), units::meter_t(y_speed.to<double>()) }, rot_speed.to<double>());
+        m_swerve_drive->Drive(frc::Translation2d{ units::meter_t(x_speed), units::meter_t(y_speed) }, r_speed);
     }
 
     void ControllerDriveCommand::End(bool interrupted) {
