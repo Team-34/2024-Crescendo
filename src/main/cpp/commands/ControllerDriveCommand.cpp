@@ -36,11 +36,6 @@ namespace t34 {
     
     }
 
-    void ControllerDriveCommand::JoystickSlewRateLimiter(){
-
-    
-    }
-
     void ControllerDriveCommand::Execute() {
 
         double x    = m_controller->GetLeftStickXDB();

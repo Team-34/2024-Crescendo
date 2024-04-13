@@ -26,7 +26,6 @@ namespace t34 {
         void Execute() override;
         void End(bool interrupted) override;
         bool IsFinished() override;
-        void JoystickSlewRateLimiter();
 
     private:
         std::shared_ptr<SwerveDrive> m_swerve_drive;
