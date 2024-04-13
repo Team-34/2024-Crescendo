@@ -16,9 +16,11 @@ namespace t34
     {
         rev::CANSparkMax m_firing_motor_left;
         rev::CANSparkMax m_firing_motor_right;
+        rev::SparkMaxRelativeEncoder m_firing_encoder_left;
+        rev::SparkMaxRelativeEncoder m_firing_encoder_right;
+
         rev::CANSparkMax m_arm_motor_top;
         rev::CANSparkMax m_arm_motor_bottom;
-
         rev::SparkMaxRelativeEncoder m_arm_encoder_top;
         rev::SparkMaxRelativeEncoder m_arm_encoder_bottom;
 

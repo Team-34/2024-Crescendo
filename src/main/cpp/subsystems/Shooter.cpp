@@ -6,6 +6,8 @@ t34::Shooter::Shooter()
   m_arm_motor_top(2, rev::CANSparkMaxLowLevel::MotorType::kBrushless), 
   m_arm_motor_bottom(1, rev::CANSparkMaxLowLevel::MotorType::kBrushless),
   m_intake_motor(12),
+  m_firing_encoder_left(m_firing_motor_left.GetEncoder(rev::CANEncoder::EncoderType::kHallSensor, 42)),
+  m_firing_encoder_right(m_firing_motor_right.GetEncoder(rev::CANEncoder::EncoderType::kHallSensor, 42)),
   m_arm_encoder_top(m_arm_motor_top.GetEncoder(rev::CANEncoder::EncoderType::kHallSensor, 42)),
   m_arm_encoder_bottom(m_arm_motor_bottom.GetEncoder(rev::CANEncoder::EncoderType::kHallSensor, 42)),
   m_note_sensor(9),
@@ -16,7 +18,7 @@ t34::Shooter::Shooter()
   arm_using_pid(true),
   m_arm_pidctrl_top(m_arm_motor_top.GetPIDController()),
   m_arm_pidctrl_bottom(m_arm_motor_bottom.GetPIDController())
-  {
+{
     m_arm_pidctrl_top.SetP(0.5);
     m_arm_pidctrl_top.SetI(0.0);
     m_arm_pidctrl_top.SetD(0.05);
@@ -24,14 +26,28 @@ t34::Shooter::Shooter()
     m_arm_pidctrl_bottom.SetP(0.5);
     m_arm_pidctrl_bottom.SetI(0.0);
     m_arm_pidctrl_bottom.SetD(0.05);
-  }
+}
 
 void t34::Shooter::RunShooterPercent(const double motor_output)
 {
-    m_firing_motor_left.Set(std::clamp(motor_output, -m_max_speed_percent, m_max_speed_percent));
-    m_firing_motor_right.Set(std::clamp(motor_output, -m_max_speed_percent, m_max_speed_percent));
+    const double speed = std::clamp(motor_output, -m_max_speed_percent, m_max_speed_percent);
 
-    //RunIntakeMotorPercent(motor_output, true);
+    m_firing_motor_left.Set(speed);
+    m_firing_motor_right.Set(speed);
+
+    const bool is_firing = speed > 0.5;
+    if (is_firing)
+    {
+        const auto left_speed = m_firing_encoder_left.GetVelocity();
+        const auto right_speed = m_firing_encoder_right.GetVelocity();
+        const auto avg_speed = (left_speed + right_speed) / 2;
+    
+        if (avg_speed >= speed)
+        {
+            const bool IGNORE_SENSOR = true;
+            this->RunIntakeMotorPercent(speed, IGNORE_SENSOR);
+        } 
+    }
 }
 
 void t34::Shooter::RunTopArmMotorPercent(double motor_output)
@@ -41,7 +57,7 @@ void t34::Shooter::RunTopArmMotorPercent(double motor_output)
     double top_clamp = ((GetTopArmEncoderVal() / ARM_DEG_SCALAR) > 90.0) ? 0.0 : 1.0;
 
 
-   m_arm_motor_top.Set(std::clamp(motor_output, bottom_clamp, top_clamp));
+    m_arm_motor_top.Set(std::clamp(motor_output, bottom_clamp, top_clamp));
 
 }
 
