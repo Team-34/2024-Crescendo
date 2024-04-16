@@ -8,8 +8,6 @@
 #include <frc2/command/Commands.h>
 #include <frc2/command/InstantCommand.h>
 
-#include "commands/ExampleCommand.h"
-
 
 //Commands
 
@@ -25,8 +23,3 @@
 //    }
 //  );
 //}
-
-frc2::CommandPtr autos::ExampleAuto(ExampleSubsystem* subsystem) {
-  return frc2::cmd::Sequence(subsystem->ExampleMethodCommand(),
-                             ExampleCommand(subsystem).ToPtr());
-}

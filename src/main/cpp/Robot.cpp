@@ -16,7 +16,6 @@ void Robot::RobotInit() {
     
 
     rc->shooter.Init();
-    rc->climber.Init();
 }
 
 /**
@@ -40,7 +39,6 @@ void Robot::RobotPeriodic()
 
     //Periodics
     rc->shooter.Periodic();
-    rc->climber.Periodic();
     rc->limelight_util.Periodic();
     //_________________________
 
@@ -134,11 +132,6 @@ void Robot::TeleopInit() {
     m_autonomous_command.reset();
   }
 
-    //rc->swerve_drive->
-
-    rc->shooter.SetTolerance(0.03);
-    rc->shooter.SetkP(0.5);
-
   frc2::CommandScheduler::GetInstance().SetDefaultCommand(rc->swerve_drive.get(), std::move(rc->DefaultCommand));
 
 
@@ -194,13 +187,14 @@ void Robot::TeleopPeriodic() {
     else if (rc->ctrl->GetRightTriggerAxis() > 0.2)
     {
         bypass = true;
-        rc->shooter.RunShooterPercent(rc->ctrl->GetRightTriggerAxis());
-        //rc->shooter.Shoot(rc->ctrl->GetRightTriggerAxis());
+        //rc->shooter.RunShooterPercent(rc->ctrl->GetRightTriggerAxis());
+        rc->shooter.Shoot(rc->ctrl->GetRightTriggerAxis());
     }
     else
     {
         bypass = false;
         rc->shooter.RunShooterPercent(0.0);
+        rc->shooter.UpdateShooterClock();
     }
 
     //Set the robot's target mode with the D-Pad

@@ -47,32 +47,34 @@ double t34::TrajMath::GetArmFiringAngleDeg()
     //   Solving Ballistic Trajectories <https://www.forrestthewoods.com/blog/solving_ballistic_trajectories/>
     //   See section “Firing Angle to Hit Stationary Target.”
 
-    const auto v = m_note_max_velocity_mps * 1.0;
-    const auto v2 = v * v;
-    const auto v4 = v2 * v2;
+    //const auto v = m_note_max_velocity_mps * 0.8;
+    //const auto v2 = v * v;
+    //const auto v4 = v2 * v2;
     const auto x = GetDistanceFromTarget();
     const auto x2 = x * x;
-    const auto y  = m_target_height_meters;
+    //const auto y  = m_target_height_meters;
+//
+    //const auto gx  = g * x;
+    //const auto gx2 = g * x2;
+    //const auto v2y = v2 * y;
+//
+    //const auto numerator = v2 - sqrt(v4 - (g * (gx2 + (2*v2y))));
+    //const auto denominator = gx;
+    //const auto θ = atan(numerator / denominator);
 
-    const auto gx  = g * x;
-    const auto gx2 = g * x2;
-    const auto v2y = v2 * y;
+    //frc::SmartDashboard::PutNumber("v", v);
+    //frc::SmartDashboard::PutNumber("v2", v2);
+    //frc::SmartDashboard::PutNumber("v4", v4);
+    //frc::SmartDashboard::PutNumber("x", x);
+    //frc::SmartDashboard::PutNumber("x2", x2);
+    //frc::SmartDashboard::PutNumber("y", y);
+    //frc::SmartDashboard::PutNumber("gx", gx);
+    //frc::SmartDashboard::PutNumber("gx2", gx2);
+    //frc::SmartDashboard::PutNumber("v2y", v2y);
+    //frc::SmartDashboard::PutNumber("Numerator", numerator);
+    //frc::SmartDashboard::PutNumber("Denominator", denominator);
 
-    const auto numerator = v2 - sqrt(v4 - (g * (gx2 + (2*v2y))));
-    const auto denominator = gx;
-    const auto θ = atan(numerator / denominator);
-
-    frc::SmartDashboard::PutNumber("v", v);
-    frc::SmartDashboard::PutNumber("v2", v2);
-    frc::SmartDashboard::PutNumber("v4", v4);
-    frc::SmartDashboard::PutNumber("x", x);
-    frc::SmartDashboard::PutNumber("x2", x2);
-    frc::SmartDashboard::PutNumber("y", y);
-    frc::SmartDashboard::PutNumber("gx", gx);
-    frc::SmartDashboard::PutNumber("gx2", gx2);
-    frc::SmartDashboard::PutNumber("v2y", v2y);
-    frc::SmartDashboard::PutNumber("Numerator", numerator);
-    frc::SmartDashboard::PutNumber("Denominator", denominator);
+    double θ = (-1.9171 * x2) + (17.186 * x) + (3.5412);
 
     if (std::isnan(θ))
     {
@@ -81,7 +83,11 @@ double t34::TrajMath::GetArmFiringAngleDeg()
 
     m_previous_firing_angle = θ;
 
-    return std::clamp((SHOOTER_OFFSET_ANGLE_DEG - RAD_TO_DEG(θ)), 0.0, 90.0);
+    return θ;
+
+    //m_previous_firing_angle = std::clamp((SHOOTER_OFFSET_ANGLE_DEG - RAD_TO_DEG(θ)), 0.0, 90.0);
+
+    //return std::clamp((SHOOTER_OFFSET_ANGLE_DEG - RAD_TO_DEG(θ)), 0.0, 90.0);
 }
 
 bool t34::TrajMath::IsInRange() const

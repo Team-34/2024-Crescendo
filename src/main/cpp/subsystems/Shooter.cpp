@@ -14,9 +14,9 @@ t34::Shooter::Shooter()
   m_arm_sensor(8),
   m_current_time(std::chrono::system_clock::now()),
   m_since_runshooter(std::chrono::system_clock::now()),
-  m_max_speed_percent(1.0),
+  m_time_delta(std::chrono::seconds(0)),
+  m_max_speed_percent(0.8),
   m_arm_angle_setpoint(90.0),
-  m_tolerance(1.0),
   arm_using_pid(true),
   reset_time(false),
   m_arm_pidctrl_top(m_arm_motor_top.GetPIDController()),
@@ -94,23 +94,33 @@ void t34::Shooter::RunIntakeMotorPercent(const double motor_output, const bool b
 
 }
 
+void t34::Shooter::UpdateShooterClock()
+{
+    if (m_time_delta.count() > 2)
+    {
+        m_since_runshooter = std::chrono::system_clock::now();
+        
+    }
+}
+
 void t34::Shooter::Shoot(double motor_output)
 {
-    std::chrono::seconds delta = 
-        std::chrono::duration_cast<std::chrono::seconds>( m_current_time - m_since_runshooter);
-
     RunShooterPercent(motor_output);
 
-    if (delta > std::chrono::seconds(1) && delta < std::chrono::seconds(2))
+    m_time_delta = 
+        std::chrono::duration_cast<std::chrono::seconds>( m_current_time - m_since_runshooter);
+    
+    if (m_time_delta.count() > 1)
     {
         RunIntakeMotorPercent(0.7, true);
     }
-    else if (delta > std::chrono::seconds(2))
+    else
     {
-        m_since_runshooter = std::chrono::system_clock::now();
+        RunIntakeMotorPercent(0.0, true);
     }
-
-
+    
+    UpdateShooterClock(); // updates m_since_runshooter, so the above if-statement will not be true
+    
 
 }
 
@@ -126,20 +136,20 @@ void t34::Shooter::ConfigForSpeaker(double shooter_firing_angle)
 
     //SetSetpoint(67.5);
     SetSetpoint(shooter_firing_angle);
-    SetMaxSpeedPercent(1.0);
+    SetMaxSpeedPercent(0.8);
 }
 
 void t34::Shooter::ConfigForRest()
 {
     SetSetpoint(90.0);
-    SetMaxSpeedPercent(1.0);
+    SetMaxSpeedPercent(0.8);
     
 }
 
 void t34::Shooter::ConfigForNoteCollection()
 {
     SetSetpoint(23.0);
-    SetMaxSpeedPercent(1.0);
+    SetMaxSpeedPercent(0.8);
 }
 
 //void t34::Shooter::MoveArmToAngleDeg(const double angle) 
@@ -180,7 +190,7 @@ void t34::Shooter::PutTelemetry()
     //frc::SmartDashboard::PutBoolean("IsIntakeMovingBackwards: ", IsIntakeMovingBackward(m_intake_motor.GetMotorOutputPercent()));
     frc::SmartDashboard::PutBoolean("UsingPIDArmMovement: ", UsingPIDArmMovement());
 
-    frc::SmartDashboard::PutNumber("Time delta (seconds)", std::chrono::duration_cast<std::chrono::seconds>( m_current_time - m_since_runshooter).count());
+    frc::SmartDashboard::PutNumber("Time delta (seconds)", m_time_delta.count());
 
 }
 

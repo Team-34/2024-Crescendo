@@ -4,7 +4,6 @@
 #include <frc2/command/button/Trigger.h>
 
 #include "commands/Autos.h"
-#include "commands/ExampleCommand.h"
 #include "subsystems/Shooter.h"
 
 #include <pathplanner/lib/auto/AutoBuilder.h>
@@ -26,10 +25,9 @@ RobotContainer::RobotContainer()
     : swerve_drive(new t34::SwerveDrive())
     , ctrl(new t34::T34XboxController(0))
     , shooter()
-    , climber()
     , traj_math
         (
-            14.062,
+            (11.884 * 2), //14.062,
             1.9815,
             1.435,
             0.2688,

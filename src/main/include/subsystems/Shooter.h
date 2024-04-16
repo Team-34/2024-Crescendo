@@ -35,14 +35,14 @@ namespace t34
 
         std::chrono::time_point<std::chrono::system_clock> m_current_time;
         std::chrono::time_point<std::chrono::system_clock> m_since_runshooter;
+
+        std::chrono::seconds m_time_delta;
     
 
         //double m_arm_angle_top{};
         //double m_arm_angle_bottom{};
         double m_max_speed_percent{};
         double m_arm_angle_setpoint{};
-        double m_tolerance{};
-        double m_kp{};
 
         bool arm_using_pid{};
         bool reset_time{};
@@ -79,10 +79,10 @@ namespace t34
 
         inline void SetSetpoint(double setpoint) {m_arm_angle_setpoint = setpoint;}
 
+        void UpdateShooterClock();
+
         inline void MoveUp() { m_arm_angle_setpoint += 1.0; }
         inline void MoveDown() { m_arm_angle_setpoint -= 1.0; }
-
-        inline void ToggleResetTime() { reset_time = !reset_time; }
 
         inline double GetTopArmEncoderVal() const { return m_arm_encoder_top.GetPosition(); }
         inline double GetBottomArmEncoderVal() const { return m_arm_encoder_bottom.GetPosition(); }
@@ -98,8 +98,5 @@ namespace t34
 
         inline bool IntakeHasNote() { return m_note_sensor.Get(); }
         inline bool IsArmAtZero() { return m_arm_sensor.Get(); }
-
-        inline void SetTolerance(const double t) {m_tolerance = t; }
-        inline void SetkP(const double kP) {m_kp = kP; }
     };
 }
