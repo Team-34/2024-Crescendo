@@ -11,11 +11,11 @@ t34::LimelightUtil::LimelightUtil(TrajMath math_handler, TargetMode target_mode)
     m_steering_adjust(0.0),
     m_drive_x(0.0),
     m_drive_y(0.0),
-    m_swerve_drive_speeds{0.0, 0.0, 0.0},
-    m_math_handler(math_handler),
     m_current_id(-1.0),
     m_target_id(-1.0),
-    m_target_mode(target_mode) 
+    m_target_mode(target_mode),
+    m_math_handler(math_handler),
+    m_swerve_drive_speeds{0.0, 0.0, 0.0}
     
 {}
 
@@ -43,8 +43,8 @@ void t34::LimelightUtil::Periodic()
             m_math_handler.SetTargetHeightMeters(0.864);
             m_math_handler.SetAprilTagHeightMeters(1.45);
             
-            m_target_id = (m_current_id == 5  && (frc::DriverStation::GetAlliance() == frc::DriverStation::Alliance::kRed) ||
-                           m_current_id == 6 && (frc::DriverStation::GetAlliance() == frc::DriverStation::Alliance::kBlue)
+            m_target_id = ((m_current_id == 5 && (frc::DriverStation::GetAlliance() == frc::DriverStation::Alliance::kRed)) ||
+                           (m_current_id == 6 && (frc::DriverStation::GetAlliance() == frc::DriverStation::Alliance::kBlue))
                         ) ? m_current_id : -1.0;
 
             break;
@@ -53,10 +53,15 @@ void t34::LimelightUtil::Periodic()
             m_math_handler.SetTargetHeightMeters(1.9815);
             m_math_handler.SetAprilTagHeightMeters(1.435);
 
-            m_target_id = ( m_current_id == 4 && (frc::DriverStation::GetAlliance() == frc::DriverStation::Alliance::kRed) ||
-                            m_current_id == 7 && (frc::DriverStation::GetAlliance() == frc::DriverStation::Alliance::kBlue)
+            m_target_id = ( (m_current_id == 4 && (frc::DriverStation::GetAlliance() == frc::DriverStation::Alliance::kRed)) ||
+                            (m_current_id == 7 && (frc::DriverStation::GetAlliance() == frc::DriverStation::Alliance::kBlue))
                         ) ? m_current_id : -1.0;
 
+            break;
+
+        case TargetMode::kTrap:
+        case TargetMode::kNone:
+        default:
             break;
     }
 
