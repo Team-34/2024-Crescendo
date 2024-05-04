@@ -1,6 +1,5 @@
 #include "RobotContainer.h"
 
-
 #include <frc2/command/Commands.h>
 #include <frc2/command/button/Trigger.h>
 #include <units/time.h>
@@ -231,4 +230,27 @@ void RobotContainer::ConfigureBindings() {
         { &shooter }
     ));
 
+    // Set the robot's target mode with the D-Pad / POV / hat
+    m_controller.POVUp().Debounce(100_ms).OnTrue(frc2::cmd::RunOnce(
+        [this] { shooter.ConfigForRest(); },
+        { &shooter }
+    ));
+    m_controller.POVRight().Debounce(100_ms).OnTrue(frc2::cmd::RunOnce(
+        [this] {
+            limelight_util.TargetAmp();
+            shooter.ConfigForAmp();
+        },
+        { &shooter, &limelight_util }
+    ));
+    m_controller.POVDown().Debounce(100_ms).OnTrue(frc2::cmd::RunOnce(
+        [this] { shooter.ConfigForNoteCollection(); },
+        { &shooter }
+    ));
+    m_controller.POVLeft().Debounce(100_ms).OnTrue(frc2::cmd::RunOnce(
+        [this] {
+            limelight_util.TargetSpeaker();
+            shooter.ConfigForSpeaker(traj_math.GetArmFiringAngleDeg());
+        },
+        { &shooter, &limelight_util }
+    ));
 }

@@ -197,26 +197,27 @@ void Robot::TeleopPeriodic() {
         rc->shooter.UpdateShooterClock();
     }
 
-    //Set the robot's target mode with the D-Pad
-    switch (rc->ctrl->GetPOV())
-    {
-        case (POV_UP): //  rest
-            rc->shooter.ConfigForRest();
+    // == Now handled with CommandXboxController in RobotContainer::ConfigureBindings
+    // //Set the robot's target mode with the D-Pad
+    // switch (rc->ctrl->GetPOV())
+    // {
+    //     case (POV_UP): //  rest
+    //         rc->shooter.ConfigForRest();
             
-            break;
-        case (POV_RIGHT): // amp
-            rc->limelight_util.TargetAmp();
-            rc->shooter.ConfigForAmp();
-            break;
-        case (POV_DOWN): // note collection
+    //         break;
+    //     case (POV_RIGHT): // amp
+    //         rc->limelight_util.TargetAmp();
+    //         rc->shooter.ConfigForAmp();
+    //         break;
+    //     case (POV_DOWN): // note collection
             
-            rc->shooter.ConfigForNoteCollection();
-            break;
-        case (POV_LEFT): // max speed
-            rc->limelight_util.TargetSpeaker();
-            rc->shooter.ConfigForSpeaker(rc->traj_math.GetArmFiringAngleDeg());
-            break;
-    }
+    //         rc->shooter.ConfigForNoteCollection();
+    //         break;
+    //     case (POV_LEFT): // max speed
+    //         rc->limelight_util.TargetSpeaker();
+    //         rc->shooter.ConfigForSpeaker(rc->traj_math.GetArmFiringAngleDeg());
+    //         break;
+    // }
 
     //Move the arm with the bumpers
       //Right bumper increases angle, left bumper decreases angle

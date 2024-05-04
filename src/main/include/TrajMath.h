@@ -8,6 +8,7 @@
 
 namespace t34
 {
+    // TODO: Should this be a subsystem so that we can control access to it in commands?
     class TrajMath
     {
         double m_note_max_velocity_mps;

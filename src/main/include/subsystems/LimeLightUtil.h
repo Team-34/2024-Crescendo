@@ -1,8 +1,9 @@
 #pragma once
 
-#include <frc/controller/PIDController.h>
-
 #include <frc/DriverStation.h>
+#include <frc/controller/PIDController.h>
+#include <frc2/command/SubsystemBase.h>
+
 #include "LimelightHelpers.h"
 #include "SwerveDrive.h"
 #include "Constants.h"
@@ -12,7 +13,7 @@
 namespace t34
 {
 
-    class LimelightUtil
+    class LimelightUtil : public frc2::SubsystemBase
     {
 
     public:

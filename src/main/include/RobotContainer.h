@@ -5,6 +5,7 @@
 #pragma once
 
 #include "T34Controller.hpp"
+#include "T34CommandXboxController.h"
 #include "subsystems/SwerveDrive.h"
 #include "subsystems/Shooter.h"
 #include "subsystems/Climber.h"
@@ -19,7 +20,6 @@
 #include <frc2/command/CommandPtr.h>
 #include <frc2/command/InstantCommand.h>
 #include <frc2/command/RunCommand.h>
-#include <frc2/command/button/CommandXboxController.h>
 #include <frc/smartdashboard/SendableChooser.h>
 #include <pathplanner/lib/auto/NamedCommands.h>
 
@@ -69,7 +69,7 @@ public: // METHODS
     
 
 private: // DATA
-    frc2::CommandXboxController m_controller{CONTROLLER_PORT};
+    t34::T34CommandXboxController m_controller{CONTROLLER_PORT};
 
     // frc2::CommandPtr m_exampleSelectCommand = frc2::cmd::Select<std::string>(
     //   [this] { return m_chooser.GetSelected(); },
