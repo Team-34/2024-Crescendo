@@ -13,7 +13,7 @@
 
 namespace t34
 {
-    class Shooter
+    class Shooter : public frc2::SubsystemBase
     {
         rev::CANSparkMax m_firing_motor_left;
         rev::CANSparkMax m_firing_motor_right;
