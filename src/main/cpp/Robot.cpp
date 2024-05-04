@@ -153,15 +153,16 @@ void Robot::TeleopPeriodic() {
     //     rc->swerve_drive->ToggleFarisMode();
     // }
 
-    // Assign Start Button to Zeroing Yaw.
-    // Note: This is for emergency use only!
-    // The robot should be oriented with the front pointed 
-    // at the opposite end of the field and sides as 
-    // parallel as possible to the fields sides when this
-    // button is pressed/released.
-    if (rc->ctrl->GetStartButtonReleased()) {
-        gyro->ZeroYaw();
-    }
+    // == Now handled with CommandXboxController in RobotContainer::ConfigureBindings
+    // // Assign Start Button to Zeroing Yaw.
+    // // Note: This is for emergency use only!
+    // // The robot should be oriented with the front pointed 
+    // // at the opposite end of the field and sides as 
+    // // parallel as possible to the fields sides when this
+    // // button is pressed/released.
+    // if (rc->ctrl->GetStartButtonReleased()) {
+    //     gyro->ZeroYaw();
+    // }
 
     // toggle PID vs basic motor output arm movement with the A button
     if (rc->ctrl->GetYButtonReleased()) { 

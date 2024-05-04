@@ -4,6 +4,7 @@
 #include <frc2/command/Commands.h>
 #include <frc2/command/button/Trigger.h>
 #include <units/time.h>
+#include "Gyro.h"
 #include "commands/Autos.h"
 #include "subsystems/Shooter.h"
 
@@ -201,8 +202,19 @@ void RobotContainer::ConfigureBindings() {
     // pressed, cancelling on release.
     // DriveController->B().WhileTrue(m_subsystem.ExampleMethodCommand());
 
+    // Assign Back Button to Faris Mode.
     m_controller.Back().Debounce(100_ms).OnFalse(frc2::cmd::RunOnce(
         [this] { swerve_drive->ToggleFarisMode(); },
         {swerve_drive.get()}
+    ));
+
+    // Assign Start Button to Zeroing Yaw.
+    // Note: This is for emergency use only!
+    // The robot should be oriented with the front pointed 
+    // at the opposite end of the field and sides as 
+    // parallel as possible to the fields sides when this
+    // button is pressed/released.
+    m_controller.Start().Debounce(100_ms).OnFalse(frc2::cmd::RunOnce(
+        [this] { t34::Gyro::Get()->ZeroYaw(); }
     ));
 }
