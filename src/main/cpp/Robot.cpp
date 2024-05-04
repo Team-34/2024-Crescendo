@@ -138,7 +138,7 @@ void Robot::TeleopInit() {
  * This function is called periodically during operator control.
  */
 void Robot::TeleopPeriodic() {
-    static t34::Gyro* gyro = t34::Gyro::Get();
+    // static t34::Gyro* gyro = t34::Gyro::Get();
     
     rc->traj_math.InputMotorOutputPercent(rc->shooter.GetMaxSpeedPercent());
 
