@@ -5,7 +5,6 @@
 #pragma once
 
 #include "T34Controller.hpp"
-#include "subsystems/ExampleSubsystem.h"
 #include "subsystems/SwerveDrive.h"
 #include "subsystems/Shooter.h"
 #include "subsystems/Climber.h"
@@ -18,34 +17,43 @@
 
 #include <memory>
 #include <frc2/command/CommandPtr.h>
+#include <frc2/command/InstantCommand.h>
+#include <frc2/command/RunCommand.h>
 #include <frc/smartdashboard/SendableChooser.h>
 #include <pathplanner/lib/auto/NamedCommands.h>
 
 using namespace pathplanner;
 using namespace t34;
 
+enum class SwerveDirections
+    {
+        kFwd,
+        kLeft,
+        kRight,
+        kBack,
+        kStill
+    };
 class RobotContainer {
 public: // PROPERTIES
+
     std::shared_ptr<t34::T34XboxController> ctrl;
     std::shared_ptr<t34::SwerveDrive>  swerve_drive;
 
     t34::Shooter shooter;
-    t34::Climber climber;
     t34::TrajMath traj_math;
     t34::LimelightUtil limelight_util;
 
     double arm_angle_setpoint;
+    double hori_distance_inch;
+    double vert_distance_inch;
 
-    double auto_start_dist_1;
-    double auto_start_dist_2;
-    double auto_end_dist_1;
-    double auto_end_dist_2;
-    double auto_current_dist;
-    bool auto_finished_driving_1;
-    bool auto_finished_driving_2;
-    bool auto_finished_aiming;
-    bool auto_finished_shooting;
+    bool start_score;
 
+    frc::SendableChooser<std::string> mode_chooser;
+
+    SwerveDirections dir;
+
+    //frc::SendableChooser<std::string> path_chooser;
 
     t34::ControllerDriveCommand DefaultCommand;
 
@@ -60,8 +68,6 @@ public: // METHODS
     
 
 private: // DATA
-    ExampleSubsystem m_subsystem;
-    frc::SendableChooser<std::string> path_chooser;
     
 
     // frc2::CommandPtr m_exampleSelectCommand = frc2::cmd::Select<std::string>(

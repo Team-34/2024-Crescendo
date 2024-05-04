@@ -4,7 +4,6 @@
 #include <frc2/command/button/Trigger.h>
 
 #include "commands/Autos.h"
-#include "commands/ExampleCommand.h"
 #include "subsystems/Shooter.h"
 
 #include <pathplanner/lib/auto/AutoBuilder.h>
@@ -26,10 +25,9 @@ RobotContainer::RobotContainer()
     : swerve_drive(new t34::SwerveDrive())
     , ctrl(new t34::T34XboxController(0))
     , shooter()
-    , climber()
     , traj_math
         (
-            23.884,
+            (11.884 * 2), //14.062,
             1.9815,
             1.435,
             0.2688,
@@ -41,124 +39,153 @@ RobotContainer::RobotContainer()
             traj_math,
             t34::LimelightUtil::TargetMode::kSpeaker
         )
-    , arm_angle_setpoint(90)
-    , auto_start_dist_1(0.0)
-    , auto_end_dist_1(0.0)
-    , auto_start_dist_2(0.0)
-    , auto_end_dist_2(0.0)
-    , auto_finished_driving_1(false)
-    , auto_finished_aiming(true)
-    , auto_finished_driving_2(true)
-    , auto_finished_shooting(true)
+    , dir(SwerveDirections::kFwd)
+    , arm_angle_setpoint(90.0)
+    , start_score(false)
     , DefaultCommand(swerve_drive, ctrl) {
     
     ctrl->SetAllAxisDeadband(0.2);
 
-    //NamedCommands::registerCommand("ShootSpeaker", std::move(/* put corrosponding function here */)); // <- This example method returns CommandPtr
+    //NamedCommands::registerCommand("ShootAmp", std::move(autos::IntakeNote(this))); 
+    // <- This example method returns CommandPtr
     //NamedCommands::registerCommand("exampleCommand", std::move(/* put corrosponding function here */)); // <- This example method returns CommandPtr
     //NamedCommands::registerCommand("someOtherCommand", std::move(/* put corrosponding function here */.ToPtr()));
     //NamedCommands::registerCommand("someOtherCommandShared", std::make_shared<frc2::/* put some sort of command here */>());
 
     ConfigureBindings();
 
-    path_chooser.SetDefaultOption("None", "None");
-    path_chooser.AddOption("Faris room path", "TestingPathFarisRoom");
+    mode_chooser.AddOption("Starting pos: shoot directly front of sub", "Starting pos: shoot directly front of sub");
+    mode_chooser.AddOption("Starting pos: drive straight", "Starting pos: drive straight");
+    mode_chooser.AddOption("Starting pos: close left of sub", "Starting pos: close left of sub");
+    mode_chooser.AddOption("Starting pos: close right of sub", "Starting pos: close right of sub");
+    mode_chooser.AddOption("Starting pos: far right of sub", "Starting pos: far right of sub");
 
-    path_chooser.AddOption("Start at left, score 2 points", "Left_Score1_NoAmp_MoveOut");
-    path_chooser.AddOption("Start at left, score 3 points", "Left_Score2_NoAmp_MoveOut");
-    path_chooser.AddOption("Start at left, score 4 points", "Left_Score3_NoAmp_MoveOut");
-
-    path_chooser.AddOption("Start at mid, score 2 points", "Mid_Score1_NoAmp_MoveOut");
-    path_chooser.AddOption("Start at mid, score 3 points", "Mid_Score2_NoAmp_MoveOut");
-    path_chooser.AddOption("Start at mid, score 4 points", "Mid_Score3_NoAmp_MoveOut");
-
-    path_chooser.AddOption("Start at right, score 2 points", "Right_Score1_NoAmp_MoveOut");
-    path_chooser.AddOption("Start at right, score 3 points", "Right_Score2_NoAmp_MoveOut");
-    path_chooser.AddOption("Start at right, score 4 points", "Right_Score3_NoAmp_MoveOut");
-
-    path_chooser.AddOption("Start at left, score in amp", "Left_Score0_YesAmp_MoveAuto");
-    path_chooser.AddOption("Start at mid, score in amp", "Middle_Score0_YesAmp_MoveAuto");
-    path_chooser.AddOption("Start at left, score in amp", "Right_Score0_YesAmp_MoveAuto");
+    //path_chooser.SetDefaultOption("None", "None");
+    //path_chooser.AddOption("Faris room path", "TestingPathFarisRoom");
+//
+    //path_chooser.AddOption("Start at left, score 2 points", "Left_Score1_NoAmp_MoveOut");
+    //path_chooser.AddOption("Start at left, score 3 points", "Left_Score2_NoAmp_MoveOut");
+    //path_chooser.AddOption("Start at left, score 4 points", "Left_Score3_NoAmp_MoveOut");
+//
+    //path_chooser.AddOption("Start at mid, score 2 points", "Mid_Score1_NoAmp_MoveOut");
+    //path_chooser.AddOption("Start at mid, score 3 points", "Mid_Score2_NoAmp_MoveOut");
+    //path_chooser.AddOption("Start at mid, score 4 points", "Mid_Score3_NoAmp_MoveOut");
+//
+    //path_chooser.AddOption("Start at right, score 2 points", "Right_Score1_NoAmp_MoveOut");
+    //path_chooser.AddOption("Start at right, score 3 points", "Right_Score2_NoAmp_MoveOut");
+    //path_chooser.AddOption("Start at right, score 4 points", "Right_Score3_NoAmp_MoveOut");
+//
+    //path_chooser.AddOption("Start at left, score in amp", "Left_Score0_YesAmp_MoveAuto");
+    //path_chooser.AddOption("Start at mid, score in amp", "Middle_Score0_YesAmp_MoveAuto");
+    //path_chooser.AddOption("Start at left, score in amp", "Right_Score0_YesAmp_MoveAuto");
 }
 
 
 frc2::CommandPtr RobotContainer::GetAutonomousCommand()
 {
-    //this->auto_start_dist_1 = 0.0;
-    //this->auto_end_dist_1 = 80.15;
-//
-    //this->auto_start_dist_2 = 0.0;
-    //this->auto_end_dist_2 = 74.0;
-//
-    //this->auto_current_dist = this->swerve_drive->GetModulePositions()[0].distance();
-
     return frc2::InstantCommand
     (
         [this]
         {
-            //this->auto_current_dist = this->swerve_drive->GetModulePositions()[0].distance();
-//
-//
-            //if (this->auto_current_dist < this->auto_end_dist_1 && this->auto_finished_driving_1 == false)
-            //{
-                this->swerve_drive->Drive(frc::Translation2d{
-                units::meter_t(0.0),
-                units::meter_t(-1.0)},//std::copysign(ScaleToRange(-(345.0 * 345.0), 0.0, 1.0, 0.0, 0.4), 345.0))),
-                0.0);
-            //}
-            //else
-            //{
-            //    this->auto_finished_driving_1 = true;
-            //    this->auto_finished_driving_2 = false;
-////
-            //    this->auto_end_dist_2 += this->auto_current_dist;
-            //}
-    //////////////////////
-            //if (this->auto_current_dist < this->auto_end_dist_1 && this->auto_finished_driving_2 == false)
-            //{
-            //    this->swerve_drive->Drive(frc::Translation2d{
-            //    units::meter_t(-0.5),
-            //    units::meter_t(0.0)},//std::copysign(ScaleToRange(-(345.0 * 345.0), 0.0, 1.0, 0.0, 0.4), 345.0))),
-            //    0.0);
-            //}
-            //else
-            //{
-            //    this->auto_finished_driving_1 = true;
-            //    this->auto_finished_aiming = false;
-            //}
-    /////////////////////
-            //if (this->auto_finished_aiming == false)
-            //{
-            //    if (this->shooter.GetTopArmEncoderVal() <= (85.0))
-            //    {
-            //        this->shooter.RunTopArmMotorPercent(0.3);
-            //        this->shooter.RunBottomArmMotorPercent(0.3);
-            //    }
-            //    else if (this->shooter.GetTopArmEncoderVal() >= (89.0))
-            //    {
-            //        this->shooter.RunTopArmMotorPercent(-0.15);
-            //        this->shooter.RunBottomArmMotorPercent(-0.15);
-            //    }
-            //    else
-            //    {
-            //        this->shooter.RunTopArmMotorPercent(0.0);
-            //        this->shooter.RunBottomArmMotorPercent(0.0);
-            //        this->auto_finished_aiming = true;
-            //    }
-            //}
-    //////////////////////
-            //if (this->auto_finished_aiming)
-            //{
-            //    this->shooter.RunShooterPercent(0.1);
-            //    this->shooter.RunIntakeMotorPercent(0.6);
-            //}
+            if (dir == SwerveDirections::kFwd && mode_chooser.GetSelected() == "Starting pos: shoot directly front of sub")
+            {
+                shooter.SetSetpoint(29.0);
+                shooter.SetMaxSpeedPercent(1.0);
+                shooter.Shoot(1.0);
+            }
+
+            // if (dir == SwerveDirections::kFwd && mode_chooser.GetSelected() == "Starting pos: drive straight")
+            // {
+            //     swerve_drive->Drive(frc::Translation2d{
+            //     units::meter_t(0.0),
+            //     units::meter_t(-1.0)},
+            //     0.0);
+            // }
+
+            // if (dir == SwerveDirections::kFwd)
+            // {
+            //     vert_distance_inch = swerve_drive->GetModulePositions()[0].distance();
+
+            //     if (vert_distance_inch <= -95 && mode_chooser.GetSelected() == "Starting pos: close right of sub")
+            //     {
+            //         dir = SwerveDirections::kLeft;
+            //     }
+            //     else if (vert_distance_inch <= -95 && mode_chooser.GetSelected() == "Starting pos: close left of sub")
+            //     {
+            //         dir = SwerveDirections::kRight;
+            //     }
+
+            //     swerve_drive->Drive(frc::Translation2d{
+            //     units::meter_t(0.0),
+            //     units::meter_t(-1.0)},
+            //     0.0);
+            // }
+
+            // else if (dir == SwerveDirections::kLeft)
+            // {
+            //     hori_distance_inch = signbit(swerve_drive->GetModulePositions()[0].distance()) ?
+            //         swerve_drive->GetModulePositions()[0].distance() + vert_distance_inch :
+            //         swerve_drive->GetModulePositions()[0].distance() - vert_distance_inch;
+
+            //     if (hori_distance_inch >= 38 && mode_chooser.GetSelected() == "Starting pos: close right of sub")
+            //     {
+            //         dir = SwerveDirections::kStill;
+            //     }
+
+            //     if (hori_distance_inch >= 118 && mode_chooser.GetSelected() == "Starting pos: far right of sub")
+            //     {
+            //         dir = SwerveDirections::kStill;
+            //     }
+
+            //     swerve_drive->Drive(frc::Translation2d{
+            //     units::meter_t(-1.0),
+            //     units::meter_t(0.0)},
+            //     0.0);
+            // }
+
+            // else if (dir == SwerveDirections::kRight)
+            // {
+            //     hori_distance_inch = signbit(swerve_drive->GetModulePositions()[0].distance()) ?
+            //         swerve_drive->GetModulePositions()[0].distance() + vert_distance_inch :
+            //         swerve_drive->GetModulePositions()[0].distance() - vert_distance_inch;
+
+            //     if (hori_distance_inch <= -38 && mode_chooser.GetSelected() == "Starting pos: close left of sub")
+            //     {
+            //         dir = SwerveDirections::kStill;
+            //     }
+
+            //     swerve_drive->Drive(frc::Translation2d{
+            //     units::meter_t(1.0),
+            //     units::meter_t(0.0)},
+            //     0.0);
+            // }
+
+            // else if (dir == SwerveDirections::kStill)
+            // {
+            //     swerve_drive->Drive(frc::Translation2d{
+            //     units::meter_t(0.0),
+            //     units::meter_t(0.0)},
+            //     0.0);
+
+            //     shooter.ConfigForSpeaker(traj_math.GetArmFiringAngleDeg());
+            //     shooter.Shoot(1.0);
+            // }
+            // else
+            // {
+            //     swerve_drive->Drive(frc::Translation2d{
+            //     units::meter_t(0.0),
+            //     units::meter_t(0.0)},
+            //     0.0);
+            // }
+            
         },
         frc2::Requirements( {swerve_drive.get()} )
     ).ToPtr();
 
-    //const std::string path_file_name = path_chooser.GetSelected();
-    //const auto path = pathplanner::PathPlannerPath::fromPathFile(path_file_name);
-    //return pathplanner::AutoBuilder::followPath(path);
+    // const std::string path_file_name = path_chooser.GetSelected();
+    // const auto path = pathplanner::PathPlannerPath::fromPathFile(path_file_name);
+
+    // return pathplanner::AutoBuilder::followPath(path);
 }
 
 void RobotContainer::ConfigureBindings() {

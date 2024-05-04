@@ -40,7 +40,7 @@ namespace t34 {
 
     private: // DATA
         bool m_field_oriented{ true };
-        bool m_faris_mode{ true };
+        bool m_faris_mode{ false };
         double m_speed_scalar{ FARIS_SPEED_MODE_SCALAR };
 
         frc::MedianFilter<double> m_filter{ 5 };

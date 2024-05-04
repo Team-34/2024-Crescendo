@@ -22,6 +22,8 @@ namespace t34
         double m_target_tx;
         double m_target_ty;
 
+        double m_previous_firing_angle;
+
         const double g = 9.80665; // gravity
 
 
@@ -41,7 +43,7 @@ namespace t34
 
         void PutTelemetry();
 
-        double GetFiringAngleDeg() const;
+        double GetArmFiringAngleDeg();
 
         bool IsInRange() const;
 
@@ -52,7 +54,6 @@ namespace t34
         inline void SetTargetHeightMeters(const double meters) { m_target_height_meters = meters; }
 
         inline void SetAprilTagHeightMeters(const double meters) { m_apriltag_height_meters = meters; }
-
 
     };
 }

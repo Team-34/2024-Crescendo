@@ -22,7 +22,10 @@ namespace t34 {
 
     ControllerDriveCommand::ControllerDriveCommand(std::shared_ptr<SwerveDrive> drive, std::shared_ptr<T34XboxController> controller)
         : m_swerve_drive(drive)
-        , m_controller(controller) {
+        , m_controller(controller)
+        , m_x_limiter( units::scalar_t(1.1).value() / 1_s)
+        , m_y_limiter( units::scalar_t(1.1).value() / 1_s)
+        , m_r_limiter( units::scalar_t(2.0).value() / 1_s) {
         
         AddRequirements(drive.get());
 
@@ -34,9 +37,14 @@ namespace t34 {
     }
 
     void ControllerDriveCommand::Execute() {
+
         double x    = m_controller->GetLeftStickXDB();
         double y    = m_controller->GetLeftStickYDB();
         double rot  = m_controller->GetRightStickXDB();
+
+        x = m_x_limiter.Calculate(units::scalar_t(x));
+        y = m_y_limiter.Calculate(units::scalar_t(y));
+        rot = m_r_limiter.Calculate(units::scalar_t(rot));
 
         if (IsInputZero(x, y, rot)) {
             m_swerve_drive->Stop();
@@ -52,11 +60,10 @@ namespace t34 {
 
             return;
         }
-
+        
         double x_speed = std::copysign(ScaleToRange(-(x * x), 0.0, 1.0, 0.0, DRIVE_MAX_SPEED), x);
         double y_speed = std::copysign(ScaleToRange(-(y * y), 0.0, 1.0, 0.0, DRIVE_MAX_SPEED), y);
         double r_speed = std::copysign(ScaleToRange(-(rot * rot), 0.0, 1.0, 0.0, STEER_MAX_SPEED), rot);
-
 
         m_swerve_drive->Drive(frc::Translation2d{ units::meter_t(x_speed), units::meter_t(y_speed) }, r_speed);
     }
