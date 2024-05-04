@@ -1,8 +1,10 @@
 #pragma once
+
 #include <string>
 #include "LimelightHelpers.h"
 #include <cmath>
 
+const int CONTROLLER_PORT = 0;
 
 constexpr bool INVERT_GYRO{ true }; // Always ensure Gyro is CCW+ CW-
 

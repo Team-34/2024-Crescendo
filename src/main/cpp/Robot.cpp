@@ -146,11 +146,12 @@ void Robot::TeleopPeriodic() {
     // Buttons are implemented this way out of simplicity.
     // Consider using button trigger events with commands instead.
 
-    // Assign Back Button to Faris Mode.
-    if (rc->ctrl->GetBackButtonReleased())
-    {
-        rc->swerve_drive->ToggleFarisMode();
-    }
+    // == Now handled with CommandXboxController in RobotContainer::ConfigureBindings
+    // // Assign Back Button to Faris Mode.
+    // if (rc->ctrl->GetBackButtonReleased())
+    // {
+    //     rc->swerve_drive->ToggleFarisMode();
+    // }
 
     // Assign Start Button to Zeroing Yaw.
     // Note: This is for emergency use only!

@@ -1,8 +1,9 @@
 #include "RobotContainer.h"
 
 
+#include <frc2/command/Commands.h>
 #include <frc2/command/button/Trigger.h>
-
+#include <units/time.h>
 #include "commands/Autos.h"
 #include "subsystems/Shooter.h"
 
@@ -199,4 +200,9 @@ void RobotContainer::ConfigureBindings() {
     // Schedule `ExampleMethodCommand` when the Xbox controller's B button is
     // pressed, cancelling on release.
     // DriveController->B().WhileTrue(m_subsystem.ExampleMethodCommand());
+
+    m_controller.Back().Debounce(100_ms).OnFalse(frc2::cmd::RunOnce(
+        [this] { swerve_drive->ToggleFarisMode(); },
+        {swerve_drive.get()}
+    ));
 }
