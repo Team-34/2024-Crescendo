@@ -1,15 +1,17 @@
 #include "subsystems/Shooter.h"
 
 t34::Shooter::Shooter()
-: m_firing_motor_left(14, rev::CANSparkMaxLowLevel::MotorType::kBrushless),
-  m_firing_motor_right(11, rev::CANSparkMaxLowLevel::MotorType::kBrushless),
-  m_arm_motor_top(2, rev::CANSparkMaxLowLevel::MotorType::kBrushless), 
-  m_arm_motor_bottom(1, rev::CANSparkMaxLowLevel::MotorType::kBrushless),
+: m_firing_motor_left(14, rev::CANSparkLowLevel::MotorType::kBrushless),
+  m_firing_motor_right(11, rev::CANSparkLowLevel::MotorType::kBrushless),
+  m_firing_encoder_left(m_firing_motor_left.GetEncoder(rev::SparkRelativeEncoder::Type::kHallSensor, 42)),
+  m_firing_encoder_right(m_firing_motor_right.GetEncoder(rev::SparkRelativeEncoder::Type::kHallSensor, 42)),
+  m_arm_motor_top(2, rev::CANSparkLowLevel::MotorType::kBrushless), 
+  m_arm_motor_bottom(1, rev::CANSparkLowLevel::MotorType::kBrushless),
+  m_arm_encoder_top(m_arm_motor_top.GetEncoder(rev::SparkRelativeEncoder::Type::kHallSensor, 42)),
+  m_arm_encoder_bottom(m_arm_motor_bottom.GetEncoder(rev::SparkRelativeEncoder::Type::kHallSensor, 42)),
+  m_arm_pidctrl_top(m_arm_motor_top.GetPIDController()),
+  m_arm_pidctrl_bottom(m_arm_motor_bottom.GetPIDController()),
   m_intake_motor(12),
-  m_firing_encoder_left(m_firing_motor_left.GetEncoder(rev::CANEncoder::EncoderType::kHallSensor, 42)),
-  m_firing_encoder_right(m_firing_motor_right.GetEncoder(rev::CANEncoder::EncoderType::kHallSensor, 42)),
-  m_arm_encoder_top(m_arm_motor_top.GetEncoder(rev::CANEncoder::EncoderType::kHallSensor, 42)),
-  m_arm_encoder_bottom(m_arm_motor_bottom.GetEncoder(rev::CANEncoder::EncoderType::kHallSensor, 42)),
   m_note_sensor(9),
   m_arm_sensor(8),
   m_current_time(std::chrono::system_clock::now()),
@@ -18,9 +20,7 @@ t34::Shooter::Shooter()
   m_max_speed_percent(0.8),
   m_arm_angle_setpoint(90.0),
   arm_using_pid(true),
-  reset_time(false),
-  m_arm_pidctrl_top(m_arm_motor_top.GetPIDController()),
-  m_arm_pidctrl_bottom(m_arm_motor_bottom.GetPIDController())
+  reset_time(false)
 {
     m_arm_pidctrl_top.SetP(0.5);
     m_arm_pidctrl_top.SetI(0.0);
@@ -207,8 +207,8 @@ void t34::Shooter::Periodic()
     {
         //m_arm_motor_top.Set(motor_output);
         //m_arm_motor_bottom.Set(motor_output);
-        m_arm_pidctrl_top.SetReference((m_arm_angle_setpoint * ARM_DEG_SCALAR), rev::ControlType::kPosition);
-        m_arm_pidctrl_bottom.SetReference((m_arm_angle_setpoint * ARM_DEG_SCALAR), rev::ControlType::kPosition);
+        m_arm_pidctrl_top.SetReference((m_arm_angle_setpoint * ARM_DEG_SCALAR), rev::CANSparkBase::ControlType::kPosition);
+        m_arm_pidctrl_bottom.SetReference((m_arm_angle_setpoint * ARM_DEG_SCALAR), rev::CANSparkBase::ControlType::kPosition);
     }
     
 }

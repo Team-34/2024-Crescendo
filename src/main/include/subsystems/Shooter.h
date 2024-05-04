@@ -17,16 +17,16 @@ namespace t34
     {
         rev::CANSparkMax m_firing_motor_left;
         rev::CANSparkMax m_firing_motor_right;
-        rev::SparkMaxRelativeEncoder m_firing_encoder_left;
-        rev::SparkMaxRelativeEncoder m_firing_encoder_right;
+        rev::SparkRelativeEncoder m_firing_encoder_left;
+        rev::SparkRelativeEncoder m_firing_encoder_right;
 
         rev::CANSparkMax m_arm_motor_top;
         rev::CANSparkMax m_arm_motor_bottom;
-        rev::SparkMaxRelativeEncoder m_arm_encoder_top;
-        rev::SparkMaxRelativeEncoder m_arm_encoder_bottom;
+        rev::SparkRelativeEncoder m_arm_encoder_top;
+        rev::SparkRelativeEncoder m_arm_encoder_bottom;
 
-        rev::SparkMaxPIDController m_arm_pidctrl_top;
-        rev::SparkMaxPIDController m_arm_pidctrl_bottom;
+        rev::SparkPIDController m_arm_pidctrl_top;
+        rev::SparkPIDController m_arm_pidctrl_bottom;
 
         ctre::phoenix::motorcontrol::can::TalonSRX m_intake_motor;
 
