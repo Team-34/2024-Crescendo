@@ -164,11 +164,12 @@ void Robot::TeleopPeriodic() {
     //     gyro->ZeroYaw();
     // }
 
-    // toggle PID vs basic motor output arm movement with the A button
-    if (rc->ctrl->GetYButtonReleased()) { 
-        rc->arm_angle_setpoint = ((rc->shooter.GetTopArmEncoderVal() + rc->shooter.GetBottomArmEncoderVal()) * 0.5) / ARM_DEG_SCALAR;
-        rc->shooter.TogglePIDArmMovement();
-    }
+    // == Now handled with CommandXboxController in RobotContainer::ConfigureBindings
+    // // toggle PID vs basic motor output arm movement with the A button
+    // if (rc->ctrl->GetYButtonReleased()) { 
+    //     rc->arm_angle_setpoint = ((rc->shooter.GetTopArmEncoderVal() + rc->shooter.GetBottomArmEncoderVal()) * 0.5) / ARM_DEG_SCALAR;
+    //     rc->shooter.TogglePIDArmMovement();
+    // }
 
     //if (rc->ctrl->GetXButton() == false && (rc->ctrl->GetRightTriggerAxis() < rc->ctrl->GetRightTriggerDB()))
     //{

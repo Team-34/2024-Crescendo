@@ -217,4 +217,18 @@ void RobotContainer::ConfigureBindings() {
     m_controller.Start().Debounce(100_ms).OnFalse(frc2::cmd::RunOnce(
         [this] { t34::Gyro::Get()->ZeroYaw(); }
     ));
+
+    // Assign Y button to toggling arm movement control between manual and PID
+    m_controller.Y().Debounce(100_ms).OnFalse(frc2::cmd::RunOnce(
+        [this]
+        {
+            const double avg_encoder_value = (shooter.GetTopArmEncoderVal() + shooter.GetBottomArmEncoderVal()) * 0.5;
+            const double current_angle = avg_encoder_value / ARM_DEG_SCALAR;
+            
+            arm_angle_setpoint = current_angle;
+            shooter.TogglePIDArmMovement();
+        },
+        { &shooter }
+    ));
+
 }
