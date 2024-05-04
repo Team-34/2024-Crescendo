@@ -55,6 +55,5 @@ namespace t34
 
         inline void SetAprilTagHeightMeters(const double meters) { m_apriltag_height_meters = meters; }
 
-
     };
 }
