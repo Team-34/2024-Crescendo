@@ -25,8 +25,17 @@
 using namespace pathplanner;
 using namespace t34;
 
+enum class SwerveDirections
+    {
+        kFwd,
+        kLeft,
+        kRight,
+        kBack,
+        kStill
+    };
 class RobotContainer {
 public: // PROPERTIES
+
     std::shared_ptr<t34::T34XboxController> ctrl;
     std::shared_ptr<t34::SwerveDrive>  swerve_drive;
 
@@ -35,18 +44,16 @@ public: // PROPERTIES
     t34::LimelightUtil limelight_util;
 
     double arm_angle_setpoint;
+    double hori_distance_inch;
+    double vert_distance_inch;
 
-    double auto_start_dist_1;
-    double auto_start_dist_2;
-    double auto_end_dist_1;
-    double auto_end_dist_2;
-    double auto_current_dist;
-    bool auto_finished_driving_1;
-    bool auto_finished_driving_2;
-    bool auto_finished_aiming;
-    bool auto_finished_shooting;
+    bool start_score;
 
-    frc::SendableChooser<std::string> path_chooser;
+    frc::SendableChooser<std::string> mode_chooser;
+
+    SwerveDirections dir;
+
+    //frc::SendableChooser<std::string> path_chooser;
 
     t34::ControllerDriveCommand DefaultCommand;
 

@@ -117,7 +117,7 @@ void t34::Shooter::Shoot(double motor_output)
     else
     {
         RunIntakeMotorPercent(0.0, true);
-    }
+    } 
     
     UpdateShooterClock(); // updates m_since_runshooter, so the above if-statement will not be true
     
@@ -127,8 +127,8 @@ void t34::Shooter::Shoot(double motor_output)
 void t34::Shooter::ConfigForAmp()
 {
 
-    SetSetpoint(87.18);
-    SetMaxSpeedPercent(0.15);
+    SetSetpoint(90.0);
+    SetMaxSpeedPercent(0.2);
 }
 
 void t34::Shooter::ConfigForSpeaker(double shooter_firing_angle)
@@ -148,7 +148,7 @@ void t34::Shooter::ConfigForRest()
 
 void t34::Shooter::ConfigForNoteCollection()
 {
-    SetSetpoint(23.0);
+    SetSetpoint(28.0);
     SetMaxSpeedPercent(0.8);
 }
 
@@ -221,9 +221,36 @@ void t34::Shooter::Init()
     m_arm_encoder_top.SetPosition(2.4803999);
     m_arm_encoder_bottom.SetPosition(m_arm_encoder_top.GetPosition());
 
-    m_arm_motor_top.SetSmartCurrentLimit(20);
-    m_arm_motor_bottom.SetSmartCurrentLimit(20);
+    m_arm_motor_top.SetSmartCurrentLimit(30);
+    m_arm_motor_bottom.SetSmartCurrentLimit(30);
+
+    frc::Timer delay;
+
+    while(m_arm_motor_top.GetInverted() != false)
+    {
+       m_arm_motor_top.SetInverted(false);
+       delay.Reset();
+       delay.Start();
+       while(!delay.HasElapsed(0.2_s));
+       delay.Stop();
+    }
+    while(m_arm_motor_bottom.GetInverted() != false){
+       m_arm_motor_bottom.SetInverted(false);
+       delay.Reset();
+       delay.Start();
+       while(!delay.HasElapsed(0.2_s));
+       delay.Stop();
+    }
+
+    // m_arm_motor_top.SetInverted(false);
+    // m_arm_motor_bottom.SetInverted(false);
+
+    m_arm_motor_bottom.BurnFlash();
+    m_arm_motor_top.BurnFlash();
 
     m_firing_motor_left.SetSmartCurrentLimit(30);
     m_firing_motor_right.SetSmartCurrentLimit(30);
+
+    m_intake_motor.ConfigPeakCurrentLimit(40);
+    m_intake_motor.EnableCurrentLimit(true);
 }

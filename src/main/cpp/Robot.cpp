@@ -13,9 +13,9 @@
 
 void Robot::RobotInit() {
     rc = RobotContainer::Get();
-    
 
     rc->shooter.Init();
+    
 }
 
 /**
@@ -56,19 +56,13 @@ void Robot::RobotPeriodic()
     frc::SmartDashboard::PutBoolean("Arm Sensor detection", rc->shooter.IsArmAtZero());
 
     frc::SmartDashboard::PutNumber("Raw Arm Encoder Val: ", rc->shooter.GetTopArmEncoderVal() / ARM_ENC_CONVERSION_FACTOR);
-
-    //_________________________
-    /*
-    //checks if the approx. range is nearing 5 meters (the range the LL with pick up an AT before the resolution becomes too low)
-    if (log2( (2.5 / LimelightHelpers::getTA()) - 0.3) >= 5.0) {
-        frc::SmartDashboard::PutNumber("Over maximum detection range, current distance is: ", rc->limelight_util.m_math_handler.GetDistanceFromTarget());
-    }
-    //_________________________*/
     
     
-    frc::SmartDashboard::PutData("Auto chooser: ", &rc->path_chooser);
+    frc::SmartDashboard::PutData("Mode chooser: ", &rc->mode_chooser);
 
     rc->limelight_util.m_math_handler.PutTelemetry();
+    frc::SmartDashboard::PutNumber("Vertical distance", rc->vert_distance_inch);
+    frc::SmartDashboard::PutNumber("Horizontal distance", rc->hori_distance_inch);
     
     
 }
@@ -92,9 +86,12 @@ void Robot::AutonomousInit() {
 
     t34::Gyro::Get()->ZeroYaw();
 
-    m_autonomous_command = rc->GetAutonomousCommand();
-
+    rc->start_score = false;
+    rc->hori_distance_inch = 0;
+    rc->vert_distance_inch = 0;
+    rc->dir = SwerveDirections::kFwd;
     
+    m_autonomous_command = rc->GetAutonomousCommand();
 
 
     if (m_autonomous_command)
@@ -116,7 +113,7 @@ void Robot::AutonomousInit() {
 
 void Robot::AutonomousPeriodic()
 {
-    
+    m_autonomous_command->Schedule();
 
 }
 
