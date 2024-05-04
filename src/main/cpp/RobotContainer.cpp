@@ -22,8 +22,8 @@ RobotContainer* RobotContainer::Get() {
 
 
 RobotContainer::RobotContainer()
-    : swerve_drive(new t34::SwerveDrive())
-    , ctrl(new t34::T34XboxController(0))
+    : ctrl(new t34::T34XboxController(0))
+    , swerve_drive(new t34::SwerveDrive())
     , shooter()
     , traj_math
         (
@@ -39,9 +39,9 @@ RobotContainer::RobotContainer()
             traj_math,
             t34::LimelightUtil::TargetMode::kSpeaker
         )
-    , dir(SwerveDirections::kFwd)
     , arm_angle_setpoint(90.0)
     , start_score(false)
+    , dir(SwerveDirections::kFwd)
     , DefaultCommand(swerve_drive, ctrl) {
     
     ctrl->SetAllAxisDeadband(0.2);
