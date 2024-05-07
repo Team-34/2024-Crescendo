@@ -253,4 +253,27 @@ void RobotContainer::ConfigureBindings() {
         },
         { &shooter, &limelight_util }
     ));
+
+    //Run the shooter with the triggers
+      //Right is forward, left is back
+    frc2::Trigger left_trigger_pressed = m_controller.LeftTrigger(0.2);
+    frc2::Trigger right_trigger_pressed = m_controller.RightTrigger(0.2);
+
+    right_trigger_pressed.Debounce(100_ms).OnTrue(frc2::cmd::RunOnce(
+        [this] { shooter.Shoot(m_controller.GetRightTriggerAxis()); },
+        { &shooter }
+    ));
+    (left_trigger_pressed && !right_trigger_pressed).Debounce(100_ms)
+        .OnTrue(frc2::cmd::RunOnce(
+            [this] { shooter.RunShooterPercent(-(m_controller.GetLeftTriggerAxis())); },
+            { &shooter }
+        ));
+    (left_trigger_pressed || right_trigger_pressed).Debounce(100_ms)
+        .OnFalse(frc2::cmd::RunOnce(
+            [this] {
+                shooter.RunShooterPercent(0.0);
+                shooter.UpdateShooterClock();
+            },
+            { &shooter }
+        ));
 }

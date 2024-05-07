@@ -177,25 +177,26 @@ void Robot::TeleopPeriodic() {
     //}
 
     static bool bypass = false;
-    //Run the shooter with the triggers
-      //Right is forward, left is back
-    if (rc->ctrl->GetLeftTriggerAxis() > 0.2)
-    {
-        bypass = false;
-        rc->shooter.RunShooterPercent(-(rc->ctrl->GetLeftTriggerAxis()));
-    }
-    else if (rc->ctrl->GetRightTriggerAxis() > 0.2)
-    {
-        bypass = true;
-        //rc->shooter.RunShooterPercent(rc->ctrl->GetRightTriggerAxis());
-        rc->shooter.Shoot(rc->ctrl->GetRightTriggerAxis());
-    }
-    else
-    {
-        bypass = false;
-        rc->shooter.RunShooterPercent(0.0);
-        rc->shooter.UpdateShooterClock();
-    }
+    // == Now handled with CommandXboxController in RobotContainer::ConfigureBindings
+    // //Run the shooter with the triggers
+    //   //Right is forward, left is back
+    // if (rc->ctrl->GetLeftTriggerAxis() > 0.2)
+    // {
+    //     bypass = false;
+    //     rc->shooter.RunShooterPercent(-(rc->ctrl->GetLeftTriggerAxis()));
+    // }
+    // else if (rc->ctrl->GetRightTriggerAxis() > 0.2)
+    // {
+    //     bypass = true;
+    //     //rc->shooter.RunShooterPercent(rc->ctrl->GetRightTriggerAxis());
+    //     rc->shooter.Shoot(rc->ctrl->GetRightTriggerAxis());
+    // }
+    // else
+    // {
+    //     bypass = false;
+    //     rc->shooter.RunShooterPercent(0.0);
+    //     rc->shooter.UpdateShooterClock();
+    // }
 
     // == Now handled with CommandXboxController in RobotContainer::ConfigureBindings
     // //Set the robot's target mode with the D-Pad
