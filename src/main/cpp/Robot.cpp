@@ -176,7 +176,7 @@ void Robot::TeleopPeriodic() {
     //    rc->shooter.RunIntakeMotorPercent(0.0);
     //}
 
-    static bool bypass = false;
+    // static bool bypass = false;
     // == Now handled with CommandXboxController in RobotContainer::ConfigureBindings
     // //Run the shooter with the triggers
     //   //Right is forward, left is back
@@ -247,20 +247,21 @@ void Robot::TeleopPeriodic() {
         rc->shooter.RunBottomArmMotorPercent(0.0);
     }
 
-    //Run intake backward with the X button, forward with A button
-    if (rc->ctrl->GetXButton())
-    {
-        rc->shooter.RunIntakeMotorPercent(-0.7);
-    }
-    else if (rc->ctrl->GetAButton())
-    {
-        rc->shooter.RunIntakeMotorPercent(0.7, bypass);
-    }
-    else
-    {
-        if (!bypass)
-            rc->shooter.RunIntakeMotorPercent(0.0, bypass);
-    }
+    // == Now handled with CommandXboxController in RobotContainer::ConfigureBindings
+    // //Run intake backward with the X button, forward with A button
+    // if (rc->ctrl->GetXButton())
+    // {
+    //     rc->shooter.RunIntakeMotorPercent(-0.7);
+    // }
+    // else if (rc->ctrl->GetAButton())
+    // {
+    //     rc->shooter.RunIntakeMotorPercent(0.7, bypass);
+    // }
+    // else
+    // {
+    //     if (!bypass)
+    //         rc->shooter.RunIntakeMotorPercent(0.0, bypass);
+    // }
 
     //if (rc->ctrl->GetYButton()) // run swerve automatically using the limelight with the Y button
     //{

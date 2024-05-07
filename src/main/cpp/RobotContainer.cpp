@@ -276,4 +276,30 @@ void RobotContainer::ConfigureBindings() {
             },
             { &shooter }
         ));
+
+    //Run intake backward with the X button, forward with A button
+    frc2::Trigger a_button_pressed = m_controller.A();
+    frc2::Trigger x_button_pressed = m_controller.X();
+    const bool BYPASS_SENSOR = true;
+
+    (a_button_pressed && right_trigger_pressed).Debounce(100_ms)
+        .OnTrue(frc2::cmd::RunOnce(
+            [this] { shooter.RunIntakeMotorPercent(0.7, BYPASS_SENSOR); },
+            { &shooter }
+        ));
+    (a_button_pressed && !right_trigger_pressed).Debounce(100_ms)
+        .OnTrue(frc2::cmd::RunOnce(
+            [this] { shooter.RunIntakeMotorPercent(0.7); },
+            { &shooter }
+        ));
+    (x_button_pressed && !a_button_pressed).Debounce(100_ms)
+        .OnTrue(frc2::cmd::RunOnce(
+            [this] { shooter.RunIntakeMotorPercent(-0.7); },
+            { &shooter }
+        ));
+    (a_button_pressed || x_button_pressed).Debounce(100_ms)
+        .OnFalse(frc2::cmd::RunOnce(
+            [this] { shooter.RunIntakeMotorPercent(0.0); },
+            { &shooter }
+        ));
 }
