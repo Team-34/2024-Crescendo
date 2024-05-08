@@ -220,32 +220,33 @@ void Robot::TeleopPeriodic() {
     //         break;
     // }
 
+    // == Now handled with CommandXboxController in RobotContainer::ConfigureBindings
     //Move the arm with the bumpers
       //Right bumper increases angle, left bumper decreases angle
 
-    if (rc->ctrl->GetLeftBumper() && rc->shooter.UsingPIDArmMovement() && rc->shooter.IsArmAtZero() == false)
-    {
-        rc->shooter.MoveDown();
-    }
-    else if (rc->ctrl->GetRightBumper() && rc->shooter.UsingPIDArmMovement() == false)
-    {
-        rc->shooter.RunTopArmMotorPercent(0.25);
-        rc->shooter.RunBottomArmMotorPercent(0.25);
-    }
-    else if (rc->ctrl->GetRightBumper() && rc->shooter.UsingPIDArmMovement())
-    {
-        rc->shooter.MoveUp();
-    }
-    else if (rc->ctrl->GetLeftBumper() && rc->shooter.UsingPIDArmMovement() == false && rc->shooter.IsArmAtZero() == false)
-    {
-        rc->shooter.RunTopArmMotorPercent(-0.3);
-        rc->shooter.RunBottomArmMotorPercent(-0.3);
-    }
-    else if (rc->shooter.UsingPIDArmMovement() == false)
-    {
-        rc->shooter.RunTopArmMotorPercent(0.0);
-        rc->shooter.RunBottomArmMotorPercent(0.0);
-    }
+    // if (rc->ctrl->GetLeftBumper() && rc->shooter.UsingPIDArmMovement() && rc->shooter.IsArmAtZero() == false)
+    // {
+    //     rc->shooter.MoveDown();
+    // }
+    // else if (rc->ctrl->GetRightBumper() && rc->shooter.UsingPIDArmMovement() == false)
+    // {
+    //     rc->shooter.RunTopArmMotorPercent(0.25);
+    //     rc->shooter.RunBottomArmMotorPercent(0.25);
+    // }
+    // else if (rc->ctrl->GetRightBumper() && rc->shooter.UsingPIDArmMovement())
+    // {
+    //     rc->shooter.MoveUp();
+    // }
+    // else if (rc->ctrl->GetLeftBumper() && rc->shooter.UsingPIDArmMovement() == false && rc->shooter.IsArmAtZero() == false)
+    // {
+    //     rc->shooter.RunTopArmMotorPercent(-0.3);
+    //     rc->shooter.RunBottomArmMotorPercent(-0.3);
+    // }
+    // else if (rc->shooter.UsingPIDArmMovement() == false)
+    // {
+    //     rc->shooter.RunTopArmMotorPercent(0.0);
+    //     rc->shooter.RunBottomArmMotorPercent(0.0);
+    // }
 
     // == Now handled with CommandXboxController in RobotContainer::ConfigureBindings
     // //Run intake backward with the X button, forward with A button

@@ -302,4 +302,63 @@ void RobotContainer::ConfigureBindings() {
             [this] { shooter.RunIntakeMotorPercent(0.0); },
             { &shooter }
         ));
+
+    //Move the arm with the bumpers
+      //Right bumper increases angle, left bumper decreases angle
+    m_controller.LeftBumper()
+        .WhileTrue(frc2::cmd::Run(
+            [this]
+            {
+                if (shooter.IsArmAtZero()) return;
+
+                if (shooter.UsingPIDArmMovement())
+                {
+                    shooter.MoveDown();
+                }
+                else
+                {
+                    shooter.RunTopArmMotorPercent(-0.3);
+                    shooter.RunBottomArmMotorPercent(-0.3);
+                }
+            },
+            { &shooter }
+        ).Repeatedly())
+        .OnFalse(frc2::cmd::RunOnce(
+            [this]
+            {
+                if (!shooter.UsingPIDArmMovement())
+                {
+                    shooter.RunTopArmMotorPercent(0.0);
+                    shooter.RunBottomArmMotorPercent(0.0);
+                }
+            },
+            { &shooter }
+        ));
+    m_controller.RightBumper()
+        .WhileTrue(frc2::cmd::Run(
+            [this]
+            {
+                if (shooter.UsingPIDArmMovement())
+                {
+                    shooter.MoveUp();
+                }
+                else
+                {
+                    shooter.RunTopArmMotorPercent(0.25);
+                    shooter.RunBottomArmMotorPercent(0.25);
+                }
+            },
+            { &shooter }
+        ).Repeatedly())
+        .OnFalse(frc2::cmd::RunOnce(
+            [this]
+            {
+                if (!shooter.UsingPIDArmMovement())
+                {
+                    shooter.RunTopArmMotorPercent(0.0);
+                    shooter.RunBottomArmMotorPercent(0.0);
+                }
+            },
+            { &shooter }
+        ));
 }
