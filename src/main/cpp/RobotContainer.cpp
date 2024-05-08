@@ -202,7 +202,7 @@ void RobotContainer::ConfigureBindings() {
     // DriveController->B().WhileTrue(m_subsystem.ExampleMethodCommand());
 
     // Assign Back Button to Faris Mode.
-    m_controller.Back().Debounce(100_ms).OnFalse(frc2::cmd::RunOnce(
+    m_controller.Back().OnTrue(frc2::cmd::RunOnce(
         [this] { swerve_drive->ToggleFarisMode(); },
         {swerve_drive.get()}
     ));
@@ -213,12 +213,12 @@ void RobotContainer::ConfigureBindings() {
     // at the opposite end of the field and sides as 
     // parallel as possible to the fields sides when this
     // button is pressed/released.
-    m_controller.Start().Debounce(100_ms).OnFalse(frc2::cmd::RunOnce(
+    m_controller.Start().OnTrue(frc2::cmd::RunOnce(
         [this] { t34::Gyro::Get()->ZeroYaw(); }
     ));
 
     // Assign Y button to toggling arm movement control between manual and PID
-    m_controller.Y().Debounce(100_ms).OnFalse(frc2::cmd::RunOnce(
+    m_controller.Y().OnTrue(frc2::cmd::RunOnce(
         [this]
         {
             const double avg_encoder_value = (shooter.GetTopArmEncoderVal() + shooter.GetBottomArmEncoderVal()) * 0.5;
@@ -231,22 +231,22 @@ void RobotContainer::ConfigureBindings() {
     ));
 
     // Set the robot's target mode with the D-Pad / POV / hat
-    m_controller.POVUp().Debounce(100_ms).OnTrue(frc2::cmd::RunOnce(
+    m_controller.POVUp().OnTrue(frc2::cmd::RunOnce(
         [this] { shooter.ConfigForRest(); },
         { &shooter }
     ));
-    m_controller.POVRight().Debounce(100_ms).OnTrue(frc2::cmd::RunOnce(
+    m_controller.POVRight().OnTrue(frc2::cmd::RunOnce(
         [this] {
             limelight_util.TargetAmp();
             shooter.ConfigForAmp();
         },
         { &shooter, &limelight_util }
     ));
-    m_controller.POVDown().Debounce(100_ms).OnTrue(frc2::cmd::RunOnce(
+    m_controller.POVDown().OnTrue(frc2::cmd::RunOnce(
         [this] { shooter.ConfigForNoteCollection(); },
         { &shooter }
     ));
-    m_controller.POVLeft().Debounce(100_ms).OnTrue(frc2::cmd::RunOnce(
+    m_controller.POVLeft().OnTrue(frc2::cmd::RunOnce(
         [this] {
             limelight_util.TargetSpeaker();
             shooter.ConfigForSpeaker(traj_math.GetArmFiringAngleDeg());
@@ -259,18 +259,28 @@ void RobotContainer::ConfigureBindings() {
     frc2::Trigger left_trigger_pressed = m_controller.LeftTrigger(0.2);
     frc2::Trigger right_trigger_pressed = m_controller.RightTrigger(0.2);
 
-    right_trigger_pressed.Debounce(100_ms).OnTrue(frc2::cmd::RunOnce(
-        [this] { shooter.Shoot(m_controller.GetRightTriggerAxis()); },
-        { &shooter }
-    ));
-    (left_trigger_pressed && !right_trigger_pressed).Debounce(100_ms)
+    right_trigger_pressed
+        .OnTrue(frc2::cmd::RunOnce(
+            [this] { shooter.Shoot(m_controller.GetRightTriggerAxis()); },
+            { &shooter }
+        ))
+        .OnFalse(frc2::cmd::RunOnce(
+            [this]
+            {
+                shooter.RunShooterPercent(0.0);
+                shooter.UpdateShooterClock();
+            },
+            { &shooter }
+        ));
+
+    left_trigger_pressed
         .OnTrue(frc2::cmd::RunOnce(
             [this] { shooter.RunShooterPercent(-(m_controller.GetLeftTriggerAxis())); },
             { &shooter }
-        ));
-    (left_trigger_pressed || right_trigger_pressed).Debounce(100_ms)
+        ))
         .OnFalse(frc2::cmd::RunOnce(
-            [this] {
+            [this]
+            {
                 shooter.RunShooterPercent(0.0);
                 shooter.UpdateShooterClock();
             },
@@ -282,22 +292,29 @@ void RobotContainer::ConfigureBindings() {
     frc2::Trigger x_button_pressed = m_controller.X();
     const bool BYPASS_SENSOR = true;
 
-    (a_button_pressed && right_trigger_pressed).Debounce(100_ms)
-        .OnTrue(frc2::cmd::RunOnce(
-            [this] { shooter.RunIntakeMotorPercent(0.7, BYPASS_SENSOR); },
-            { &shooter }
-        ));
-    (a_button_pressed && !right_trigger_pressed).Debounce(100_ms)
+    (a_button_pressed && !right_trigger_pressed)
         .OnTrue(frc2::cmd::RunOnce(
             [this] { shooter.RunIntakeMotorPercent(0.7); },
             { &shooter }
+        ))
+        .OnFalse(frc2::cmd::RunOnce(
+            [this] { shooter.RunIntakeMotorPercent(0.0); },
+            { &shooter }
         ));
-    (x_button_pressed && !a_button_pressed).Debounce(100_ms)
+    (a_button_pressed && right_trigger_pressed)
+        .OnTrue(frc2::cmd::RunOnce(
+            [this] { shooter.RunIntakeMotorPercent(0.7, BYPASS_SENSOR); },
+            { &shooter }
+        ))
+        .OnFalse(frc2::cmd::RunOnce(
+            [this] { shooter.RunIntakeMotorPercent(0.0); },
+            { &shooter }
+        ));
+    x_button_pressed
         .OnTrue(frc2::cmd::RunOnce(
             [this] { shooter.RunIntakeMotorPercent(-0.7); },
             { &shooter }
-        ));
-    (a_button_pressed || x_button_pressed).Debounce(100_ms)
+        ))
         .OnFalse(frc2::cmd::RunOnce(
             [this] { shooter.RunIntakeMotorPercent(0.0); },
             { &shooter }
