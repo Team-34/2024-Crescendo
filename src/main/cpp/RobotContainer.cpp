@@ -260,13 +260,14 @@ void RobotContainer::ConfigureBindings() {
     frc2::Trigger right_trigger_pressed = m_controller.RightTrigger(0.2);
 
     right_trigger_pressed
-        .OnTrue(frc2::cmd::RunOnce(
+        .OnTrue(frc2::cmd::Run(
             [this] { shooter.Shoot(m_controller.GetRightTriggerAxis()); },
             { &shooter }
         ))
-        .OnFalse(frc2::cmd::RunOnce(
+        .OnFalse(frc2::cmd::Run(
             [this]
             {
+                shooter.RunIntakeMotorPercent(0.0);
                 shooter.RunShooterPercent(0.0);
                 shooter.UpdateShooterClock();
             },
@@ -294,7 +295,7 @@ void RobotContainer::ConfigureBindings() {
 
     (a_button_pressed && !right_trigger_pressed)
         .OnTrue(frc2::cmd::RunOnce(
-            [this] { shooter.RunIntakeMotorPercent(0.7); },
+            [this] { shooter.RunIntakeMotorPercent(0.5); },
             { &shooter }
         ))
         .OnFalse(frc2::cmd::RunOnce(
@@ -303,7 +304,7 @@ void RobotContainer::ConfigureBindings() {
         ));
     (a_button_pressed && right_trigger_pressed)
         .OnTrue(frc2::cmd::RunOnce(
-            [this] { shooter.RunIntakeMotorPercent(0.7, BYPASS_SENSOR); },
+            [this] { shooter.RunIntakeMotorPercent(0.5, BYPASS_SENSOR); },
             { &shooter }
         ))
         .OnFalse(frc2::cmd::RunOnce(
@@ -312,7 +313,7 @@ void RobotContainer::ConfigureBindings() {
         ));
     x_button_pressed
         .OnTrue(frc2::cmd::RunOnce(
-            [this] { shooter.RunIntakeMotorPercent(-0.7); },
+            [this] { shooter.RunIntakeMotorPercent(-0.5); },
             { &shooter }
         ))
         .OnFalse(frc2::cmd::RunOnce(

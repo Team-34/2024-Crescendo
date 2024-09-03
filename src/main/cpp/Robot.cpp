@@ -50,6 +50,7 @@ void Robot::RobotPeriodic()
 
 
     // Misc.
+
     frc::SmartDashboard::PutNumber("Target ID: ", rc->limelight_util.GetTargetID());
     frc::SmartDashboard::PutNumber("Distance from limelight target (meters): ", rc->limelight_util.m_math_handler.GetDistanceFromTarget());
     frc::SmartDashboard::PutBoolean("Note Sensor detection", rc->shooter.IntakeHasNote());

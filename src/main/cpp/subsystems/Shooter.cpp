@@ -96,30 +96,32 @@ void t34::Shooter::RunIntakeMotorPercent(const double motor_output, const bool b
 
 void t34::Shooter::UpdateShooterClock()
 {
-    if (m_time_delta.count() > 2)
-    {
-        m_since_runshooter = std::chrono::system_clock::now();
-        
-    }
+    m_since_runshooter = std::chrono::system_clock::now();
+    //if (m_time_delta.count() > 2)
+    //{
+    //    m_since_runshooter = std::chrono::system_clock::now();
+    //    
+    //}
 }
 
 void t34::Shooter::Shoot(double motor_output)
 {
     RunShooterPercent(motor_output);
-
-    m_time_delta = 
-        std::chrono::duration_cast<std::chrono::seconds>( m_current_time - m_since_runshooter);
     
-    if (m_time_delta.count() > 1)
+    if (m_time_delta.count() == 1)
     {
-        RunIntakeMotorPercent(0.7, true);
+        RunIntakeMotorPercent(0.5, true); //0.7
+    }
+    else if (m_time_delta.count() >= 2)
+    {
+        UpdateShooterClock();
     }
     else
     {
         RunIntakeMotorPercent(0.0, true);
     } 
     
-    UpdateShooterClock(); // updates m_since_runshooter, so the above if-statement will not be true
+    //UpdateShooterClock(); // updates m_since_runshooter, so the above if-statement will not be true
     
 
 }
@@ -198,6 +200,8 @@ void t34::Shooter::Periodic()
 {
     m_arm_angle_setpoint = std::clamp(m_arm_angle_setpoint, 12.0, 90.0);
     m_current_time = std::chrono::system_clock::now();
+
+    m_time_delta = std::chrono::duration_cast<std::chrono::seconds>( m_current_time - m_since_runshooter);   
 
     //double motor_output = 
     //(fabs(m_kp * ( ( (m_arm_angle_setpoint / ARM_DEG_SCALAR) - GetTopArmEncoderVal()) / m_arm_angle_setpoint)) < m_tolerance) ? 
